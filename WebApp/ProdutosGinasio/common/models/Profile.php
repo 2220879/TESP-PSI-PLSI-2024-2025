@@ -2,9 +2,6 @@
 
 namespace common\models;
 
-use app\models\Avaliaco;
-use app\models\User;
-use app\models\Usocupo;
 use frontend\models\Carrinhocompra;
 use frontend\models\Favorito;
 
@@ -17,13 +14,13 @@ use frontend\models\Favorito;
  * @property int $telefone
  * @property int $user_id
  *
- * @property Avaliaco[] $avaliacos
+ * @property Avaliacao[] $avaliacos
  * @property Carrinhocompra[] $carrinhocompras
  * @property Encomenda[] $encomendas
  * @property Fatura[] $faturas
  * @property Favorito[] $favoritos
  * @property User $user
- * @property Usocupo[] $usocupos
+ * @property Usocupao[] $usocupos
  */
 class Profile extends \yii\db\ActiveRecord
 {
@@ -69,7 +66,7 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getAvaliacos()
     {
-        return $this->hasMany(Avaliaco::class, ['profile_id' => 'id']);
+        return $this->hasMany(Avaliacao::class, ['profile_id' => 'id']);
     }
 
     /**
@@ -129,6 +126,6 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getUsocupos()
     {
-        return $this->hasMany(Usocupo::class, ['profile_id' => 'id']);
+        return $this->hasMany(Usocupao::class, ['profile_id' => 'id']);
     }
 }

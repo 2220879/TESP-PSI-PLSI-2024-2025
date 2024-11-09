@@ -27,6 +27,7 @@ class Categoria extends \yii\db\ActiveRecord
     {
         return [
             [['nomeCategoria'], 'required'],
+            [['nomeCategoria'], 'unique','message'=>'Esta categoria ja esta criada'],
             [['nomeCategoria'], 'string', 'max' => 45],
         ];
     }

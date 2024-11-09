@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use app\models\Usocupo;
-
 /**
  * This is the model class for table "cupoesdescontos".
  *
@@ -12,7 +10,7 @@ use app\models\Usocupo;
  * @property float $desconto
  * @property string $dataFim
  *
- * @property Usocupo[] $usocupos
+ * @property Usocupao[] $usocupos
  */
 class Cupaodesconto extends \yii\db\ActiveRecord
 {
@@ -58,6 +56,6 @@ class Cupaodesconto extends \yii\db\ActiveRecord
      */
     public function getUsocupos()
     {
-        return $this->hasMany(Usocupo::class, ['cupaodesconto_id' => 'id']);
+        return $this->hasMany(Usocupao::class, ['cupaodesconto_id' => 'id']);
     }
 }

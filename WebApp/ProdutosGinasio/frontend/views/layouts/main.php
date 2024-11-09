@@ -100,11 +100,6 @@ AppAsset::register($this);
                         <a href="">
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>
-                        <form class="form-inline">
-                            <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
-                                <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>
-                        </form>
                         <?php
                         echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
                             . Html::submitButton(

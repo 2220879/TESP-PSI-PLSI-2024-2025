@@ -2,7 +2,7 @@
 
 namespace common\models;
 
-use app\models\Fornecedore;
+use backend\models\Fornecedor;
 
 /**
  * This is the model class for table "marcas".
@@ -10,7 +10,7 @@ use app\models\Fornecedore;
  * @property int $id
  * @property string $nomeMarca
  *
- * @property Fornecedore[] $fornecedores
+ * @property Fornecedor[] $fornecedores
  * @property Produto[] $produtos
  */
 class Marca extends \yii\db\ActiveRecord
@@ -30,6 +30,7 @@ class Marca extends \yii\db\ActiveRecord
     {
         return [
             [['nomeMarca'], 'required'],
+            [['nomeMarca'], 'unique','message'=>'Esta marca ja esta criada'],
             [['nomeMarca'], 'string', 'max' => 45],
         ];
     }
@@ -52,7 +53,7 @@ class Marca extends \yii\db\ActiveRecord
      */
     public function getFornecedores()
     {
-        return $this->hasMany(Fornecedore::class, ['marca_id' => 'id']);
+        return $this->hasMany(Fornecedor::class, ['marca_id' => 'id']);
     }
 
     /**

@@ -2,10 +2,8 @@
 
 namespace common\models;
 
-use app\models\Avaliaco;
-use app\models\Imagen;
-use app\models\Linhascarrinho;
-use app\models\Linhascompra;
+use frontend\models\Linhacarrinho;
+use backend\models\Linhacompra;
 use frontend\models\Favorito;
 
 /**
@@ -22,14 +20,14 @@ use frontend\models\Favorito;
  * @property int|null $genero_id
  * @property int|null $tamanho_id
  *
- * @property Avaliaco[] $avaliacos
+ * @property Avaliacao[] $avaliacos
  * @property Categoria $categoria
  * @property Favorito[] $favoritos
  * @property Genero $genero
- * @property Imagen[] $imagens
+ * @property Imagem[] $imagens
  * @property Iva $iva
- * @property Linhascarrinho[] $linhascarrinhos
- * @property Linhascompra[] $linhascompras
+ * @property Linhacarrinho[] $linhascarrinhos
+ * @property Linhacompra[] $linhascompras
  * @property Marca $marca
  * @property Tamanho $tamanho
  */
@@ -88,7 +86,7 @@ class Produto extends \yii\db\ActiveRecord
      */
     public function getAvaliacos()
     {
-        return $this->hasMany(Avaliaco::class, ['produto_id' => 'id']);
+        return $this->hasMany(Avaliacao::class, ['produto_id' => 'id']);
     }
 
     /**
@@ -128,7 +126,7 @@ class Produto extends \yii\db\ActiveRecord
      */
     public function getImagens()
     {
-        return $this->hasMany(Imagen::class, ['produto_id' => 'id']);
+        return $this->hasMany(Imagem::class, ['produto_id' => 'id']);
     }
 
     /**
@@ -148,7 +146,7 @@ class Produto extends \yii\db\ActiveRecord
      */
     public function getLinhascarrinhos()
     {
-        return $this->hasMany(Linhascarrinho::class, ['produto_id' => 'id']);
+        return $this->hasMany(Linhacarrinho::class, ['produto_id' => 'id']);
     }
 
     /**
@@ -158,7 +156,7 @@ class Produto extends \yii\db\ActiveRecord
      */
     public function getLinhascompras()
     {
-        return $this->hasMany(Linhascompra::class, ['produto_id' => 'id']);
+        return $this->hasMany(Linhacompra::class, ['produto_id' => 'id']);
     }
 
     /**

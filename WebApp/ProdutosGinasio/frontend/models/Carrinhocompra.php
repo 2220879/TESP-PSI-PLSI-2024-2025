@@ -2,7 +2,6 @@
 
 namespace frontend\models;
 
-use app\models\Linhascarrinho;
 use common\models\Profile;
 
 /**
@@ -15,7 +14,7 @@ use common\models\Profile;
  * @property float $ivaTotal
  * @property int $profile_id
  *
- * @property Linhascarrinho[] $linhascarrinhos
+ * @property Linhacarrinho[] $linhascarrinhos
  * @property Profile $profile
  */
 class Carrinhocompra extends \yii\db\ActiveRecord
@@ -64,7 +63,7 @@ class Carrinhocompra extends \yii\db\ActiveRecord
      */
     public function getLinhascarrinhos()
     {
-        return $this->hasMany(Linhascarrinho::class, ['carrinhocompras_id' => 'id']);
+        return $this->hasMany(Linhacarrinho::class, ['carrinhocompras_id' => 'id']);
     }
 
     /**

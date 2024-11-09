@@ -2,10 +2,6 @@
 
 namespace common\models;
 
-use app\models\Linhasfatura;
-use app\models\Metodosentrega;
-use app\models\Metodospagamento;
-
 /**
  * This is the model class for table "faturas".
  *
@@ -21,9 +17,9 @@ use app\models\Metodospagamento;
  * @property int $profile_id
  *
  * @property Encomenda $encomenda
- * @property Linhasfatura[] $linhasfaturas
- * @property Metodosentrega $metodoentrega
- * @property Metodospagamento $metodopagamento
+ * @property Linhafatura[] $linhasfaturas
+ * @property Metodoentrega $metodoentrega
+ * @property Metodopagamento $metodopagamento
  * @property Profile $profile
  */
 class Fatura extends \yii\db\ActiveRecord
@@ -47,8 +43,8 @@ class Fatura extends \yii\db\ActiveRecord
             [['valorTotal', 'ivaTotal'], 'number'],
             [['nif', 'metodopagamento_id', 'metodoentrega_id', 'encomenda_id', 'profile_id'], 'integer'],
             [['encomenda_id'], 'exist', 'skipOnError' => true, 'targetClass' => Encomenda::class, 'targetAttribute' => ['encomenda_id' => 'id']],
-            [['metodoentrega_id'], 'exist', 'skipOnError' => true, 'targetClass' => Metodosentrega::class, 'targetAttribute' => ['metodoentrega_id' => 'id']],
-            [['metodopagamento_id'], 'exist', 'skipOnError' => true, 'targetClass' => Metodospagamento::class, 'targetAttribute' => ['metodopagamento_id' => 'id']],
+            [['metodoentrega_id'], 'exist', 'skipOnError' => true, 'targetClass' => Metodoentrega::class, 'targetAttribute' => ['metodoentrega_id' => 'id']],
+            [['metodopagamento_id'], 'exist', 'skipOnError' => true, 'targetClass' => Metodopagamento::class, 'targetAttribute' => ['metodopagamento_id' => 'id']],
             [['profile_id'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::class, 'targetAttribute' => ['profile_id' => 'id']],
         ];
     }
@@ -89,7 +85,7 @@ class Fatura extends \yii\db\ActiveRecord
      */
     public function getLinhasfaturas()
     {
-        return $this->hasMany(Linhasfatura::class, ['fatura_id' => 'id']);
+        return $this->hasMany(Linhafatura::class, ['fatura_id' => 'id']);
     }
 
     /**
@@ -99,7 +95,7 @@ class Fatura extends \yii\db\ActiveRecord
      */
     public function getMetodoentrega()
     {
-        return $this->hasOne(Metodosentrega::class, ['id' => 'metodoentrega_id']);
+        return $this->hasOne(Metodoentrega::class, ['id' => 'metodoentrega_id']);
     }
 
     /**
@@ -109,7 +105,7 @@ class Fatura extends \yii\db\ActiveRecord
      */
     public function getMetodopagamento()
     {
-        return $this->hasOne(Metodospagamento::class, ['id' => 'metodopagamento_id']);
+        return $this->hasOne(Metodopagamento::class, ['id' => 'metodopagamento_id']);
     }
 
     /**

@@ -27,6 +27,7 @@ class Genero extends \yii\db\ActiveRecord
     {
         return [
             [['referencia'], 'required'],
+            [['referencia'], 'unique','message'=>'Este genero ja esta criado'],
             [['referencia'], 'string', 'max' => 45],
         ];
     }

@@ -587,9 +587,6 @@ class m241021_154947_init_rbac extends Migration
         $auth->addChild($cliente, $viewGeneros);
         // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
         // usually implemented in your User model.
-        //teste para ver se os commits funcionam************************
-        $auth->assign($cliente, 3);
-        $auth->assign($funcionario, 2);
         $auth->assign($admin, 1);
     }
 

@@ -1,8 +1,6 @@
 <?php
 
-namespace app\models;
-
-use Yii;
+namespace backend\models;
 
 /**
  * This is the model class for table "compras".
@@ -12,8 +10,8 @@ use Yii;
  * @property string $dataDespesa
  * @property int $fornecedor_id
  *
- * @property Fornecedore $fornecedor
- * @property Linhascompra[] $linhascompras
+ * @property Fornecedor $fornecedor
+ * @property Linhacompra[] $linhascompras
  */
 class Compra extends \yii\db\ActiveRecord
 {
@@ -35,7 +33,7 @@ class Compra extends \yii\db\ActiveRecord
             [['total'], 'number'],
             [['dataDespesa'], 'safe'],
             [['fornecedor_id'], 'integer'],
-            [['fornecedor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Fornecedore::class, 'targetAttribute' => ['fornecedor_id' => 'id']],
+            [['fornecedor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Fornecedor::class, 'targetAttribute' => ['fornecedor_id' => 'id']],
         ];
     }
 
@@ -59,7 +57,7 @@ class Compra extends \yii\db\ActiveRecord
      */
     public function getFornecedor()
     {
-        return $this->hasOne(Fornecedore::class, ['id' => 'fornecedor_id']);
+        return $this->hasOne(Fornecedor::class, ['id' => 'fornecedor_id']);
     }
 
     /**
@@ -69,6 +67,6 @@ class Compra extends \yii\db\ActiveRecord
      */
     public function getLinhascompras()
     {
-        return $this->hasMany(Linhascompra::class, ['compra_id' => 'id']);
+        return $this->hasMany(Linhacompra::class, ['compra_id' => 'id']);
     }
 }

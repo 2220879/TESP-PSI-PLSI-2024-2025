@@ -849,6 +849,8 @@ a:focus {
 /* end info section */
 .footer_section {
     background-color: #060a36;
+    position: relative;
+    margin-top: auto;
 }
 
 .footer_section p {

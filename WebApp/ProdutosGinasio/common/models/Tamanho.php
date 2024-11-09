@@ -27,6 +27,7 @@ class Tamanho extends \yii\db\ActiveRecord
     {
         return [
             [['referencia'], 'required'],
+            [['referencia'], 'unique','message'=>'Este tamanho ja existe'],
             [['referencia'], 'string', 'max' => 45],
         ];
     }

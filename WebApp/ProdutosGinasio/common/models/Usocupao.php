@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use app\models\Cupoesdesconto;
-
 /**
  * This is the model class for table "usocupoes".
  *
@@ -12,7 +10,7 @@ use app\models\Cupoesdesconto;
  * @property int $profile_id
  * @property string $dataUso
  *
- * @property Cupoesdesconto $cupaodesconto
+ * @property Cupaodesconto $cupaodesconto
  * @property Profile $profile
  */
 class Usocupao extends \yii\db\ActiveRecord
@@ -59,7 +57,7 @@ class Usocupao extends \yii\db\ActiveRecord
      */
     public function getCupaodesconto()
     {
-        return $this->hasOne(Cupoesdesconto::class, ['id' => 'cupaodesconto_id']);
+        return $this->hasOne(Cupaodesconto::class, ['id' => 'cupaodesconto_id']);
     }
 
     /**
