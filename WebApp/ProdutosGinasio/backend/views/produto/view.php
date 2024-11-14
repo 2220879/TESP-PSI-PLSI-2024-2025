@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
@@ -41,5 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'tamanho_id',
         ],
     ]) ?>
+
+    <h3>Imagens:</h3>
+
+    <div class="product-images">
+        <?php foreach ($model->imagens as $imagem): ?>
+            <div class="image-container">
+                <?= Html::img(Yii::getAlias('@web/uploads/') . $imagem->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?>
+            </div>
+        <?php endforeach; ?>
+    </div>
 
 </div>

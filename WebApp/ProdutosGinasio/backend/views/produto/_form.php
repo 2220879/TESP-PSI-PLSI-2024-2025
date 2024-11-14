@@ -25,15 +25,17 @@ use common\models\Tamanho;
 
     <?= $form->field($model, 'descricaoProduto')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'marca_id')->dropDownList($marcas,['prompt' => 'Selecione uma Marca']) ?>
+    <?= $form->field($model, 'marca_id')->dropDownList($marcas, ['prompt' => 'Selecione uma Marca']) ?>
 
-    <?= $form->field($model, 'categoria_id')->dropDownList($categorias,['prompt' => 'Selecione uma Categoria']) ?>
+    <?= $form->field($model, 'categoria_id')->dropDownList($categorias, ['prompt' => 'Selecione uma Categoria']) ?>
 
-    <?= $form->field($model, 'iva_id')->dropDownList($ivas,['prompt' => 'Selecione um Iva']) ?>
+    <?= $form->field($model, 'iva_id')->dropDownList($ivas, ['prompt' => 'Selecione um Iva']) ?>
 
-    <?= $form->field($model, 'genero_id')->dropDownList($generos,['prompt' => 'Selecione um Genero']) ?>
+    <?= $form->field($model, 'genero_id')->dropDownList($generos, ['prompt' => 'Selecione um Genero']) ?>
 
-    <?= $form->field($model, 'tamanho_id')->dropDownList($tamanhos,['prompt' => 'Selecione um Tamanho']) ?>
+    <?= $form->field($model, 'tamanho_id')->dropDownList($tamanhos, ['prompt' => 'Selecione um Tamanho']) ?>
+
+    <?= $form->field($imagemForm, 'imagens[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
@@ -42,4 +44,3 @@ use common\models\Tamanho;
     <?php ActiveForm::end(); ?>
 
 </div>
-

@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use backend\models\ImagemForm;
+use common\models\Imagem;
 use common\models\Produto;
 use common\models\ProdutoSearch;
 use common\models\Marca;
@@ -9,9 +11,12 @@ use common\models\Categoria;
 use common\models\Genero;
 use common\models\Tamanho;
 use common\models\Iva;
+use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ProdutoController implements the CRUD actions for Produto model.
@@ -26,6 +31,17 @@ class ProdutoController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'create', 'view', 'update', 'updateimagem', 'delete', 'deleteimagem', 'upload', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'create', 'view', 'update', 'updateimagem', 'delete', 'deleteimagem', 'upload', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin', 'funcionario'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -43,9 +59,12 @@ class ProdutoController extends Controller
      */
     public function actionIndex()
     {
+        //criar a instância do Produto
         $searchModel = new ProdutoSearch();
+        //seleciona todos os dados da tabela de produtos
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        //faz render da página index com todos os produtos armazenados na base dados
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -60,6 +79,7 @@ class ProdutoController extends Controller
      */
     public function actionView($id)
     {
+        //faz render da página view com os dados do produto selecionado
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
@@ -72,22 +92,35 @@ class ProdutoController extends Controller
      */
     public function actionCreate()
     {
+        //iniciliaza a variavel para a criação de um user
         $model = new Produto();
+        //iniciliaza a variavel do modelo ImagemForm
+        $imagemForm = new ImagemForm();
 
+        //buscar todos os dados destas categorias de dados
         $marcas = Marca::find()->select(['nomeMarca', 'id'])->indexBy('id')->column();
         $categorias = Categoria::find()->select(['nomeCategoria', 'id'])->indexBy('id')->column();
         $tamanhos = Tamanho::find()->select(['referencia', 'id'])->indexBy('id')->column();
         $generos = Genero::find()->select(['referencia', 'id'])->indexBy('id')->column();
         $ivas = Iva::find()->where(['vigor' => 1])->select(['percentagem', 'id'])->indexBy('id')->column();
 
+        //se o pedido for POST
         if ($this->request->isPost) {
+            //guardar na base dados o novo produto
             if ($model->load($this->request->post()) && $model->save()) {
+
+                //chamar o metodo para tatar do upload das imagens
+                $this->actionUpload($model->id, $imagemForm);
+
+                //redireciona para a página index
                 return $this->redirect(['index']);
             }
         } else {
+            //se ocorrer algo de errado carrega os dados por default
             $model->loadDefaultValues();
         }
 
+        //faz o render da pagina create com os respetivos dados
         return $this->render('create', [
             'model' => $model,
             'marcas' => $marcas,
@@ -95,6 +128,7 @@ class ProdutoController extends Controller
             'categorias' => $categorias,
             'ivas' => $ivas,
             'generos' => $generos,
+            'imagemForm' => $imagemForm,
         ]);
     }
 
@@ -107,14 +141,86 @@ class ProdutoController extends Controller
      */
     public function actionUpdate($id)
     {
+        //seleciona o produto a pretendido
         $model = $this->findModel($id);
 
+        //iniciliaza a variavel do modelo ImagemForm
+        $imagemForm = new ImagemForm();
+
+        //buscar todos os dados destas categorias de dados
+        $marcas = Marca::find()->select(['nomeMarca', 'id'])->indexBy('id')->column();
+        $categorias = Categoria::find()->select(['nomeCategoria', 'id'])->indexBy('id')->column();
+        $tamanhos = Tamanho::find()->select(['referencia', 'id'])->indexBy('id')->column();
+        $generos = Genero::find()->select(['referencia', 'id'])->indexBy('id')->column();
+        $ivas = Iva::find()->where(['vigor' => 1])->select(['percentagem', 'id'])->indexBy('id')->column();
+
+        //se o pedido for POST e carregar os dados do formulário com sucesso, e armazenar
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+            //chamar o metodo para tatar do upload das imagens
+            $this->actionUpload($model->id, $imagemForm);
+
+            //redireciona para a página de index
             return $this->redirect(['index']);
         }
 
+        //faz o render da página de update com os respetivos dados
         return $this->render('update', [
             'model' => $model,
+            'marcas' => $marcas,
+            'tamanhos' => $tamanhos,
+            'categorias' => $categorias,
+            'ivas' => $ivas,
+            'generos' => $generos,
+            'imagemForm' => $imagemForm,
+        ]);
+    }
+
+    public function actionUpdateimagem($id)
+    {
+        //iniciliaza a variavel do modelo ImagemForm
+        $imagemForm = new ImagemForm();
+
+        //seleciona a imagem pretendida
+        $imagem = Imagem::findOne($id);
+
+        //seleciona o produto cuja a imagem está a ser editada
+        $model = Produto::find()->where(['id' => $imagem->produto_id])->one();
+
+        //buscar todos os dados destas categorias de dados
+        $marcas = Marca::find()->select(['nomeMarca', 'id'])->indexBy('id')->column();
+        $categorias = Categoria::find()->select(['nomeCategoria', 'id'])->indexBy('id')->column();
+        $tamanhos = Tamanho::find()->select(['referencia', 'id'])->indexBy('id')->column();
+        $generos = Genero::find()->select(['referencia', 'id'])->indexBy('id')->column();
+        $ivas = Iva::find()->where(['vigor' => 1])->select(['percentagem', 'id'])->indexBy('id')->column();
+
+        //se o pedido for POST
+        if ($this->request->isPost) {
+
+            //carrega as imagens
+            $imagemForm->imagens = UploadedFile::getInstances($imagemForm, 'imagens');
+
+            //se existir imagens carregadas
+            if ($imagemForm->update($id)) {
+                //redireciona para a página de index
+                return $this->redirect(['update', 'model' => $model,
+                    'marcas' => $marcas,
+                    'tamanhos' => $tamanhos,
+                    'categorias' => $categorias,
+                    'ivas' => $ivas,
+                    'generos' => $generos,
+                    'imagemForm' => $imagemForm]);
+            }
+        }
+
+        //faz o render da página de update com os respetivos dados
+        return $this->render('update', [
+            'model' => $model,
+            'marcas' => $marcas,
+            'tamanhos' => $tamanhos,
+            'categorias' => $categorias,
+            'ivas' => $ivas,
+            'generos' => $generos,
+            'imagemForm' => $imagemForm,
         ]);
     }
 
@@ -127,9 +233,50 @@ class ProdutoController extends Controller
      */
     public function actionDelete($id)
     {
+        //criar a instância do modelo
+        $imagemForm = new ImagemForm();
+
+        //chamar o metodo do modelo
+        $imagemForm->deleteAll($id);
+
+        //apagar na base dados o produto selecionado
         $this->findModel($id)->delete();
 
+        //redireciona para a página de index
         return $this->redirect(['index']);
+    }
+
+    public function actionUpload($id, $imagemForm)
+    {
+        //se o pedido for POST
+        if (Yii::$app->request->isPost) {
+            //carrega as imagens
+            $imagemForm->imagens = UploadedFile::getInstances($imagemForm, 'imagens');
+
+            //se existir imagens carregadas
+            if ($imagemForm->upload($id)) {
+                //se correu tudo bem
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function actionDeleteimagem($id)
+    {
+        //criar a instância do modelo
+        $imagemForm = new ImagemForm();
+
+        //seleciona a imagem pretendida
+        $imagem = Imagem::findOne($id);
+        //armazenar o id do produto referente à imagem a eliminar
+        $produto = $imagem->produto_id;
+
+        //chamar o metodo do modelo
+        $imagemForm->delete($id);
+
+        //redireciona para a página de index
+        return $this->redirect(['update', 'id' => $produto]);
     }
 
     /**
@@ -141,11 +288,12 @@ class ProdutoController extends Controller
      */
     protected function findModel($id)
     {
+        //se econtrar o modelo de dados do Produto selecionado
         if (($model = Produto::findOne(['id' => $id])) !== null) {
+            //devolve o modelo de dados
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
-

@@ -32,7 +32,7 @@
                     ['label' => 'Utilizadores', 'icon' => 'fa fa-users', 'url' => ['/user/index']],
                     ['label' => 'Produtos', 'header' => true],
                     [
-                        'label' => 'Ver Produtos',
+                        'label' => 'Gestão',
                         'items' => [
                             ['label' => 'Produtos', 'icon' => 'fa fa-book', 'url' => ['/produto/index']],
                             ['label' => 'Categorias', 'icon' => 'fa fa-inbox', 'url' => ['/categoria/index']],

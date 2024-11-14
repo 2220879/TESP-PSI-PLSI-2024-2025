@@ -52,6 +52,8 @@ class Produto extends \yii\db\ActiveRecord
             [['quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id', 'tamanho_id'], 'integer'],
             [['descricaoProduto'], 'string'],
             [['nomeProduto'], 'string', 'max' => 50],
+            [['quantidade'], 'integer', 'min' => 0, 'message' => 'A quantidade do estoque não pode ser negativa.'],
+            [['preco'], 'number', 'min' => 0.01, 'message' => 'O preço deve ser maior que zero.'],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categoria::class, 'targetAttribute' => ['categoria_id' => 'id']],
             [['genero_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genero::class, 'targetAttribute' => ['genero_id' => 'id']],
             [['iva_id'], 'exist', 'skipOnError' => true, 'targetClass' => Iva::class, 'targetAttribute' => ['iva_id' => 'id']],

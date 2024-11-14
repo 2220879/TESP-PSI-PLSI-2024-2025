@@ -30,7 +30,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['logout', 'index'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['admin', 'funcionario'],
                     ],
                 ],
             ],
@@ -79,10 +79,19 @@ class SiteController extends Controller
         $this->layout = 'blank';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
 
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            // Verifica diretamente se o usuário tem os papéis de 'admin' ou 'funcionario'
+            if (Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'admin') ||
+                Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'funcionario')) {
+                return $this->goBack();
+            }
+
+            // Caso o usuário não tenha permissão, faz logout e redireciona com uma mensagem de erro
+            Yii::$app->user->logout();
+            Yii::$app->session->setFlash('error', 'Acesso negado. Não tem permissão para aceder o backend.');
+            return $this->redirect(['login']);
+        }
         $model->password = '';
 
         return $this->render('login', [

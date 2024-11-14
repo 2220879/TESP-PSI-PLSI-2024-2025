@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\Imagem;
+use common\models\Produto;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -75,7 +77,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $produtosRecentes = Produto::find()->with(['imagens'])->orderBy(['id' => SORT_DESC])->limit(9)->all();
+
+        return $this->render('index', ['produtosRecentes' => $produtosRecentes]);
     }
 
     /**
@@ -90,11 +94,18 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            if (Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'cliente')) {
+                return $this->goHome();
+            } else {
+                Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', 'Acesso negado. Apenas clientes podem aceder.');
+                return $this->redirect(['login']);
+            }
         }
 
-        $model->password = '';
+        $model->password = ''; // Limpa o campo de senha após tentativa de login
 
         return $this->render('login', [
             'model' => $model,
@@ -217,8 +228,8 @@ class SiteController extends Controller
      * Verify email address
      *
      * @param string $token
-     * @throws BadRequestHttpException
      * @return yii\web\Response
+     * @throws BadRequestHttpException
      */
     public function actionVerifyEmail($token)
     {
