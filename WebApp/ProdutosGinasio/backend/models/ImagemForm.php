@@ -34,6 +34,18 @@ class ImagemForm extends Model
                 $backendPath = Yii::getAlias('@backend/web/uploads/') . $key . '.' . $file->extension;
                 $frontendPath = Yii::getAlias('@frontend/web/uploads/') . $key . '.' . $file->extension;
 
+                // Verificar e criar a pasta de backend se não existir
+                $backendDir = dirname($backendPath);
+                if (!is_dir($backendDir)) {
+                    mkdir($backendDir, 777, true); // Cria o diretório com permissões e recursivamente
+                }
+
+                // Verificar e criar a pasta de frontend se não existir
+                $frontendDir = dirname($frontendPath);
+                if (!is_dir($frontendDir)) {
+                    mkdir($frontendDir, 777, true); // Cria o diretório com permissões e recursivamente
+                }
+
                 //guardar as imagens
                 $file->saveAs($backendPath);
                 $file->saveAs($frontendPath);

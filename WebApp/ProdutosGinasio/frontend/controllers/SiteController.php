@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\Imagem;
 use common\models\Produto;
+use common\models\Profile;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -166,7 +167,6 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
             return $this->goHome();
         }
 

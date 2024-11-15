@@ -12,19 +12,21 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'username')->textInput(['value' => $model->username]) ?>
+    <?= $form->field($model, 'username')->textInput() ?>
 
-    <?= $form->field($model, 'email')->textInput(['value' => $model->email]) ?>
+    <?= $form->field($model, 'email')->textInput() ?>
 
-    <?= $form->field($model, 'password')->passwordInput(['value' => ''])->label("Password") ?>
+    <?= $form->field($model, 'password')->passwordInput() ?>
 
-    <?= $form->field($profile, 'nif')->textInput(['value' => $profile->nif]) ?>
+    <?= $form->field($model, 'nif')->textInput() ?>
 
-    <?= $form->field($profile, 'morada')->textInput(['value' => $profile->morada]) ?>
+    <?= $form->field($model, 'morada')->textInput() ?>
 
-    <?= $form->field($profile, 'telefone')->textInput(['value' => $profile->telefone]) ?>
-    
-    <?= $form->field($model, 'status')->dropDownList($status, ['value' => $model->status]) ?>
+    <?= $form->field($model, 'telefone')->textInput() ?>
+
+    <?= $form->field($model, 'role')->dropDownList($roles) ?>
+
+    <?= $form->field($model, 'status')->dropDownList($status) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

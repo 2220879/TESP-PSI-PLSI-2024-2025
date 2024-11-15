@@ -60,7 +60,6 @@ class User extends ActiveRecord implements IdentityInterface
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength'], 'tooShort' => 'A senha deve ter no mínimo 12 caracteres.'],
             ['password', 'string', 'max' => Yii::$app->params['user.passwordMaxLength'], 'tooLong' => 'A senha deve ter no máximo 16 caracteres.'],
             [['password'], 'match', 'pattern' => Yii::$app->params['user.passwordPattern'], 'message' => 'A senha deve conter pelo menos uma letra maiúscula, números e símbolos especiais.'],
-            //['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
         ];
     }

@@ -35,11 +35,45 @@ $this->params['breadcrumbs'][] = $this->title;
             'preco',
             'quantidade',
             'descricaoProduto:ntext',
-            'marca_id',
-            'categoria_id',
-            'iva_id',
-            'genero_id',
-            'tamanho_id',
+            [
+                'attribute' => 'marca_id',
+                'value' => function ($model) {
+                    return $model->marca ? $model->marca->nomeMarca : 'N/A'; // Exibe o nome da marca
+                },
+                'label' => 'Marca',
+            ],
+
+            [
+                'attribute' => 'categoria_id',
+                'value' => function ($model) {
+                    return $model->categoria ? $model->categoria->nomeCategoria : 'N/A'; // Exibe o nome da categoria
+                },
+                'label' => 'Categoria',
+            ],
+
+            [
+                'attribute' => 'iva_id',
+                'value' => function ($model) {
+                    return $model->iva ? $model->iva->percentagem : 'N/A'; // Exibe a percentagem do IVA
+                },
+                'label' => 'IVA',
+            ],
+
+            [
+                'attribute' => 'genero_id',
+                'value' => function ($model) {
+                    return $model->genero ? $model->genero->referencia : 'N/A'; // Exibe o nome do gênero
+                },
+                'label' => 'Gênero',
+            ],
+
+            [
+                'attribute' => 'tamanho_id',
+                'value' => function ($model) {
+                    return $model->tamanho ? $model->tamanho->referencia : 'N/A'; // Exibe o nome do tamanho
+                },
+                'label' => 'Tamanho',
+            ],
         ],
     ]) ?>
 

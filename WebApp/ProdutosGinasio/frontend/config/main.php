@@ -37,14 +37,20 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
+        'layout' => '@frontend/views/layouts/main.php',
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'about' => 'site/about',
+                'contact' => 'site/contact',
+                'signup' => 'site/signup',
+                'login' => 'site/login',
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

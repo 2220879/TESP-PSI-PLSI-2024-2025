@@ -30,9 +30,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
-                <?= $form->field($model, 'email') ?>
+                <?= $form->field($model, 'email')->textInput() ?>
 
                 <?= $form->field($model, 'password')->passwordInput() ?>
+
+                <?= $form->field($model, 'nif')->textInput() ?>
+
+                <?= $form->field($model, 'morada')->textInput() ?>
+
+                <?= $form->field($model, 'telefone')->textInput() ?>
 
                 <div class="form-group">
                     <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>

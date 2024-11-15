@@ -53,6 +53,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Telefone',
                 'value' => $profile ? $profile->telefone : 'Não Disponível',
             ],
+            [
+                'label' => 'Função no Sistema',
+                'value' => key(Yii::$app->authManager->getRolesByUser($model->id)),
+            ],
         ],
     ]) ?>
 

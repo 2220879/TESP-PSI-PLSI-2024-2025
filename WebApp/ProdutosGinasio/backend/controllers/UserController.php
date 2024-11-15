@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\UserForm;
 use common\models\Profile;
 use common\models\User;
 use common\models\UserSearch;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -89,74 +91,28 @@ class UserController extends Controller
 
     public function actionCreate()
     {
-        //iniciliaza as variaveis para a criação de um user e de um perfil
-        $model = new User();
-        $profile = new Profile();
+        //instancia o UserForm
+        $model = new UserForm();
+
+        //definir o cenário de criação
+        $model->scenario = UserForm::SCENARIO_CREATE;
 
         //guarda os estados disponíveis para um user
         $status = [User::STATUS_ACTIVE => 'Ativo', User::STATUS_INACTIVE => 'Inativo'];
 
-        //se o pedido save por POST
-        if ($this->request->isPost) {
-            //guarda os campos do form na variavel
-            $post = $this->request->post();
+        //guarda as roles disponíveis para um user
+        $roles = ['admin' => 'Adminstrador', 'funcionario' => 'Funcionário', 'cliente' => 'Cliente'];
 
-            //se tudo for válido
-            if ($model->load($post) && $profile->load($post)) {
-                if (User::find()->where(['username' => $post['User']['username']])->exists()) {
-                    //Yii::$app->getSession()->setFlash('error', 'Username já utilizado!');
-                    $model->addError('username', 'Username já utilizado!');
-                } else if (User::find()->where(['email' => $post['User']['email']])->exists()) {
-                    //Yii::$app->getSession()->setFlash('error', 'Email já utilizado!');
-                    $model->addError('email', 'Email já utilizado!');
-                } else if (Profile::find()->where(['nif' => $post['Profile']['nif']])->exists()) {
-                    //Yii::$app->getSession()->setFlash('error', 'Nif já utilizado!');
-                    $profile->addError('nif', 'NIF já utilizado!');
-                } else if (Profile::find()->where(['telefone' => $post['Profile']['telefone']])->exists()) {
-                    //Yii::$app->getSession()->setFlash('error', 'Número telefone já utilizado!');
-                    $profile->addError('telefone', 'Telefone já utilizado!');
-                } else {
-                    //atribui o respetivo valor para cada campo do utilizador
-                    $model->username = $post['User']['username'];
-                    $model->email = $post['User']['email'];
-                    $model->setPassword($post['User']['password']);
-                    $model->generateAuthKey();
-                    $model->status = $post['User']['status'];
-                    $model->save(false);
-
-                    //se o registo do user foi concluído
-                    if ($model->save()) {
-
-                        //atribui a role funcionário ao user criado
-                        $auth = \Yii::$app->authManager;
-                        $role = $auth->getRole('funcionario');
-                        $auth->assign($role, $model->id);
-
-                        //criar um perfil ao user criado
-                        //atribui o respetivo valor para cada campo do perfil
-                        $profile->nif = $post['Profile']['nif'];
-                        $profile->morada = $post['Profile']['morada'];
-                        $profile->telefone = $post['Profile']['telefone'];
-                        $profile->user_id = $model->id;
-
-                        //se o registo do perfil foi concluído
-                        if ($profile->save()) {
-                            //redireciona para a página view do user criado
-                            return $this->redirect(['view', 'id' => $model->id]);
-                        }
-                    }
-                }
-            } else {
-                //se ocorrer erro devolve os valores do user inseridos no formulário
-                $model->loadDefaultValues();
-                $profile->loadDefaultValues();
-            }
+        //verifica se correu tudo bem com a criação do user e o respetivo perfil
+        if ($model->load(Yii::$app->request->post()) && ($userID = $model->create())) {
+            //redireciona para a página view do user criado
+            return $this->redirect(['view', 'id' => $userID]);
         }
 
         //faz render da página de create e manda os dados principais para o user e perfil, e os respetivos status
         return $this->render('create', [
             'model' => $model,
-            'profile' => $profile,
+            'roles' => $roles,
             'status' => $status,
         ]);
     }
@@ -174,79 +130,74 @@ class UserController extends Controller
     {
         //se o utilizador a editar não for o 1
         if ($id != 1) {
-            //inicializa as variaveis para a edição do user e do perfil
-            $model = User::findOne($id);
-            $profile = Profile::findOne(['user_id' => $model->id]);
+            //seleciona o user pretendido
+            $user = User::findOne($id);
+
+            //seleciona o perfil do user pretendido
+            $profile = Profile::findOne(['user_id' => $id]);
+
+            //instancia o UserForm
+            $model = new UserForm();
 
             //guarda os estados disponíveis para um user
             $status = [User::STATUS_ACTIVE => 'Ativo', User::STATUS_INACTIVE => 'Inativo'];
 
-            //se o pedido save por POST
-            if ($this->request->isPost) {
-                //guarda os campos do form na variavel
-                $post = $this->request->post();
+            //guarda as roles disponíveis para um user
+            $roles = ['admin' => 'Adminstrador', 'funcionario' => 'Funcionário', 'cliente' => 'Cliente'];
 
-                //se tudo for válido
-                if ($model->load($post) && $profile->load($post)) {
-                    if (User::find()->where(['username' => $post['User']['username']])->andWhere(['!=', 'id', $id])->exists()) {
-                        if (User::find()->where(['username' => $post['User']['username']])->exists()) {
-                            $model->addError('username', 'Username já utilizado!');
-                        }
-                    } else if (User::find()->where(['email' => $post['User']['email']])->andWhere(['!=', 'id', $id])->exists()) {
-                        if (User::find()->where(['email' => $post['User']['email']])->exists()) {
-                            $model->addError('email', 'Email já utilizado!');
-                        }
-                    } else if (Profile::find()->where(['nif' => $post['Profile']['nif']])->andWhere(['!=', 'user_id', $id])->exists()) {
-                        if (Profile::find()->where(['nif' => $post['Profile']['nif']])->exists()) {
-                            $profile->addError('nif', 'NIF já utilizado!');
-                        }
-                    } else if (Profile::find()->where(['telefone' => $post['Profile']['telefone']])->andWhere(['!=', 'user_id', $id])->exists()) {
-                        if (Profile::find()->where(['telefone' => $post['Profile']['telefone']])->exists()) {
-                            $profile->addError('telefone', 'Telefone já utilizado!');
-                        }
+            //verifica se correu tudo bem com o carregamento dos dados do form
+            if ($model->load(Yii::$app->request->post())) {
+
+                //valida toda a informação dos campos definidos como dados únicos na base dados
+                //verifica se os dados inseridos não combinam com o registo que existe na base dados
+                if (User::find()->where(['username' => $model->username])->andWhere(['!=', 'id', $id])->exists()) {
+                    //verifica se os novos dados inseridos existem na base dados
+                    if (User::find()->where(['username' => $model->username])->exists()) {
+                        $model->addError('username', 'Username já utilizado!');
+                    }
+                } else if (User::find()->where(['email' => $model->email])->andWhere(['!=', 'id', $id])->exists()) {
+                    if (User::find()->where(['email' => $model->email])->exists()) {
+                        $model->addError('email', 'Email já utilizado!');
+                    }
+                } else if (Profile::find()->where(['nif' => $model->nif])->andWhere(['!=', 'user_id', $id])->exists()) {
+                    if (Profile::find()->where(['nif' => $model->nif])->exists()) {
+                        $model->addError('nif', 'Nif já utilizado!');
+                    }
+                } else if (Profile::find()->where(['telefone' => $model->telefone])->andWhere(['!=', 'user_id', $id])->exists()) {
+                    if (Profile::find()->where(['telefone' => $model->telefone])->exists()) {
+                        $model->addError('telefone', 'Telefone já utilizado!');
+                    }
+                    //se não haver problema nenhum com a informação inserida
+                } else {
+                    //se update for concluido com sucesso
+                    if ($model->update($id)) {
+                        //redireciona para a página view do user alterado
+                        return $this->redirect(['view', 'id' => $id]);
+
+                        //caso contrário faz render da vista update
                     } else {
-                        //atribui o respetivo valor para cada campo do utilizador
-                        $model->username = $post['User']['username'];
-                        $model->email = $post['User']['email'];
-
-                        //se o campo da password não estiver vazio
-                        if ($post['User']['password_hash'] != null) {
-                            $model->setPassword($post['User']['password_hash']);
-                        }
-
-                        //atribui o respetivo status do utilizador a editar
-                        $model->status = $post['User']['status'];
-                        $model->save(false);
-
-                        //se a edição do user foi concluída
-                        if ($model->save()) {
-                            //editar o perfil do user criado
-                            //atribui o respetivo valor para cada campo do perfil
-                            $profile->nif = $post['Profile']['nif'];
-                            $profile->morada = $post['Profile']['morada'];
-                            $profile->telefone = $post['Profile']['telefone'];
-
-                            //se a edição do perfil foi concluída
-                            if ($profile->save()) {
-                                //redireciona para a página view do user editado
-                                return $this->redirect(['view', 'id' => $model->id]);
-                            }
-                        }
+                        //faz render da página de update e manda os dados principais para o user e perfil, e os respetivos status
+                        return $this->render('update', [
+                            'model' => $model,
+                            'user' => $user,
+                            'profile' => $profile,
+                            'roles' => $roles,
+                            'status' => $status,
+                        ]);
                     }
                 }
-            } else {
-                //se ocorrer erro devolve os valores do user inseridos no formulário
-                $model->loadDefaultValues();
-                $profile->loadDefaultValues();
             }
 
-            //faz render da página de create e manda os dados principais para o user e perfil, e os respetivos status
+            //faz render da página de update e manda os dados principais para o user e perfil, e os respetivos status
             return $this->render('update', [
                 'model' => $model,
+                'user' => $user,
                 'profile' => $profile,
+                'roles' => $roles,
                 'status' => $status,
             ]);
         } else {
+            //se for o 1 faz redirect para o index
             return $this->redirect(['index']);
         }
     }

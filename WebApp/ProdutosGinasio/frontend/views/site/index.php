@@ -111,8 +111,9 @@ $this->title = 'Produtos de Ginásio';
                                 <i class="fa fa-cart-plus" aria-hidden="true"></i>
                             </a>
                             <div class="img-box">
-                                <?= Html::img(Yii::getAlias('@web/uploads/') . $produtoRecente->imagens[0]->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?>
-
+                                <?php if (!empty($produtoRecente->imagens) && isset($produtoRecente->imagens[0])): ?>
+                                    <?= Html::img(Yii::getAlias('@web/uploads/') . $produtoRecente->imagens[0]->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?>
+                                <?php endif; ?>
                             </div>
                             <div class="detail-box">
                 <span class="p_rating">
