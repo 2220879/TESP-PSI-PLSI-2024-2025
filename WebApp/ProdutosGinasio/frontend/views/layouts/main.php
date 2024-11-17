@@ -94,9 +94,19 @@ AppAsset::register($this);
                     if (Yii::$app->user->isGuest) {
                         echo Html::tag('div', Html::a('Login', ['/site/login'], ['class' => ['btn btn-link login text-decoration-none']]), ['class' => ['d-flex']]);
                     } else { ?>
-                        <a href="">
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                        </a>
+                        <?php
+                        $DropItems[] = [
+                            'label' => '<i class="fa fa-user" ></i>',
+                            'items' => [
+                                ['label' => 'Meu Perfil', 'url' => ['user/view', 'id' => Yii::$app->user->identity->getId()]],
+                            ],
+                            'encode' => false,
+
+                        ];
+                        echo Nav::widget([
+                            'items' => $DropItems,
+                        ]);
+                        ?>
                         <a href="">
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>

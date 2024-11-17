@@ -4,14 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var common\models\User $model */
 
-$this->title = 'Atualizar Utilizador: ' . $user->username;
+$this->title = 'Atualizar Dados: ';
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $user->username, 'url' => ['view', 'id' => $user->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="user-update">
+<div class="container">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -29,12 +28,8 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $form->field($model, 'telefone')->textInput(['value' => $profile->telefone]) ?>
 
-    <?= $form->field($model, 'role')->dropDownList($roles, ['value' => key(Yii::$app->authManager->getRolesByUser($user->id))]) ?>
-
-    <?= $form->field($model, 'status')->dropDownList($status, ['value' => $user->status]) ?>
-
     <div class="form-group">
-        <?= Html::submitButton('Alterar', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Alterar Dados', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

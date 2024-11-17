@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Genero $model */
 
-$this->title = 'Update Genero: ' . $model->id;
+$this->title = 'Update Genero: ' . $model->referencia;
 $this->params['breadcrumbs'][] = ['label' => 'Generos', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->referencia, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="genero-update">

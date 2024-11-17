@@ -30,9 +30,8 @@ class ImagemForm extends Model
                 //gerar uma random string
                 $key = Yii::$app->getSecurity()->generateRandomString();
 
-                //atribuir as imagens em duas pastas
+                //atribuir as imagens na pasta
                 $backendPath = Yii::getAlias('@backend/web/uploads/') . $key . '.' . $file->extension;
-                $frontendPath = Yii::getAlias('@frontend/web/uploads/') . $key . '.' . $file->extension;
 
                 // Verificar e criar a pasta de backend se não existir
                 $backendDir = dirname($backendPath);
@@ -40,15 +39,8 @@ class ImagemForm extends Model
                     mkdir($backendDir, 777, true); // Cria o diretório com permissões e recursivamente
                 }
 
-                // Verificar e criar a pasta de frontend se não existir
-                $frontendDir = dirname($frontendPath);
-                if (!is_dir($frontendDir)) {
-                    mkdir($frontendDir, 777, true); // Cria o diretório com permissões e recursivamente
-                }
-
                 //guardar as imagens
                 $file->saveAs($backendPath);
-                $file->saveAs($frontendPath);
 
                 //criar o registo na base dados
                 $imagem = new Imagem();
@@ -70,24 +62,18 @@ class ImagemForm extends Model
             $file = $this->imagens[0];
             $key = Yii::$app->getSecurity()->generateRandomString();
 
-            //atribuir as imagens em duas pastas
+            //atribuir a imagem na pasta
             $backendPath = Yii::getAlias('@backend/web/uploads/') . $key . '.' . $file->extension;
-            $frontendPath = Yii::getAlias('@frontend/web/uploads/') . $key . '.' . $file->extension;
 
-            // Se necessário, excluir a imagem antiga das pastas (caso você queira limpar)
+            //verificar se a imagem antiga a apagar existe na pasta
             $oldBackendPath = Yii::getAlias('@backend/web/uploads/') . $imagem->filename;
-            $oldFrontendPath = Yii::getAlias('@frontend/web/uploads/') . $imagem->filename;
 
             if (file_exists($oldBackendPath)) {
-                unlink($oldBackendPath);  // Deletar a imagem antiga do backend
-            }
-            if (file_exists($oldFrontendPath)) {
-                unlink($oldFrontendPath);  // Deletar a imagem antiga do frontend
+                unlink($oldBackendPath);
             }
 
-            //guardar as imagens
+            //guardar a imagem
             $file->saveAs($backendPath);
-            $file->saveAs($frontendPath);
 
             //alterar o registo na base dados
             $imagem->filename = $key . '.' . $file->extension;
@@ -105,17 +91,11 @@ class ImagemForm extends Model
             foreach ($imagens as $imagem) {
                 //selecionar a imagem da pasta de imagens
                 $backendPath = Yii::getAlias('@backend/web/uploads/') . $imagem->filename;
-                $frontendPath = Yii::getAlias('@frontend/web/uploads/') . $imagem->filename;
 
                 //se encontrar a imagem
                 if (file_exists($backendPath)) {
-                    //apagar a imagem no backend
+                    //apagar a imagem na pasta
                     unlink($backendPath);
-                }
-                //se encontrar a imagem
-                if (file_exists($frontendPath)) {
-                    //apagar a imagem no frontend
-                    unlink($frontendPath);
                 }
 
                 //apagar na base dados
@@ -128,19 +108,13 @@ class ImagemForm extends Model
     {
         //pesquisa na base dados as imagens referentes a um produto
         if ($imagem = Imagem::find()->where(['id' => $id])->one()) {
-            //selecionar a imagem da pasta de imagens
+            //selecionar a imagem na pasta de imagens
             $backendPath = Yii::getAlias('@backend/web/uploads/') . $imagem->filename;
-            $frontendPath = Yii::getAlias('@frontend/web/uploads/') . $imagem->filename;
 
             //se encontrar a imagem
             if (file_exists($backendPath)) {
-                //apagar a imagem no backend
+                //apagar a imagem na pasta
                 unlink($backendPath);
-            }
-            //se encontrar a imagem
-            if (file_exists($frontendPath)) {
-                //apagar a imagem no frontend
-                unlink($frontendPath);
             }
 
             //apagar na base dados

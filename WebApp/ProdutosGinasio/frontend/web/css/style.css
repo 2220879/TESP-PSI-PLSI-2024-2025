@@ -7,6 +7,28 @@ body {
     color: #ffffff;
 }
 
+.site-view-user-data {
+    background-color: white;
+    color: black;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+    text-align: left;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.site-view-profile {
+    background-color: #1376b1;
+    color: white;
+    padding: 20px;
+    margin: 0 auto;
+    width: 100%;
+    text-align: left;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
 .layout_padding {
     padding: 90px 0;
 }
@@ -107,6 +129,21 @@ a:focus {
 
 .header_section .nav_container {
     margin: 0 auto;
+}
+
+/*Dropdown - estilo */
+.nav-item .dropdown-menu {
+    background-color: #1376b1;
+    color: #ffffff;
+    min-width: auto;
+    white-space: nowrap;
+}
+
+
+/*Dropdown - estilo quando passar o rato nas opções */
+.nav-item .dropdown-menu a:hover {
+    background-color: black;
+    color: #ffffff;
 }
 
 .custom_nav-container .navbar-nav .nav-item .nav-link {

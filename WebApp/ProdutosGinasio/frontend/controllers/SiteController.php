@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use backend\models\UserForm;
 use common\models\Imagem;
 use common\models\Produto;
 use common\models\Profile;
@@ -42,7 +43,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['logout'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['cliente'],
                     ],
                 ],
             ],
@@ -166,6 +167,10 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
+
+        //definir o cenário de signup
+        $model->scenario = SignupForm::SCENARIO_SIGNUP;
+
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             return $this->goHome();
         }

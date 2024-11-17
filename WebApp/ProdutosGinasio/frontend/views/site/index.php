@@ -112,7 +112,7 @@ $this->title = 'Produtos de Ginásio';
                             </a>
                             <div class="img-box">
                                 <?php if (!empty($produtoRecente->imagens) && isset($produtoRecente->imagens[0])): ?>
-                                    <?= Html::img(Yii::getAlias('@web/uploads/') . $produtoRecente->imagens[0]->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?>
+                                    <img src="<?= htmlspecialchars("./../../backend/web/uploads/" . $produtoRecente->imagens[0]->filename) ?>">
                                 <?php endif; ?>
                             </div>
                             <div class="detail-box">
