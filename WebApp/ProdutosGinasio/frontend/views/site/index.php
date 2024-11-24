@@ -133,7 +133,8 @@ $this->title = 'Produtos de Ginásio';
                     <i class="fa fa-star" aria-hidden="true"></i>
                   </a>
                 </span>
-                                <a href="" class="p_name">
+                                <a href="<?= Yii::$app->urlManager->createAbsoluteUrl(['detalhesProduto', 'id' => $produtoRecente->id]) ?>"
+                                   class="p_name">
                                     <?= Html::Encode($produtoRecente->nomeProduto) ?>
                                 </a>
                                 <h6 class="p_price">

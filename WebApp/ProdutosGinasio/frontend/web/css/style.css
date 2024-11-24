@@ -29,6 +29,27 @@ body {
     margin-top: 20px;
 }
 
+.container-produto {
+    display: flex;
+    gap: 50%;
+}
+
+.produto-imagens,
+.produto-atributos {
+    padding: 10px;
+    border: 1px solid #ccc; /* Só para mostrar o contorno das divs */
+}
+
+.produto-imagens {
+    background-color: #1376b1;
+    color: white;
+}
+
+.produto-atributos {
+    background-color: #1376b1;
+    color: white;
+}
+
 .layout_padding {
     padding: 90px 0;
 }
