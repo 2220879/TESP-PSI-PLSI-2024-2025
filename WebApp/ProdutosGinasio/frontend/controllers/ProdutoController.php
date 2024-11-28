@@ -8,6 +8,8 @@ use common\models\Imagem;
 use common\models\Marca;
 use common\models\Produto;
 use common\models\ProdutoSearch;
+use frontend\models\Favorito;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -57,6 +59,35 @@ class ProdutoController extends Controller
             'categorias' => $categorias,
             'marcas' => $marcas,
             'generos' => $generos,
+        ]);
+    }
+
+    public function actionView($id)
+    {
+        // Busca o produto pelo ID
+        $model = Produto::findOne($id);
+        if (!$model) {
+            throw new NotFoundHttpException('Produto não encontrado.');
+        }
+
+        // Verifica se o usuário está logado
+        $isFavorited = false;
+        if (!Yii::$app->user->isGuest) {
+            $user_id = Yii::$app->user->identity->id;
+            $profile = \common\models\Profile::findOne(['user_id' => $user_id]);
+
+            if ($profile) {
+                $isFavorited = Favorito::find()->where([
+                    'produto_id' => $model->id,
+                    'profile_id' => $profile->id,
+                ])->exists();
+            }
+        }
+
+        // Renderiza a view do produto e passa a variável $isFavorited
+        return $this->render('view', [
+            'model' => $model,
+            'isFavorited' => $isFavorited,
         ]);
     }
 

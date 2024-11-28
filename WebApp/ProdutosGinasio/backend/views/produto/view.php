@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
@@ -66,16 +67,33 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'label' => 'Gênero',
             ],
-
-            [
-                'attribute' => 'tamanho_id',
-                'value' => function ($model) {
-                    return $model->tamanho ? $model->tamanho->referencia : 'N/A'; // Exibe o nome do tamanho
-                },
-                'label' => 'Tamanho',
-            ],
         ],
     ]) ?>
+
+    <?php
+    echo GridView::widget([
+        'dataProvider' => new \yii\data\ArrayDataProvider([
+            'allModels' => $tamanhos,
+            'pagination' => false,
+        ]),
+        'columns' => [
+            [
+                'label' => 'Tamanhos',
+                'attribute' => 'tamanho_id',
+                'value' => function ($model) {
+                    return $model->tamanho ? $model->tamanho->referencia : 'N/A';
+                },
+            ],
+            [
+                'label' => 'Quantidades', // Exibe a quantidade do tamanho
+                'attribute' => 'quantidade', // Assumindo que 'quantidade' é o campo que armazena a quantidade disponível
+                'value' => function ($model) {
+                    return $model->quantidade ? $model->quantidade : 0; // Exibe a quantidade (caso haja valor)
+                },
+            ],
+        ],
+    ])
+    ?>
 
     <h3>Imagens:</h3>
 

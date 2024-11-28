@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             // Exibindo os dados relacionados:
             [
                 'attribute' => 'marca_id',
-                'value' => function($model) {
+                'value' => function ($model) {
                     return $model->marca ? $model->marca->nomeMarca : 'N/A'; // Exibe o nome da marca
                 },
                 'label' => 'Marca',
@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'categoria_id',
-                'value' => function($model) {
+                'value' => function ($model) {
                     return $model->categoria ? $model->categoria->nomeCategoria : 'N/A'; // Exibe o nome da categoria
                 },
                 'label' => 'Categoria',
@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'iva_id',
-                'value' => function($model) {
+                'value' => function ($model) {
                     return $model->iva ? $model->iva->percentagem : 'N/A'; // Exibe a percentagem do IVA
                 },
                 'label' => 'IVA',
@@ -67,19 +67,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'genero_id',
-                'value' => function($model) {
+                'value' => function ($model) {
                     return $model->genero ? $model->genero->referencia : 'N/A'; // Exibe o nome do gênero
                 },
                 'label' => 'Gênero',
             ],
-
-            [
-                'attribute' => 'tamanho_id',
-                'value' => function($model) {
-                    return $model->tamanho ? $model->tamanho->referencia : 'N/A'; // Exibe o nome do tamanho
-                },
-                'label' => 'Tamanho',
-            ],
+            
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Produto $model, $key, $index, $column) {

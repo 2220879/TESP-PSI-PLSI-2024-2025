@@ -33,7 +33,17 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $form->field($model, 'genero_id')->dropDownList($generos, ['prompt' => 'Selecione um Genero']) ?>
 
-    <?= $form->field($model, 'tamanho_id')->dropDownList($tamanhos, ['prompt' => 'Selecione um Tamanho']) ?>
+    <div class="form-group">
+        <label for="tamanhos_quantidades">Tamanhos e Quantidades</label>
+        <div id="tamanhos_quantidades">
+            <?php foreach ($tamanhos as $id => $referencia): ?>
+                <div class="tamanho-group">
+                    <label><?= $referencia ?></label>
+                    <?= Html::input('number', 'quantidade_tamanho[' . $id . ']', '', ['class' => 'form-control', 'placeholder' => 'Quantidade', 'min' => 0]) ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <?= $form->field($imagemForm, 'imagens[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 

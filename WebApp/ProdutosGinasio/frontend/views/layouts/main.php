@@ -109,6 +109,10 @@ AppAsset::register($this);
                         <a href="">
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>
+                        <!-- Ícone de Favoritos -->
+                        <a href="<?= Yii::$app->urlManager->createUrl(['/favoritos']) ?>" class="ms-3">
+                            <i class="fa fa-heart" aria-hidden="true"></i>
+                        </a>
                         <?php
                         echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
                             . Html::submitButton(

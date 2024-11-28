@@ -18,7 +18,6 @@ use frontend\models\Favorito;
  * @property int $categoria_id
  * @property int $iva_id
  * @property int|null $genero_id
- * @property int|null $tamanho_id
  *
  * @property Avaliacao[] $avaliacos
  * @property Categoria $categoria
@@ -29,7 +28,8 @@ use frontend\models\Favorito;
  * @property Linhacarrinho[] $linhascarrinhos
  * @property Linhacompra[] $linhascompras
  * @property Marca $marca
- * @property Tamanho $tamanho
+ * @property ProdutosHasTamanho[] $produtosHasTamanhos
+ * @property Tamanho[] $tamanhos
  */
 class Produto extends \yii\db\ActiveRecord
 {
@@ -49,7 +49,7 @@ class Produto extends \yii\db\ActiveRecord
         return [
             [['nomeProduto', 'preco', 'quantidade', 'descricaoProduto', 'marca_id', 'categoria_id', 'iva_id'], 'required'],
             [['preco'], 'number'],
-            [['quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id', 'tamanho_id'], 'integer'],
+            [['quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id'], 'integer'],
             [['descricaoProduto'], 'string'],
             [['nomeProduto'], 'string', 'max' => 50],
             [['quantidade'], 'integer', 'min' => 0, 'message' => 'A quantidade do estoque não pode ser negativa.'],
@@ -58,7 +58,6 @@ class Produto extends \yii\db\ActiveRecord
             [['genero_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genero::class, 'targetAttribute' => ['genero_id' => 'id']],
             [['iva_id'], 'exist', 'skipOnError' => true, 'targetClass' => Iva::class, 'targetAttribute' => ['iva_id' => 'id']],
             [['marca_id'], 'exist', 'skipOnError' => true, 'targetClass' => Marca::class, 'targetAttribute' => ['marca_id' => 'id']],
-            [['tamanho_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tamanho::class, 'targetAttribute' => ['tamanho_id' => 'id']],
         ];
     }
 
@@ -77,7 +76,6 @@ class Produto extends \yii\db\ActiveRecord
             'categoria_id' => 'Categoria ID',
             'iva_id' => 'Iva ID',
             'genero_id' => 'Genero ID',
-            'tamanho_id' => 'Tamanho ID',
         ];
     }
 
@@ -172,12 +170,22 @@ class Produto extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Tamanho]].
+     * Gets query for [[ProdutosHasTamanhos]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getTamanho()
+    public function getProdutosHasTamanhos()
     {
-        return $this->hasOne(Tamanho::class, ['id' => 'tamanho_id']);
+        return $this->hasMany(ProdutosHasTamanho::class, ['produto_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Tamanhos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTamanhos()
+    {
+        return $this->hasMany(Tamanho::class, ['id' => 'tamanho_id'])->viaTable('produtos_has_tamanhos', ['produto_id' => 'id']);
     }
 }

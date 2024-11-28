@@ -11,8 +11,13 @@ $this->title = $model->nomeProduto;
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 <div class="container">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
+    <!-- Exibe todas as mensagens flash -->
+    <?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
+        <div class="alert alert-<?= $type ?> alert-dismissible fade show" role="alert">
+            <?= $message ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endforeach; ?>
 
     <div class="container-produto">
         <div class="produto-imagens">
@@ -44,8 +49,9 @@ $this->title = $model->nomeProduto;
             <a href="">
                 <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
             </a>
-            <a href="">
-                <i class="fa-regular fa-star" aria-hidden="true"></i>
+            <!-- Botão de Favoritos simples -->
+            <a href="<?= yii\helpers\Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">
+                <i class="fa fa-heart-o" aria-hidden="true"></i>
             </a>
         </div>
     </div>

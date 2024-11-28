@@ -1,15 +1,15 @@
 <?php
 
-namespace common\models;
+namespace frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Produto;
+use frontend\models\Favorito;
 
 /**
- * ProdutoSearch represents the model behind the search form of `common\models\Produto`.
+ * FavoritoSearch represents the model behind the search form of `frontend\models\Favorito`.
  */
-class ProdutoSearch extends Produto
+class FavoritoSearch extends Favorito
 {
     /**
      * {@inheritdoc}
@@ -17,9 +17,7 @@ class ProdutoSearch extends Produto
     public function rules()
     {
         return [
-            [['id', 'quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id'], 'integer'],
-            [['nomeProduto', 'descricaoProduto'], 'safe'],
-            [['preco'], 'number'],
+            [['id', 'produto_id', 'profile_id'], 'integer'],
         ];
     }
 
@@ -41,7 +39,7 @@ class ProdutoSearch extends Produto
      */
     public function search($params)
     {
-        $query = Produto::find();
+        $query = Favorito::find();
 
         // add conditions that should always apply here
 
@@ -60,16 +58,9 @@ class ProdutoSearch extends Produto
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'preco' => $this->preco,
-            'quantidade' => $this->quantidade,
-            'marca_id' => $this->marca_id,
-            'categoria_id' => $this->categoria_id,
-            'iva_id' => $this->iva_id,
-            'genero_id' => $this->genero_id,
+            'produto_id' => $this->produto_id,
+            'profile_id' => $this->profile_id,
         ]);
-
-        $query->andFilterWhere(['like', 'nomeProduto', $this->nomeProduto])
-            ->andFilterWhere(['like', 'descricaoProduto', $this->descricaoProduto]);
 
         return $dataProvider;
     }

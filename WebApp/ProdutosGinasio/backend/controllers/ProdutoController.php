@@ -9,6 +9,7 @@ use common\models\ProdutoSearch;
 use common\models\Marca;
 use common\models\Categoria;
 use common\models\Genero;
+use common\models\ProdutosHasTamanho;
 use common\models\Tamanho;
 use common\models\Iva;
 use Yii;
@@ -82,6 +83,7 @@ class ProdutoController extends Controller
         //faz render da página view com os dados do produto selecionado
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'tamanhos' => ProdutosHasTamanho::find()->where(['produto_id' => $id])->all(),
         ]);
     }
 
@@ -108,6 +110,31 @@ class ProdutoController extends Controller
         if ($this->request->isPost) {
             //guardar na base dados o novo produto
             if ($model->load($this->request->post()) && $model->save()) {
+
+                //selecionar as quantidades dos tamanhos
+                $quantidades = Yii::$app->request->post('quantidade_tamanho');
+
+                //se existir tamanhos associados ao novo produto
+                if (is_array($quantidades) && !empty($quantidades) && array_filter($quantidades)) {
+                    //atribui 0 à quantidade da tabela de produtos
+                    $model->quantidade = 0;
+
+                    //percorre todos os campos preenchidos na vista
+                    foreach ($quantidades as $tamanho_id => $quantidade) {
+                        //criar o registo na base dados
+                        $tamanho = new ProdutosHasTamanho();
+                        $tamanho->produto_id = $model->id;
+                        $tamanho->tamanho_id = $tamanho_id;
+                        $tamanho->quantidade = $quantidade;
+                        //atribui a respetiva quantidade do produto na tabela de Produtos (tira o 0 e coloca a quantidade correta)
+                        $model->quantidade += (int)$quantidade;
+
+                        //guardar o registo na tabela de ProdutosHasTamanho
+                        $tamanho->save();
+                    }
+                    //guardar o registo na tabela de Produtos
+                    $model->save();
+                }
 
                 //chamar o metodo para tatar do upload das imagens
                 $this->actionUpload($model->id, $imagemForm);
@@ -156,6 +183,56 @@ class ProdutoController extends Controller
 
         //se o pedido for POST e carregar os dados do formulário com sucesso, e armazenar
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+
+            //verifica se o produto tem tamanhos associados
+            $tamanhosExistem = ProdutosHasTamanho::find()->where(['produto_id' => $id])->exists();
+
+            //se existir tamanhos associados ao produto selecionado
+            if ($tamanhosExistem) {
+
+                //selecionar as quantidades dos tamanhos
+                $quantidades = Yii::$app->request->post('quantidade_tamanho');
+
+                //se existirem quantidades inseridas nos respetivos tamanhos
+                if (is_array($quantidades)) {
+                    //atribui 0 à quantidade da tabela de produtos
+                    $model->quantidade = 0;
+
+                    //percorre todos os campos preenchidos na vista
+                    foreach ($quantidades as $tamanho_id => $quantidade) {
+                        if ($produto = ProdutosHasTamanho::find()->where(['produto_id' => $id, 'tamanho_id' => $tamanho_id])->one()) {
+                            //editar a qunatidade na base dados
+                            $produto->quantidade = $quantidade;
+
+                            //guardar o registo editado na tabela de ProdutosHasTamanho
+                            $produto->save();
+                        } else {
+                            //criar o registo na base dados
+                            $tamanho = new ProdutosHasTamanho();
+                            $tamanho->produto_id = $model->id;
+                            $tamanho->tamanho_id = $tamanho_id;
+                            $tamanho->quantidade = $quantidade;
+
+                            //guardar o registo na tabela de ProdutosHasTamanho
+                            $tamanho->save();
+                        }
+                        //atribui a respetiva quantidade do produto na tabela de Produtos (tira o 0 e coloca a quantidade correta)
+                        $model->quantidade += (int)$quantidade;
+                    }
+                    //recalcular e atualizar a quantidade total do produto
+                    //obter todas as quantidades do produto selecionado relacionado aos tamanhos
+                    $total_quantidade = ProdutosHasTamanho::find()
+                        ->where(['produto_id' => $model->id])
+                        ->sum('quantidade');  //soma as quantidades de todos os tamanhos
+
+                    //atualiza a quantidade total do produto
+                    $model->quantidade = (int)$total_quantidade;
+
+                    //guardar o registo na tabela de Produtos
+                    $model->save();
+                }
+            }
+
             //chamar o metodo para tatar do upload das imagens
             $this->actionUpload($model->id, $imagemForm);
 
@@ -238,6 +315,9 @@ class ProdutoController extends Controller
 
         //chamar o metodo do modelo
         $imagemForm->deleteAll($id);
+
+        //apagar todos os tamanhos na tabela ProdutosHasTamanho que correspondem ao produto selecionado
+        ProdutosHasTamanho::deleteAll(['produto_id' => $id]);
 
         //apagar na base dados o produto selecionado
         $this->findModel($id)->delete();

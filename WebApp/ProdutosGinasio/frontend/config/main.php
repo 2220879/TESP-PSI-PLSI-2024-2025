@@ -53,6 +53,7 @@ return [
                 'contact' => 'site/contact',
                 'signup' => 'site/signup',
                 'login' => 'site/login',
+                'favoritos' =>'favorito/index',
             ],
         ],
 
