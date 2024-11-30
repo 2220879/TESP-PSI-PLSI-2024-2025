@@ -25,7 +25,7 @@ $this->title = $model->nomeProduto;
                 <div class="carousel-inner">
                     <?php foreach ($imagens as $index => $imagem): ?>
                         <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                            <?= Html::img('./../../backend/web/uploads/' . $imagem->filename, ['class' => 'd-block w-100', 'style' => 'height: 300px;']) ?>
+                            <?= Html::img('../../../backend/web/uploads/' . $imagem->filename, ['class' => 'd-block w-100', 'style' => 'height: 300px;']) ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -45,7 +45,6 @@ $this->title = $model->nomeProduto;
             <p><label>Categoria: <?= Html::encode($model->categoria->nomeCategoria) ?></label></p>
             <p><label>Iva: <?= Html::encode($model->iva->percentagem) ?></label></p>
             <p><label>Género: <?= Html::encode($model->genero->referencia) ?></label></p>
-            <p><label>Tamanho: <?= Html::encode($model->tamanho->referencia) ?></label></p>
             <a href="">
                 <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
             </a>

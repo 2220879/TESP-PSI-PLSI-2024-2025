@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <h1><?= Html::encode($this->title) ?></h1>
 
         <?php if (empty($favoritos)): ?>
-            <p>Você ainda não possui produtos favoritados.</p>
+            <p>Ainda não possui produtos favoritos.</p>
         <?php else: ?>
             <div class="product_container">
                 <div class="row">
@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </a>
                                 <div class="img-box">
                                     <?php if (!empty($favorito->produto->imagens) && isset($favorito->produto->imagens[0])): ?>
-                                        <img src="<?= htmlspecialchars("./../../backend/web/uploads/" . $favorito->produto->imagens[0]->filename) ?>"
+                                        <img src="<?= htmlspecialchars("../../../backend/web/uploads/" . $favorito->produto->imagens[0]->filename) ?>"
                                              alt="Imagem do Produto">
                                     <?php endif; ?>
                                 </div>

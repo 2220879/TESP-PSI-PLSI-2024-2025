@@ -30,19 +30,19 @@ AppAsset::register($this);
         <?php $this->head() ?>
 
         <!-- bootstrap core css -->
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+        <link rel="stylesheet" type="text/css" href="<?= Yii::getAlias('@web/css/bootstrap.css') ?>"/>
 
         <!-- fonts style -->
         <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet"/>
         <!-- slick slider -->
 
-        <link rel="stylesheet" href="css/slick-theme.css"/>
+        <link rel="stylesheet" href="<?= Yii::getAlias('@web/css/slick-theme.css') ?>"/>
         <!-- font awesome style -->
-        <link href="css/font-awesome.min.css" rel="stylesheet"/>
+        <link href="<?= Yii::getAlias('@web/css/font-awesome.min.css') ?>" rel="stylesheet"/>
         <!-- Custom styles for this template -->
-        <link href="css/style.css" rel="stylesheet"/>
+        <link href="<?= Yii::getAlias('@web/css/style.css') ?>" rel="stylesheet"/>
         <!-- responsive style -->
-        <link href="css/responsive.css" rel="stylesheet"/>
+        <link href="<?= Yii::getAlias('@web/css/responsive.css') ?>" rel="stylesheet"/>
     </head>
     <body class="d-flex flex-column h-100">
     <?php $this->beginBody() ?>
@@ -110,7 +110,7 @@ AppAsset::register($this);
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>
                         <!-- Ícone de Favoritos -->
-                        <a href="<?= Yii::$app->urlManager->createUrl(['/favoritos']) ?>" class="ms-3">
+                        <a href="<?= Yii::$app->urlManager->createUrl(['favorito/index']) ?>" class="ms-3">
                             <i class="fa fa-heart" aria-hidden="true"></i>
                         </a>
                         <?php
@@ -146,11 +146,11 @@ AppAsset::register($this);
 
     <?php $this->endBody() ?>
     <!-- jQery -->
-    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="<?= Yii::getAlias('@web/js/jquery-3.4.1.min.js') ?>"></script>
     <!-- bootstrap js -->
-    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="<?= Yii::getAlias('@web/js/bootstrap.js') ?>"></script>
     <!-- custom js -->
-    <script type="text/javascript" src="js/custom.js"></script>
+    <script type="text/javascript" src="<?= Yii::getAlias('@web/js/custom.js') ?>"></script>
     </body>
     </html>
 <?php $this->endPage();

@@ -109,7 +109,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </a>
                                 <div class="img-box">
                                     <?php if (!empty($produto->imagens) && isset($produto->imagens[0])): ?>
-                                        <img src="<?= htmlspecialchars("./../../backend/web/uploads/" . $produto->imagens[0]->filename) ?>"
+                                        <img src="<?= htmlspecialchars("../../../backend/web/uploads/" . $produto->imagens[0]->filename) ?>"
                                              alt="Imagem do Produto">
                                     <?php endif; ?>
                                 </div>

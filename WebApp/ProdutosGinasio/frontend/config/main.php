@@ -44,16 +44,10 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'produtosFiltrados' => 'produto/filtrar',
-                'detalhesProduto' => 'produto/detalhes',
-                'produto' => 'produto/index',
-                'updateCliente' => 'user/update',
-                'cliente' => 'user/view',
                 'about' => 'site/about',
                 'contact' => 'site/contact',
                 'signup' => 'site/signup',
                 'login' => 'site/login',
-                'favoritos' =>'favorito/index',
             ],
         ],
 

@@ -31,7 +31,10 @@ body {
 
 .container-produto {
     display: flex;
-    gap: 50%;
+    /*gap: 50%;*/
+
+    /*ajustar o conteúdo no ecrã*/
+    justify-content: space-between;
 }
 
 .produto-imagens,
@@ -43,11 +46,17 @@ body {
 .produto-imagens {
     background-color: #1376b1;
     color: white;
+    /*ajustar o conteúdo no ecrã*/
+    flex: 0 0 40%;
+    padding-right: 20px;
 }
 
 .produto-atributos {
     background-color: #1376b1;
     color: white;
+    /*ajustar o conteúdo no ecrã*/
+    flex: 0 0 30%;
+    padding-left: 20px;
 }
 
 .layout_padding {
