@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var common\models\Produto $model */
@@ -48,8 +49,7 @@ $this->title = $model->nomeProduto;
             <a href="">
                 <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
             </a>
-            <!-- Botão de Favoritos simples -->
-            <a href="<?= yii\helpers\Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">
+            <a href="<?= Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">
                 <i class="fa fa-heart-o" aria-hidden="true"></i>
             </a>
         </div>

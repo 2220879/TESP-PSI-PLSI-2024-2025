@@ -10,6 +10,7 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -110,7 +111,7 @@ AppAsset::register($this);
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>
                         <!-- Ícone de Favoritos -->
-                        <a href="<?= Yii::$app->urlManager->createUrl(['favorito/index']) ?>" class="ms-3">
+                        <a href="<?= Url::to(['favorito/index']) ?>" class="ms-3">
                             <i class="fa fa-heart" aria-hidden="true"></i>
                         </a>
                         <?php

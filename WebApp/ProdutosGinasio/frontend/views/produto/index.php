@@ -114,7 +114,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php endif; ?>
                                 </div>
                                 <div class="detail-box">
-                                    <a href="<?= Yii::$app->urlManager->createUrl(['produto/detalhes', 'id' => $produto->id]) ?>"
+                                    <a href="<?= Url::to(['produto/detalhes', 'id' => $produto->id]) ?>"
                                        class="p_name">
                                         <?= Html::encode($produto->nomeProduto) ?>
                                     </a>

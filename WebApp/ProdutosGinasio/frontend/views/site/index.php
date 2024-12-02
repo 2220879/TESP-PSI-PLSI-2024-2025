@@ -3,6 +3,7 @@
 /** @var yii\web\View $this */
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = 'Produtos de Ginásio';
 ?>
@@ -133,7 +134,7 @@ $this->title = 'Produtos de Ginásio';
                     <i class="fa fa-star" aria-hidden="true"></i>
                   </a>
                 </span>
-                                <a href="<?= Yii::$app->urlManager->createAbsoluteUrl(['produto/detalhes', 'id' => $produtoRecente->id]) ?>"
+                                <a href="<?= Url::to(['produto/detalhes', 'id' => $produtoRecente->id]) ?>"
                                    class="p_name">
                                     <?= Html::Encode($produtoRecente->nomeProduto) ?>
                                 </a>
