@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use frontend\models\Favorito;
 use frontend\models\FavoritoSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +23,17 @@ class FavoritoController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'create', 'model', 'delete'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'create', 'model', 'delete'],
+                            'allow' => true,
+                            'roles' => ['cliente'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -40,7 +52,7 @@ class FavoritoController extends Controller
     public function actionIndex()
     {
         // Verifica se o usuário está logado
-        if(Yii::$app->user->isGuest){
+        if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         }
         // Obtém o ID do usuário logado
@@ -59,19 +71,6 @@ class FavoritoController extends Controller
 
         return $this->render('index', [
             'favoritos' => $favoritos,
-        ]);
-    }
-
-    /**
-     * Displays a single Favorito model.
-     * @param int $id ID
-     * @return string
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -106,8 +105,7 @@ class FavoritoController extends Controller
             ->column(); // Retorna uma lista de IDs
 
         // Verifica se o produto já está nos favoritos do user
-        if(!in_array($produto_id,$produtosFavoritos))
-        {
+        if (!in_array($produto_id, $produtosFavoritos)) {
             // Se o produto não está nos favoritos, cria um novo registro nos favoritos
             $model = new Favorito();
             $model->produto_id = $produto_id;
@@ -119,7 +117,7 @@ class FavoritoController extends Controller
                 Yii::$app->session->setFlash('error', 'Erro ao adicionar o produto aos favoritos.');
             }
 
-        } else{
+        } else {
             Yii::$app->session->setFlash('info', 'Este produto já está nos favoritos.');
             return $this->redirect(['produto/detalhes', 'id' => $produto_id]);
         }

@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var common\models\Produto $model */
@@ -9,7 +10,6 @@ use yii\helpers\Url;
 $this->title = $model->nomeProduto;
 \yii\web\YiiAsset::register($this);
 ?>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 <div class="container">
 
     <!-- Exibe todas as mensagens flash -->
@@ -41,16 +41,24 @@ $this->title = $model->nomeProduto;
             </div>
         </div>
         <div class="produto-atributos">
-            <p><label>Preço: <?= Html::encode($model->preco) ?> €</label></p>
+            <p><label>Preço: <?= Html::encode(number_format($model->preco, 2, ',', '')) ?> €</label></p>
             <p><label>Marca: <?= Html::encode($model->marca->nomeMarca) ?></label></p>
             <p><label>Categoria: <?= Html::encode($model->categoria->nomeCategoria) ?></label></p>
-            <p><label>Iva: <?= Html::encode($model->iva->percentagem) ?></label></p>
+            <p><label>Iva: <?= Html::encode($model->iva->percentagem * 100) ?>%</label></p>
             <p><label>Género: <?= Html::encode($model->genero->referencia) ?></label></p>
+            <?php foreach ($model->tamanhos as $tamanho): ?>
+                <hr>
+                <p>Tamanhos disponíveis: </p>
+                <p>
+                    <button><?= Html::encode($tamanho->referencia) ?></button>
+                </p>
+            <?php endforeach; ?>
+
             <a href="">
-                <i class="fa-solid fa-cart-plus" aria-hidden="true"></i>
+                <i class="fa fa-cart-plus" aria-hidden="true" style="color: white;"></i>
             </a>
             <a href="<?= Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">
-                <i class="fa fa-heart-o" aria-hidden="true"></i>
+                <i class="fa fa-heart" aria-hidden="true" style="color: white;"></i>
             </a>
         </div>
     </div>
@@ -62,6 +70,38 @@ $this->title = $model->nomeProduto;
     <hr>
     <div class="produto-avaliacoes">
         <h3 align="center">Avaliações Produto</h3>
+
+        <?php
+        if (!Yii::$app->user->isGuest) {
+            $form = ActiveForm::begin([
+                'action' => ['avaliacao/create', 'id' => $model->id],
+                'method' => 'post',
+            ]);
+            echo $form->field($avaliacao, 'descricao')->textarea()->label('Adicionar Avaliação');
+            echo '<div class="form-group">';
+            echo Html::submitButton('Submeter', ['class' => 'btn btn-primary', 'name' => 'submit-button']);
+            echo '</div>';
+            ActiveForm::end();
+        }
+        ?>
+
+        <hr>
+
+        <?php if (empty($avaliacoes)): ?>
+            <p>Ainda não existem avaliações.</p>
+        <?php else: ?>
+            <?php foreach ($avaliacoes as $avaliacao): ?>
+                <div class="avaliacoes">
+                    <p><?= Html::encode($avaliacao->descricao) ?></p>
+                    <?php if (Yii::$app->user->id == $avaliacao->profile->user->id): ?>
+                        <?= Html::a('Editar', ['avaliacao/update', 'id' => $avaliacao->id], [
+                            'class' => 'btn btn-info',
+                        ]) ?>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+
     </div>
 
 </div>
