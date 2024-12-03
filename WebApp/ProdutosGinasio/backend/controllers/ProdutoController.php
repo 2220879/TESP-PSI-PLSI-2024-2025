@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\ImagemForm;
+use common\models\Avaliacao;
 use common\models\Imagem;
 use common\models\Produto;
 use common\models\ProdutoSearch;
@@ -12,6 +13,7 @@ use common\models\Genero;
 use common\models\ProdutosHasTamanho;
 use common\models\Tamanho;
 use common\models\Iva;
+use frontend\models\Favorito;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -84,6 +86,7 @@ class ProdutoController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
             'tamanhos' => ProdutosHasTamanho::find()->where(['produto_id' => $id])->all(),
+            'avaliacoes' => Avaliacao::find()->where(['produto_id' => $id])->all(),
         ]);
     }
 
@@ -315,6 +318,12 @@ class ProdutoController extends Controller
 
         //chamar o metodo do modelo
         $imagemForm->deleteAll($id);
+
+        //apagar todos os favoritos na tabela Favoritos que correspondem ao produto selecionado
+        Favorito::deleteAll(['produto_id' => $id]);
+
+        //apagar todos as avaliações na tabela Avalicoes que correspondem ao produto selecionado
+        Avaliacao::deleteAll(['produto_id' => $id]);
 
         //apagar todos os tamanhos na tabela ProdutosHasTamanho que correspondem ao produto selecionado
         ProdutosHasTamanho::deleteAll(['produto_id' => $id]);

@@ -40,7 +40,6 @@
                             ['label' => 'Géneros', 'icon' => 'fa fa-inbox', 'url' => ['/genero/index']],
                             ['label' => 'Ivas', 'icon' => 'fa fa-inbox', 'url' => ['/iva/index']],
                             ['label' => 'Tamanhos', 'icon' => 'fa fa-inbox', 'url' => ['/tamanho/index']],
-                            ['label' => 'Avaliações', 'icon' => 'fa fa-star', 'url' => ['/avaliacoes/index']],
                         ],
                     ],
                 ],

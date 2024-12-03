@@ -2,6 +2,7 @@
 
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
@@ -39,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'marca_id',
                 'value' => function ($model) {
-                    return $model->marca ? $model->marca->nomeMarca : 'N/A'; // Exibe o nome da marca
+                    return $model->marca ? $model->marca->nomeMarca : 'N/A';
                 },
                 'label' => 'Marca',
             ],
@@ -47,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'categoria_id',
                 'value' => function ($model) {
-                    return $model->categoria ? $model->categoria->nomeCategoria : 'N/A'; // Exibe o nome da categoria
+                    return $model->categoria ? $model->categoria->nomeCategoria : 'N/A';
                 },
                 'label' => 'Categoria',
             ],
@@ -55,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'iva_id',
                 'value' => function ($model) {
-                    return $model->iva ? $model->iva->percentagem : 'N/A'; // Exibe a percentagem do IVA
+                    return $model->iva ? $model->iva->percentagem : 'N/A';
                 },
                 'label' => 'IVA',
             ],
@@ -63,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'genero_id',
                 'value' => function ($model) {
-                    return $model->genero ? $model->genero->referencia : 'N/A'; // Exibe o nome do gênero
+                    return $model->genero ? $model->genero->referencia : 'N/A';
                 },
                 'label' => 'Gênero',
             ],
@@ -85,15 +86,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
-                'label' => 'Quantidades', // Exibe a quantidade do tamanho
-                'attribute' => 'quantidade', // Assumindo que 'quantidade' é o campo que armazena a quantidade disponível
+                'label' => 'Quantidades',
+                'attribute' => 'quantidade',
                 'value' => function ($model) {
-                    return $model->quantidade ? $model->quantidade : 0; // Exibe a quantidade (caso haja valor)
+                    return $model->quantidade ? $model->quantidade : 0;
                 },
             ],
         ],
     ])
     ?>
+
+    <hr>
 
     <h3>Imagens:</h3>
 
@@ -104,5 +107,51 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         <?php endforeach; ?>
     </div>
+
+    <hr>
+
+    <h3>Avaliações:</h3>
+
+    <?= GridView::widget([
+        'dataProvider' => new \yii\data\ArrayDataProvider([
+            'allModels' => $avaliacoes,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+        ]),
+        'columns' => [
+            [
+                'attribute' => 'descricao',
+                'label' => 'Avaliação',
+            ],
+            [
+                'attribute' => 'profile_id',
+                'label' => 'Cliente',
+                'value' => function ($model) {
+                    return $model->profile->user->username;
+                },
+            ],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header' => 'Ações',
+                'template' => '{delete}',
+                'buttons' => [
+                    'delete' => function ($url, $model) {
+                        $url = Url::to(['avaliacao/delete', 'id' => $model->id]);
+
+                        return Html::a(
+                            '<i class="fa fa-trash"></i>',
+                            $url,
+                            [
+                                'class' => 'btn btn-danger btn-sm',
+                                'data-confirm' => 'Tem certeza que deseja apagar esta avaliação?',
+                                'data-method' => 'post',
+                            ]
+                        );
+                    },
+                ],
+            ],
+        ],
+    ]); ?>
 
 </div>
