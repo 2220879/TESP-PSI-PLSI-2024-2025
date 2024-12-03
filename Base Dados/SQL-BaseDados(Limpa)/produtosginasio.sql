@@ -1,17 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1:3306
--- Tempo de geração: 03-Dez-2024 às 12:42
--- Versão do servidor: 8.0.31
--- versão do PHP: 8.1.13
-
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
-
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -19,6 +5,8 @@ SET time_zone = "+00:00";
 
 --
 -- Banco de dados: `produtosginasio`
+CREATE DATABASE produtosginasio;
+USE produtosginasio;
 --
 
 -- --------------------------------------------------------
