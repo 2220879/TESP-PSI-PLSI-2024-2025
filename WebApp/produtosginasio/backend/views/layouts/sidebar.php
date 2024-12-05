@@ -35,6 +35,7 @@
                         'label' => 'Mercadoria',
                         'items' => [
                             ['label' => 'Fornecedores', 'icon' => 'fa fa-truck', 'url' => ['/fornecedor/index']],
+                            ['label' => 'Compras', 'icon' => 'fa fa-book', 'url' => ['/compra/index']],
                         ],
                     ],
                     ['label' => 'Gestão', 'header' => true],
