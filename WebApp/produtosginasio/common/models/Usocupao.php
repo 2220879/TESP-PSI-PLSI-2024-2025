@@ -32,7 +32,7 @@ class Usocupao extends \yii\db\ActiveRecord
             [['cupaodesconto_id', 'profile_id', 'dataUso'], 'required'],
             [['cupaodesconto_id', 'profile_id'], 'integer'],
             [['dataUso'], 'safe'],
-            [['cupaodesconto_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cupoesdesconto::class, 'targetAttribute' => ['cupaodesconto_id' => 'id']],
+            [['cupaodesconto_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cupaodesconto::class, 'targetAttribute' => ['cupaodesconto_id' => 'id']],
             [['profile_id'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::class, 'targetAttribute' => ['profile_id' => 'id']],
         ];
     }

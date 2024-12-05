@@ -3,15 +3,14 @@
 namespace frontend\models;
 
 use common\models\Profile;
+use Yii;
 
 /**
  * This is the model class for table "carrinhocompras".
  *
  * @property int $id
- * @property string $dataVenda
  * @property int $quantidade
  * @property float $valorTotal
- * @property float $ivaTotal
  * @property int $profile_id
  *
  * @property Linhacarrinho[] $linhascarrinhos
@@ -33,10 +32,9 @@ class Carrinhocompra extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['dataVenda', 'quantidade', 'valorTotal', 'ivaTotal', 'profile_id'], 'required'],
-            [['dataVenda'], 'safe'],
+            [['quantidade', 'valorTotal', 'profile_id'], 'required'],
             [['quantidade', 'profile_id'], 'integer'],
-            [['valorTotal', 'ivaTotal'], 'number'],
+            [['valorTotal'], 'number'],
             [['profile_id'], 'exist', 'skipOnError' => true, 'targetClass' => Profile::class, 'targetAttribute' => ['profile_id' => 'id']],
         ];
     }
@@ -48,10 +46,8 @@ class Carrinhocompra extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'dataVenda' => 'Data Venda',
             'quantidade' => 'Quantidade',
             'valorTotal' => 'Valor Total',
-            'ivaTotal' => 'Iva Total',
             'profile_id' => 'Profile ID',
         ];
     }

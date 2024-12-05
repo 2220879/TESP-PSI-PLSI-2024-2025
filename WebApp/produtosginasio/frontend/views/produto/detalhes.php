@@ -54,7 +54,7 @@ $this->title = $model->nomeProduto;
                 </p>
             <?php endforeach; ?>
 
-            <a href="">
+            <a href="<?= Url::to(['carrinhocompra/create', 'produto_id' => $model->id]) ?>"class="ms-3">
                 <i class="fa fa-cart-plus" aria-hidden="true" style="color: white;"></i>
             </a>
             <a href="<?= Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">

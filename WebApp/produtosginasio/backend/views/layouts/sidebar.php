@@ -30,7 +30,14 @@
                     ['label' => 'Gii', 'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
                     ['label' => 'Gestão de Utilizadores', 'icon' => '', 'header' => true],
                     ['label' => 'Utilizadores', 'icon' => 'fa fa-users', 'url' => ['/user/index']],
-                    ['label' => 'Produtos', 'header' => true],
+                    ['label' => 'Mercadoria', 'header' => true],
+                    [
+                        'label' => 'Mercadoria',
+                        'items' => [
+                            ['label' => 'Fornecedores', 'icon' => 'fa fa-truck', 'url' => ['/fornecedor/index']],
+                        ],
+                    ],
+                    ['label' => 'Gestão', 'header' => true],
                     [
                         'label' => 'Gestão',
                         'items' => [

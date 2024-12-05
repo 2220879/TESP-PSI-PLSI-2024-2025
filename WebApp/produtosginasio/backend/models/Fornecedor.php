@@ -34,6 +34,7 @@ class Fornecedor extends \yii\db\ActiveRecord
         return [
             [['nome', 'telefone', 'email', 'marca_id'], 'required'],
             [['nome'], 'string'],
+            [['nome'], 'unique', 'message' => 'Este fornecedor já está registado.'],
             [['telefone', 'marca_id'], 'integer'],
             [['email'], 'string', 'max' => 50],
             [['marca_id'], 'exist', 'skipOnError' => true, 'targetClass' => Marca::class, 'targetAttribute' => ['marca_id' => 'id']],

@@ -107,7 +107,7 @@ AppAsset::register($this);
                             'items' => $DropItems,
                         ]);
                         ?>
-                        <a href="">
+                        <a href="<?= Url::to(['carrinhocompra/index']) ?>" class="ms-3">
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>
                         <!-- Ícone de Favoritos -->
