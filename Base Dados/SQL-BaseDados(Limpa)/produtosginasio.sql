@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `auth_assignment` (
 --
 
 INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
-('admin', '1', 1733229615);
+('admin', '1', 1734364072);
 
 -- --------------------------------------------------------
 
@@ -56,87 +56,87 @@ CREATE TABLE IF NOT EXISTS `auth_item` (
 --
 
 INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
-('admin', 1, NULL, NULL, NULL, 1733229614, 1733229614),
-('cliente', 1, NULL, NULL, NULL, 1733229615, 1733229615),
-('createAvaliacao', 2, 'Create Avaliacao', NULL, NULL, 1733229614, 1733229614),
-('createCategoria', 2, 'Create a categoria', NULL, NULL, 1733229614, 1733229614),
-('createCompra', 2, 'Create a compra', NULL, NULL, 1733229614, 1733229614),
-('createCupao', 2, 'Create a cupao', NULL, NULL, 1733229614, 1733229614),
-('createFavorito', 2, 'Create Favorito', NULL, NULL, 1733229614, 1733229614),
-('createFornecedor', 2, 'Create a fornecedor', NULL, NULL, 1733229614, 1733229614),
-('createGenero', 2, 'Create a Genero', NULL, NULL, 1733229614, 1733229614),
-('createImagem', 2, 'Create a Imagem', NULL, NULL, 1733229614, 1733229614),
-('createIva', 2, 'Create a Iva', NULL, NULL, 1733229614, 1733229614),
-('createLinhaCarrinhoCompra', 2, 'Create LinhaCarrinhoCompra', NULL, NULL, 1733229614, 1733229614),
-('createLinhaCompra', 2, 'Create a linha compra', NULL, NULL, 1733229614, 1733229614),
-('createMarca', 2, 'Create a marca', NULL, NULL, 1733229614, 1733229614),
-('createMetodoEntrega', 2, 'Create a Metodo Entrega', NULL, NULL, 1733229614, 1733229614),
-('createMetodoPagamento', 2, 'Create a Metodo Pagamento', NULL, NULL, 1733229614, 1733229614),
-('createProduto', 2, 'Create a produto', NULL, NULL, 1733229614, 1733229614),
-('createProfile', 2, 'Create a profile', NULL, NULL, 1733229614, 1733229614),
-('createTamanho', 2, 'Create a tamanho', NULL, NULL, 1733229614, 1733229614),
-('createUser', 2, 'Create a user', NULL, NULL, 1733229614, 1733229614),
-('deleteAvaliacao', 2, 'Delete Avaliacao', NULL, NULL, 1733229614, 1733229614),
-('deleteCategoria', 2, 'delete Categoria', NULL, NULL, 1733229614, 1733229614),
-('deleteCompra', 2, 'delete compra', NULL, NULL, 1733229614, 1733229614),
-('deleteCupao', 2, 'delete cupao', NULL, NULL, 1733229614, 1733229614),
-('deleteFavorito', 2, 'Delete Favorito', NULL, NULL, 1733229614, 1733229614),
-('deleteFornecedor', 2, 'delete fornecedor', NULL, NULL, 1733229614, 1733229614),
-('deleteGenero', 2, 'delete Genero', NULL, NULL, 1733229614, 1733229614),
-('deleteImagem', 2, 'delete Imagem', NULL, NULL, 1733229614, 1733229614),
-('deleteIva', 2, 'delete Iva', NULL, NULL, 1733229614, 1733229614),
-('deleteLinhaCarrinhoCompra', 2, 'Delete LinhaCarrinhoCompra', NULL, NULL, 1733229614, 1733229614),
-('deleteLinhaCompra', 2, 'delete linha compra', NULL, NULL, 1733229614, 1733229614),
-('deleteMarca', 2, 'delete Marca', NULL, NULL, 1733229614, 1733229614),
-('deleteMetodoEntrega', 2, 'delete Metodo Entrega', NULL, NULL, 1733229614, 1733229614),
-('deleteMetodoPagamento', 2, 'delete Metodo Pagamento', NULL, NULL, 1733229614, 1733229614),
-('deleteProduto', 2, 'delete produto', NULL, NULL, 1733229614, 1733229614),
-('deleteProfile', 2, 'delete profile', NULL, NULL, 1733229614, 1733229614),
-('deleteTamanho', 2, 'delete tamanho', NULL, NULL, 1733229614, 1733229614),
-('deleteUser', 2, 'delete user', NULL, NULL, 1733229614, 1733229614),
-('funcionario', 1, NULL, NULL, NULL, 1733229615, 1733229615),
-('updateAvaliacao', 2, 'Update Avaliacao', NULL, NULL, 1733229614, 1733229614),
-('updateCategoria', 2, 'Update Categoria', NULL, NULL, 1733229614, 1733229614),
-('updateCompra', 2, 'Update Compra', NULL, NULL, 1733229614, 1733229614),
-('updateCupao', 2, 'Update Cupao', NULL, NULL, 1733229614, 1733229614),
-('updateEncomenda', 2, 'Update Encomenda', NULL, NULL, 1733229614, 1733229614),
-('updateFavorito', 2, 'Update Favorito', NULL, NULL, 1733229614, 1733229614),
-('updateFornecedor', 2, 'Update Fornecedor', NULL, NULL, 1733229614, 1733229614),
-('updateGenero', 2, 'Update Genero', NULL, NULL, 1733229614, 1733229614),
-('updateImagem', 2, 'Update Imagem', NULL, NULL, 1733229614, 1733229614),
-('updateIva', 2, 'Update Iva', NULL, NULL, 1733229614, 1733229614),
-('updateLInhaCarrinhoCompra', 2, 'Update LinhaCarrinhoCompra', NULL, NULL, 1733229614, 1733229614),
-('updateLinhaCompra', 2, 'Update Linha Compra', NULL, NULL, 1733229614, 1733229614),
-('updateMarca', 2, 'Update Marca', NULL, NULL, 1733229614, 1733229614),
-('updateMetodoEntrega', 2, 'Update Metodo Entrega', NULL, NULL, 1733229614, 1733229614),
-('updateMetodoPagamento', 2, 'Update Metodo Pagamento', NULL, NULL, 1733229614, 1733229614),
-('updateProduto', 2, 'Update Produto', NULL, NULL, 1733229614, 1733229614),
-('updateProfile', 2, 'Update profile', NULL, NULL, 1733229614, 1733229614),
-('updateTamanho', 2, 'Update Tamanho', NULL, NULL, 1733229614, 1733229614),
-('updateUser', 2, 'Update user', NULL, NULL, 1733229614, 1733229614),
-('viewAvaliacoes', 2, 'View Avaliacoes', NULL, NULL, 1733229614, 1733229614),
-('viewCarrinhoCompras', 2, 'View CarrinhoCompras', NULL, NULL, 1733229614, 1733229614),
-('viewCategorias', 2, 'View Categorias', NULL, NULL, 1733229614, 1733229614),
-('viewCompras', 2, 'View Compras', NULL, NULL, 1733229614, 1733229614),
-('viewCupoes', 2, 'View Cupoes Descontos', NULL, NULL, 1733229614, 1733229614),
-('viewEncomendas', 2, 'View Encomendas', NULL, NULL, 1733229614, 1733229614),
-('viewFaturas', 2, 'View Faturas', NULL, NULL, 1733229614, 1733229614),
-('viewFavoritos', 2, 'View Favoritos', NULL, NULL, 1733229614, 1733229614),
-('viewFornecedores', 2, 'View Fornecedores', NULL, NULL, 1733229614, 1733229614),
-('viewGeneros', 2, 'View Generos', NULL, NULL, 1733229614, 1733229614),
-('viewImagens', 2, 'View Imagens', NULL, NULL, 1733229614, 1733229614),
-('viewIvas', 2, 'View Ivas', NULL, NULL, 1733229614, 1733229614),
-('viewLinhaCarrinhoCompras', 2, 'View LinhaCarrinhoCompras', NULL, NULL, 1733229614, 1733229614),
-('viewLinhasCompras', 2, 'View Linhas Compras', NULL, NULL, 1733229614, 1733229614),
-('viewLinhasFaturas', 2, 'View Linhas Faturas', NULL, NULL, 1733229614, 1733229614),
-('viewMarcas', 2, 'View Marcas', NULL, NULL, 1733229614, 1733229614),
-('viewMetodosEntregas', 2, 'View Metodos Entregas', NULL, NULL, 1733229614, 1733229614),
-('viewMetodosPagamentos', 2, 'View Metodos Pagamentos', NULL, NULL, 1733229614, 1733229614),
-('viewProdutos', 2, 'View Produtos', NULL, NULL, 1733229614, 1733229614),
-('viewProfiles', 2, 'View Profiles', NULL, NULL, 1733229614, 1733229614),
-('viewTamanhos', 2, 'View Tamanhos', NULL, NULL, 1733229614, 1733229614),
-('viewUsers', 2, 'View users', NULL, NULL, 1733229614, 1733229614),
-('viewUsoCupoes', 2, 'View uso cupoes', NULL, NULL, 1733229614, 1733229614);
+('admin', 1, NULL, NULL, NULL, 1734364072, 1734364072),
+('cliente', 1, NULL, NULL, NULL, 1734364072, 1734364072),
+('createAvaliacao', 2, 'Create Avaliacao', NULL, NULL, 1734364072, 1734364072),
+('createCategoria', 2, 'Create a categoria', NULL, NULL, 1734364071, 1734364071),
+('createCompra', 2, 'Create a compra', NULL, NULL, 1734364071, 1734364071),
+('createCupao', 2, 'Create a cupao', NULL, NULL, 1734364071, 1734364071),
+('createFavorito', 2, 'Create Favorito', NULL, NULL, 1734364072, 1734364072),
+('createFornecedor', 2, 'Create a fornecedor', NULL, NULL, 1734364071, 1734364071),
+('createGenero', 2, 'Create a Genero', NULL, NULL, 1734364071, 1734364071),
+('createImagem', 2, 'Create a Imagem', NULL, NULL, 1734364071, 1734364071),
+('createIva', 2, 'Create a Iva', NULL, NULL, 1734364071, 1734364071),
+('createLinhaCarrinhoCompra', 2, 'Create LinhaCarrinhoCompra', NULL, NULL, 1734364071, 1734364071),
+('createLinhaCompra', 2, 'Create a linha compra', NULL, NULL, 1734364071, 1734364071),
+('createMarca', 2, 'Create a marca', NULL, NULL, 1734364071, 1734364071),
+('createMetodoEntrega', 2, 'Create a Metodo Entrega', NULL, NULL, 1734364071, 1734364071),
+('createMetodoPagamento', 2, 'Create a Metodo Pagamento', NULL, NULL, 1734364072, 1734364072),
+('createProduto', 2, 'Create a produto', NULL, NULL, 1734364071, 1734364071),
+('createProfile', 2, 'Create a profile', NULL, NULL, 1734364071, 1734364071),
+('createTamanho', 2, 'Create a tamanho', NULL, NULL, 1734364071, 1734364071),
+('createUser', 2, 'Create a user', NULL, NULL, 1734364071, 1734364071),
+('deleteAvaliacao', 2, 'Delete Avaliacao', NULL, NULL, 1734364072, 1734364072),
+('deleteCategoria', 2, 'delete Categoria', NULL, NULL, 1734364071, 1734364071),
+('deleteCompra', 2, 'delete compra', NULL, NULL, 1734364071, 1734364071),
+('deleteCupao', 2, 'delete cupao', NULL, NULL, 1734364071, 1734364071),
+('deleteFavorito', 2, 'Delete Favorito', NULL, NULL, 1734364072, 1734364072),
+('deleteFornecedor', 2, 'delete fornecedor', NULL, NULL, 1734364071, 1734364071),
+('deleteGenero', 2, 'delete Genero', NULL, NULL, 1734364071, 1734364071),
+('deleteImagem', 2, 'delete Imagem', NULL, NULL, 1734364071, 1734364071),
+('deleteIva', 2, 'delete Iva', NULL, NULL, 1734364071, 1734364071),
+('deleteLinhaCarrinhoCompra', 2, 'Delete LinhaCarrinhoCompra', NULL, NULL, 1734364071, 1734364071),
+('deleteLinhaCompra', 2, 'delete linha compra', NULL, NULL, 1734364071, 1734364071),
+('deleteMarca', 2, 'delete Marca', NULL, NULL, 1734364071, 1734364071),
+('deleteMetodoEntrega', 2, 'delete Metodo Entrega', NULL, NULL, 1734364072, 1734364072),
+('deleteMetodoPagamento', 2, 'delete Metodo Pagamento', NULL, NULL, 1734364072, 1734364072),
+('deleteProduto', 2, 'delete produto', NULL, NULL, 1734364071, 1734364071),
+('deleteProfile', 2, 'delete profile', NULL, NULL, 1734364071, 1734364071),
+('deleteTamanho', 2, 'delete tamanho', NULL, NULL, 1734364071, 1734364071),
+('deleteUser', 2, 'delete user', NULL, NULL, 1734364071, 1734364071),
+('funcionario', 1, NULL, NULL, NULL, 1734364072, 1734364072),
+('updateAvaliacao', 2, 'Update Avaliacao', NULL, NULL, 1734364072, 1734364072),
+('updateCategoria', 2, 'Update Categoria', NULL, NULL, 1734364071, 1734364071),
+('updateCompra', 2, 'Update Compra', NULL, NULL, 1734364071, 1734364071),
+('updateCupao', 2, 'Update Cupao', NULL, NULL, 1734364071, 1734364071),
+('updateEncomenda', 2, 'Update Encomenda', NULL, NULL, 1734364072, 1734364072),
+('updateFavorito', 2, 'Update Favorito', NULL, NULL, 1734364072, 1734364072),
+('updateFornecedor', 2, 'Update Fornecedor', NULL, NULL, 1734364071, 1734364071),
+('updateGenero', 2, 'Update Genero', NULL, NULL, 1734364071, 1734364071),
+('updateImagem', 2, 'Update Imagem', NULL, NULL, 1734364071, 1734364071),
+('updateIva', 2, 'Update Iva', NULL, NULL, 1734364071, 1734364071),
+('updateLInhaCarrinhoCompra', 2, 'Update LinhaCarrinhoCompra', NULL, NULL, 1734364071, 1734364071),
+('updateLinhaCompra', 2, 'Update Linha Compra', NULL, NULL, 1734364071, 1734364071),
+('updateMarca', 2, 'Update Marca', NULL, NULL, 1734364071, 1734364071),
+('updateMetodoEntrega', 2, 'Update Metodo Entrega', NULL, NULL, 1734364071, 1734364071),
+('updateMetodoPagamento', 2, 'Update Metodo Pagamento', NULL, NULL, 1734364072, 1734364072),
+('updateProduto', 2, 'Update Produto', NULL, NULL, 1734364071, 1734364071),
+('updateProfile', 2, 'Update profile', NULL, NULL, 1734364071, 1734364071),
+('updateTamanho', 2, 'Update Tamanho', NULL, NULL, 1734364071, 1734364071),
+('updateUser', 2, 'Update user', NULL, NULL, 1734364071, 1734364071),
+('viewAvaliacoes', 2, 'View Avaliacoes', NULL, NULL, 1734364072, 1734364072),
+('viewCarrinhoCompras', 2, 'View CarrinhoCompras', NULL, NULL, 1734364071, 1734364071),
+('viewCategorias', 2, 'View Categorias', NULL, NULL, 1734364071, 1734364071),
+('viewCompras', 2, 'View Compras', NULL, NULL, 1734364071, 1734364071),
+('viewCupoes', 2, 'View Cupoes Descontos', NULL, NULL, 1734364071, 1734364071),
+('viewEncomendas', 2, 'View Encomendas', NULL, NULL, 1734364072, 1734364072),
+('viewFaturas', 2, 'View Faturas', NULL, NULL, 1734364071, 1734364071),
+('viewFavoritos', 2, 'View Favoritos', NULL, NULL, 1734364072, 1734364072),
+('viewFornecedores', 2, 'View Fornecedores', NULL, NULL, 1734364071, 1734364071),
+('viewGeneros', 2, 'View Generos', NULL, NULL, 1734364071, 1734364071),
+('viewImagens', 2, 'View Imagens', NULL, NULL, 1734364071, 1734364071),
+('viewIvas', 2, 'View Ivas', NULL, NULL, 1734364071, 1734364071),
+('viewLinhaCarrinhoCompras', 2, 'View LinhaCarrinhoCompras', NULL, NULL, 1734364071, 1734364071),
+('viewLinhasCompras', 2, 'View Linhas Compras', NULL, NULL, 1734364071, 1734364071),
+('viewLinhasFaturas', 2, 'View Linhas Faturas', NULL, NULL, 1734364071, 1734364071),
+('viewMarcas', 2, 'View Marcas', NULL, NULL, 1734364071, 1734364071),
+('viewMetodosEntregas', 2, 'View Metodos Entregas', NULL, NULL, 1734364071, 1734364071),
+('viewMetodosPagamentos', 2, 'View Metodos Pagamentos', NULL, NULL, 1734364072, 1734364072),
+('viewProdutos', 2, 'View Produtos', NULL, NULL, 1734364071, 1734364071),
+('viewProfiles', 2, 'View Profiles', NULL, NULL, 1734364071, 1734364071),
+('viewTamanhos', 2, 'View Tamanhos', NULL, NULL, 1734364071, 1734364071),
+('viewUsers', 2, 'View users', NULL, NULL, 1734364071, 1734364071),
+('viewUsoCupoes', 2, 'View uso cupoes', NULL, NULL, 1734364071, 1734364071);
 
 -- --------------------------------------------------------
 
@@ -541,9 +541,11 @@ CREATE TABLE IF NOT EXISTS `linhascarrinhos` (
   `subtotal` float NOT NULL,
   `carrinhocompras_id` int NOT NULL,
   `produto_id` int NOT NULL,
+  `tamanho_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_linhasCarrinhos_carrinhocompras1_idx` (`carrinhocompras_id`),
-  KEY `fk_linhasCarrinhos_produtos1_idx` (`produto_id`)
+  KEY `fk_linhasCarrinhos_produtos1_idx` (`produto_id`),
+  KEY `fk_linhascarrinhos_tamanhos1_idx` (`tamanho_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -582,8 +584,10 @@ CREATE TABLE IF NOT EXISTS `linhasfaturas` (
   `valorComIva` float NOT NULL,
   `subtotal` float NOT NULL,
   `fatura_id` int NOT NULL,
+  `produto_id` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_linhasfaturas_faturas1_idx` (`fatura_id`)
+  KEY `fk_linhasfaturas_faturas1_idx` (`fatura_id`),
+  KEY `fk_linhasfaturas_produtos1_idx` (`produto_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -626,7 +630,15 @@ CREATE TABLE IF NOT EXISTS `metodospagamentos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `metodoPagamento` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Extraindo dados da tabela `metodospagamentos`
+--
+
+INSERT INTO `metodospagamentos` (`id`, `metodoPagamento`) VALUES
+(1, 'Paypal'),
+(2, 'Cartão de crédito');
 
 -- --------------------------------------------------------
 
@@ -840,7 +852,8 @@ ALTER TABLE `imagens`
 --
 ALTER TABLE `linhascarrinhos`
   ADD CONSTRAINT `fk_linhasCarrinhos_carrinhocompras1` FOREIGN KEY (`carrinhocompras_id`) REFERENCES `carrinhocompras` (`id`),
-  ADD CONSTRAINT `fk_linhasCarrinhos_produtos1` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`);
+  ADD CONSTRAINT `fk_linhasCarrinhos_produtos1` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`),
+  ADD CONSTRAINT `fk_linhascarrinhos_tamanhos1` FOREIGN KEY (`tamanho_id`) REFERENCES `tamanhos` (`id`);
 
 --
 -- Limitadores para a tabela `linhascompras`
@@ -853,7 +866,8 @@ ALTER TABLE `linhascompras`
 -- Limitadores para a tabela `linhasfaturas`
 --
 ALTER TABLE `linhasfaturas`
-  ADD CONSTRAINT `fk_linhasfaturas_faturas1` FOREIGN KEY (`fatura_id`) REFERENCES `faturas` (`id`);
+  ADD CONSTRAINT `fk_linhasfaturas_faturas1` FOREIGN KEY (`fatura_id`) REFERENCES `faturas` (`id`),
+  ADD CONSTRAINT `fk_linhasfaturas_produtos1` FOREIGN KEY (`produto_id`) REFERENCES `produtos` (`id`);
 
 --
 -- Limitadores para a tabela `produtos`
