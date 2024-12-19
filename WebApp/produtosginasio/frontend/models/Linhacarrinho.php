@@ -3,6 +3,7 @@
 namespace frontend\models;
 
 use common\models\Produto;
+use common\models\Tamanho;
 
 /**
  * This is the model class for table "linhascarrinhos".
@@ -15,9 +16,11 @@ use common\models\Produto;
  * @property float $subtotal
  * @property int $carrinhocompras_id
  * @property int $produto_id
+ * @property int|null $tamanho_id
  *
  * @property Carrinhocompra $carrinhocompras
  * @property Produto $produto
+ * @property Tamanho $tamanho
  */
 class Linhacarrinho extends \yii\db\ActiveRecord
 {
@@ -40,6 +43,7 @@ class Linhacarrinho extends \yii\db\ActiveRecord
             [['precoUnit', 'valorIva', 'valorComIva', 'subtotal'], 'number'],
             [['carrinhocompras_id'], 'exist', 'skipOnError' => true, 'targetClass' => Carrinhocompra::class, 'targetAttribute' => ['carrinhocompras_id' => 'id']],
             [['produto_id'], 'exist', 'skipOnError' => true, 'targetClass' => Produto::class, 'targetAttribute' => ['produto_id' => 'id']],
+            [['tamanho_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tamanho::class, 'targetAttribute' => ['tamanho_id' => 'id']],
         ];
     }
 
@@ -57,6 +61,7 @@ class Linhacarrinho extends \yii\db\ActiveRecord
             'subtotal' => 'Subtotal',
             'carrinhocompras_id' => 'Carrinhocompras ID',
             'produto_id' => 'Produto ID',
+            'tamanho_id' => 'Tamanho ID',
         ];
     }
 
@@ -78,5 +83,15 @@ class Linhacarrinho extends \yii\db\ActiveRecord
     public function getProduto()
     {
         return $this->hasOne(Produto::class, ['id' => 'produto_id']);
+    }
+
+    /**
+     * Gets query for [[Tamanho]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTamanho()
+    {
+        return $this->hasOne(Tamanho::class, ['id' => 'tamanho_id']);
     }
 }

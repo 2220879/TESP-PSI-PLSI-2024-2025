@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php foreach ($produtos as $produto): ?>
                         <div class="col-sm-6 col-md-4">
                             <div class="box">
-                                <a href="#" class="p_cart">
+                               <a href="" class="p_cart">
                                     <i class="fa fa-cart-plus" aria-hidden="true"></i>
                                 </a>
                                 <div class="img-box">

@@ -37,6 +37,7 @@ body {
     justify-content: space-between;
 }
 
+
 .produto-imagens,
 .produto-atributos {
     padding: 10px;
@@ -81,6 +82,7 @@ body {
     padding-right: 20px;
     padding-bottom: 20px;
 }
+
 
 .layout_padding {
     padding: 90px 0;

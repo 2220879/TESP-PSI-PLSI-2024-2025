@@ -14,8 +14,10 @@ namespace common\models;
  * @property float $valorComIva
  * @property float $subtotal
  * @property int $fatura_id
+ * @property int $produto_id
  *
  * @property Fatura $fatura
+ * @property Produto $produto
  */
 class Linhafatura extends \yii\db\ActiveRecord
 {
@@ -39,6 +41,7 @@ class Linhafatura extends \yii\db\ActiveRecord
             [['precoUnit', 'valorIva', 'valorComIva', 'subtotal'], 'number'],
             [['nomeProduto'], 'string', 'max' => 50],
             [['fatura_id'], 'exist', 'skipOnError' => true, 'targetClass' => Fatura::class, 'targetAttribute' => ['fatura_id' => 'id']],
+            [['produto_id'], 'exist', 'skipOnError' => true, 'targetClass' => Produto::class, 'targetAttribute' => ['produto_id' => 'id']],
         ];
     }
 
@@ -57,6 +60,7 @@ class Linhafatura extends \yii\db\ActiveRecord
             'valorComIva' => 'Valor Com Iva',
             'subtotal' => 'Subtotal',
             'fatura_id' => 'Fatura ID',
+            'produto_id' => 'Produto ID',
         ];
     }
 
@@ -68,5 +72,15 @@ class Linhafatura extends \yii\db\ActiveRecord
     public function getFatura()
     {
         return $this->hasOne(Fatura::class, ['id' => 'fatura_id']);
+    }
+
+    /**
+     * Gets query for [[Produto]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProduto()
+    {
+        return $this->hasOne(Produto::class, ['id' => 'produto_id']);
     }
 }

@@ -1,21 +1,30 @@
 <?php
 
-use common\models\Usocupao;
+use common\models\Metodoentrega;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var common\models\UsocupaoSearch $searchModel */
+/** @var common\models\MedodoentregaSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Usocupaos';
+$this->title = 'Metodo Entregas';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="usocupao-index">
+<div class="metodoentrega-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+    <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert-success">
+            <?= Yii::$app->session->getFlash('success') ?>
+        </div>
+    <?php endif; ?>
+
+    <p>
+        <?= Html::a('Criar Metodo Entrega', ['create'], ['class' => 'btn btn-success']) ?>
+    </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -26,24 +35,13 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            //'cupaodesconto_id',
-            [
-                'label' => 'Cupao de Desconto',
-                'value' => function($model){
-                    return $model->cupaodesconto->desconto;
-                }
-            ],
-            //'profile_id',
-            [
-                'label' => 'Utilizador',
-                'value' => function($model){
-                    return $model->profile->user->username;
-                }
-            ],
-            'dataUso',
+            'descricao:ntext',
+            'diasEntrega:ntext',
+            //'preco',
+            //'vigor',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Usocupao $model, $key, $index, $column) {
+                'urlCreator' => function ($action, Metodoentrega $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

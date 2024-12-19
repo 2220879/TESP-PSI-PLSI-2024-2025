@@ -93,7 +93,13 @@ class SignupForm extends Model
 
                 //se o registo do perfil foi concluído
                 if ($profile->save()) {
-                    return true;
+                    $carrinhoCompras = new Carrinhocompra();
+                    $carrinhoCompras->quantidade = 0;
+                    $carrinhoCompras->valorTotal = 0.00;
+                    $carrinhoCompras->profile_id = $profile->id;
+                    if ($carrinhoCompras->save()) {
+                        return true;
+                    }
                 }
             }
         }

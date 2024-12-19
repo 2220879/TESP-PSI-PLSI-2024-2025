@@ -30,6 +30,25 @@
                     ['label' => 'Gii', 'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
                     ['label' => 'Gestão de Utilizadores', 'icon' => '', 'header' => true],
                     ['label' => 'Utilizadores', 'icon' => 'fa fa-users', 'url' => ['/user/index']],
+                    ['label' => 'Métodos de Entrega', 'icon' => '', 'header' => true],
+                    ['label' => 'Métodos de Entrega', 'icon' => 'fa fa-truck', 'url' => ['/metodoentrega/index']],
+                    ['label' => 'Métodos de Pagamento', 'icon' => '', 'header' => true],
+                    ['label' => 'Métodos de Pagamento', 'icon' => 'fa fa-credit-card', 'url' => ['/metodopagamento/index']],
+                    ['label' => 'Encomendas', 'header' => true],
+                    [
+                        'label' => 'Encomendas',
+                        'items' => [
+                            ['label' => 'Encomendas', 'icon' => 'fa-solid fa-boxes', 'url' => ['/encomenda/index']],
+                        ],
+                    ],
+                    ['label' => 'Vendas', 'header' => true],
+                    [
+                        'label' => 'Vendas',
+                        'items' => [
+                            ['label' => 'Realizar Venda', 'icon' => 'fa fa-cart-plus', 'url' => ['/realizarvenda/index']],
+                            ['label' => 'Ver Vendas', 'icon' => 'fa-solid fa-euro-sign', 'url' => ['/venda/index']],
+                        ],
+                    ],
                     ['label' => 'Mercadoria', 'header' => true],
                     [
                         'label' => 'Mercadoria',
@@ -48,6 +67,7 @@
                             ['label' => 'Géneros', 'icon' => 'fa fa-inbox', 'url' => ['/genero/index']],
                             ['label' => 'Ivas', 'icon' => 'fa fa-inbox', 'url' => ['/iva/index']],
                             ['label' => 'Tamanhos', 'icon' => 'fa fa-inbox', 'url' => ['/tamanho/index']],
+                            ['label' => 'CupaoDesconto', 'icon' => 'fa fa-tag', 'url' => ['/cupaodesconto/index']],
                         ],
                     ],
                 ],

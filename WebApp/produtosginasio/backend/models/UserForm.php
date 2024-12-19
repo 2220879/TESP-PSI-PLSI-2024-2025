@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use frontend\models\Carrinhocompra;
 use Yii;
 use yii\base\Model;
 use common\models\User;
@@ -88,6 +89,14 @@ class UserForm extends Model
 
                 //se o registo do perfil foi concluído
                 if ($profile->save()) {
+
+                    if ($this->role == 'cliente') {
+                        $carrinhoCompras = new Carrinhocompra();
+                        $carrinhoCompras->quantidade = 0;
+                        $carrinhoCompras->valorTotal = 0.00;
+                        $carrinhoCompras->profile_id = $profile->id;
+                        $carrinhoCompras->save();
+                    }
                     return $user->id;
                 }
             }

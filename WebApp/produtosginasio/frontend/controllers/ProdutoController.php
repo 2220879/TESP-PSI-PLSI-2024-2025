@@ -145,15 +145,32 @@ class ProdutoController extends Controller
      */
     public function actionDetalhes($id)
     {
+        // Verifica se o produto existe
+        $produto = $this->findModel($id);
+        if (!$produto) {
+            throw new NotFoundHttpException('Produto não encontrado.');
+        }
+
+        // Busca as avaliações do produto
         $avaliacoes = Avaliacao::find()->where(['produto_id' => $id])->all();
-        
-        //faz render da página
-        return $this->render('detalhes', ['model' => $this->findModel($id),
-            'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),
-            'tamanhos' => ProdutosHasTamanho::find()->where(['produto_id' => $id])->andWhere(['>', 'quantidade', 0])->all(),
-            'avaliacao' => new Avaliacao(),
-            'avaliacoes' => $avaliacoes,]);
+
+        // Busca os tamanhos disponíveis para o produto
+        $tamanhos = ProdutosHasTamanho::find()
+            ->where(['produto_id' => $id])
+            ->andWhere(['>', 'quantidade', 0])  // Garante que apenas tamanhos com estoque disponível sejam retornados
+            ->all();
+
+        // Renderiza a página de detalhes, passando os dados necessários
+        return $this->render('detalhes', [
+            'model' => $produto,  // Passa o modelo do produto
+            'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),  // Busca as imagens do produto
+            'tamanhos' => $tamanhos,  // Passa os tamanhos disponíveis
+            'avaliacao' => new Avaliacao(),  // Passa um novo modelo de avaliação para o formulário
+            'avaliacoes' => $avaliacoes,  // Passa as avaliações existentes
+        ]);
     }
+
+
 
     /**
      * Finds the Produto model based on its primary key value.
