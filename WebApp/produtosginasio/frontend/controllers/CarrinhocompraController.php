@@ -185,6 +185,8 @@ class CarrinhocompraController extends Controller
                 Yii::$app->session->setFlash('error', 'Erro ao atualizar os totais do carrinho.');
                 return $this->redirect(['site/produto', 'id' => $produto_id]);
             }
+
+
         }
 
         return $this->redirect(['carrinhocompra/index']);
@@ -228,6 +230,21 @@ class CarrinhocompraController extends Controller
 
         // Encontra o carrinho de compra associado à linha
         $carrinho = $linhaCarrinho->carrinhocompras;
+
+        // Recupera a relação do produto com o tamanho
+        $produtostamanho = ProdutosHasTamanho::findOne([
+            'produto_id' => $linhaCarrinho->produto_id,
+            'tamanho_id' => $linhaCarrinho->tamanho_id,
+        ]);
+
+        if ($produtostamanho) {
+            // Atualiza o estoque incrementando a quantidade removida do carrinho
+            $produtostamanho->quantidade += $linhaCarrinho->quantidade;
+            if (!$produtostamanho->save()) {
+                Yii::$app->session->setFlash('error', 'Erro ao atualizar o estoque do produto.');
+                return $this->redirect(['index']);
+            }
+        }
 
         // Remove a linha do carrinho
         $linhaCarrinho->delete();
@@ -384,3 +401,4 @@ class CarrinhocompraController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 }
+

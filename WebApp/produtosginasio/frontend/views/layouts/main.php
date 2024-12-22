@@ -99,6 +99,8 @@ AppAsset::register($this);
                             'label' => '<i class="fa fa-user" ></i>',
                             'items' => [
                                 ['label' => 'Meu Perfil', 'url' => ['user/view', 'id' => Yii::$app->user->identity->getId()]],
+                                ['label' => 'Minhas Compras', 'url' => ['compra/index', 'id' => Yii::$app->user->identity->getId()]],
+                                ['label' => 'Minhas Encomendas', 'url' => ['encomenda/index', 'id' => Yii::$app->user->identity->getId()]],
                             ],
                             'encode' => false,
 
