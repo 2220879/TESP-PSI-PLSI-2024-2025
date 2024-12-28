@@ -476,7 +476,7 @@ DROP TABLE IF EXISTS `fornecedores`;
 CREATE TABLE IF NOT EXISTS `fornecedores` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(50) NOT NULL,
-  `telefone` mediumint NOT NULL,
+  `telefone` int NOT NULL,
   `email` varchar(50) NOT NULL,
   `marca_id` int NOT NULL,
   PRIMARY KEY (`id`),
