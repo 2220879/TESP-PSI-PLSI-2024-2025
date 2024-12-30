@@ -4,6 +4,9 @@ namespace backend\controllers;
 
 use common\models\Cupaodesconto;
 use common\models\CupaodescontoSearch;
+use common\models\Usocupao;
+use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,6 +24,17 @@ class CupaodescontoController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin', 'funcionario'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -111,7 +125,15 @@ class CupaodescontoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Usocupao::find()->where(['cupaodesconto_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este cupão, devido a estar a ser utilizado.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

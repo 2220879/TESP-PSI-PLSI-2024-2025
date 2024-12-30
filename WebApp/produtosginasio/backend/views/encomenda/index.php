@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'profile_id',
             [
                 'class' => ActionColumn::className(),
+                'template' => '{view} {update}', // Aqui você define as ações que quer mostrar (view e update)
                 'urlCreator' => function ($action, Encomenda $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }

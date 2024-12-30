@@ -26,8 +26,6 @@
             <?php
             echo \hail812\adminlte\widgets\Menu::widget([
                 'items' => [
-                    ['label' => 'Yii2 PROVIDED', 'header' => true],
-                    ['label' => 'Gii', 'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
                     ['label' => 'Gestão de Utilizadores', 'icon' => '', 'header' => true],
                     ['label' => 'Utilizadores', 'icon' => 'fa fa-users', 'url' => ['/user/index']],
                     ['label' => 'Métodos de Entrega', 'icon' => '', 'header' => true],
@@ -54,6 +52,7 @@
                         'label' => 'Mercadoria',
                         'items' => [
                             ['label' => 'Fornecedores', 'icon' => 'fa fa-truck', 'url' => ['/fornecedor/index']],
+                            ['label' => 'Produtos', 'icon' => 'fa fa-book', 'url' => ['/produto/index']],
                             ['label' => 'Compras', 'icon' => 'fa fa-book', 'url' => ['/compra/index']],
                         ],
                     ],
@@ -61,7 +60,6 @@
                     [
                         'label' => 'Gestão',
                         'items' => [
-                            ['label' => 'Produtos', 'icon' => 'fa fa-book', 'url' => ['/produto/index']],
                             ['label' => 'Categorias', 'icon' => 'fa fa-inbox', 'url' => ['/categoria/index']],
                             ['label' => 'Marcas', 'icon' => 'fa fa-inbox', 'url' => ['/marca/index']],
                             ['label' => 'Géneros', 'icon' => 'fa fa-inbox', 'url' => ['/genero/index']],

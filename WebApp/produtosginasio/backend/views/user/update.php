@@ -13,8 +13,6 @@ $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="user-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'username')->textInput(['value' => $user->username]) ?>

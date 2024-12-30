@@ -15,10 +15,14 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cupaodesconto-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Yii::$app->session->getFlash('error') ?>
+        </div>
+    <?php endif; ?>
 
     <p>
-        <?= Html::a('Create Cupaodesconto', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Criar Cupaodesconto', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -36,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Cupaodesconto $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>

@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use common\models\Genero;
 use common\models\GeneroSearch;
+use common\models\Produto;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,7 +31,7 @@ class GeneroController extends Controller
                         [
                             'actions' => ['index', 'create', 'view', 'update', 'delete', 'model'],
                             'allow' => true,
-                            'roles' => ['admin','funcionario'],
+                            'roles' => ['admin', 'funcionario'],
                         ],
                     ],
                 ],
@@ -123,7 +125,15 @@ class GeneroController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Produto::find()->where(['genero_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este género, pois existem produtos relacionados.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

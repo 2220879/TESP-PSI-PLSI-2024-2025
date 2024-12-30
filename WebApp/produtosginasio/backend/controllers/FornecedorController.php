@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\Compra;
 use backend\models\Fornecedor;
 use backend\models\FornecedorSearch;
 use common\models\Marca;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -130,7 +132,16 @@ class FornecedorController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        // Verificar se existem produtos relacionados ao fornecedor
+        if (Compra::find()->where(['fornecedor_id' => $model->id])->exists()) {
+            // Se houver produtos relacionados, impedir a exclusão e exibir uma mensagem de erro
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este fornecedor, pois existem compras/mercadoria relacionadas.');
+            return $this->redirect(['index']); // Redireciona de volta para a página de índice
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

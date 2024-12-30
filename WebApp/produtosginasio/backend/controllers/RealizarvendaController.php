@@ -400,12 +400,15 @@ class RealizarvendaController extends Controller
                         Yii::$app->session->setFlash('error', "Cupão inválido");
                         //remover o cupão da sessão se inválido
                         Yii::$app->session->remove('cupao');
+                        $cupao = null;
                     } else if ($cupao && strtotime($cupao->dataFim) < time()) {
                         //Mensagem de erro, caso o cupão tenha expirado
                         Yii::$app->session->setFlash('error', "Este cupão está expirado.");
+                        $cupao = null;
                     } else if (Usocupao::find()->where(['cupaodesconto_id' => $cupao, 'profile_id' => $profile])->exists()) {
                         //se o cupão for inválido, mostra mensagem de erro
                         Yii::$app->session->setFlash('error', "Cupão já utilizado!");
+                        $cupao = null;
                     } else if ($cupao && strtotime($cupao->dataFim) >= time()) {
                         //calcular o valor poupado com base do desconto do cupão
                         $ValorPoupado = ($cupao->desconto * $valorProdutos);
@@ -448,126 +451,169 @@ class RealizarvendaController extends Controller
 
     public function actionFecharcompra()
     {
-        // Obtém a sessão
         $session = Yii::$app->session;
-        // Obtém os produtos do carrinho
         $carrinho = $session->get('carrinho', []);
-        // Obtém o cupão inserido, se houver
         $cupaoCodigo = $session->get('cupao');
-        // Obtém o id do cliente selecionado
         $clienteId = Yii::$app->request->post('cliente');
-        // Obtém o id do método de pagamento e entrega selecionados
         $metodoPagamentoId = Yii::$app->request->post('metodo_pagamento');
         $metodoEntregaId = Yii::$app->request->post('metodo_entrega');
         $email = Yii::$app->request->post('email');
         $nif = Yii::$app->request->post('nif');
         $morada = Yii::$app->request->post('morada');
         $telefone = Yii::$app->request->post('telefone');
+        $metodosPagamento = Metodopagamento::find()->all();
+        $metodosEntrega = Metodoentrega::find()->where(['vigor' => 1])->all();
+        $clientes = User::find()->where(['id' => Yii::$app->authManager->getUserIdsByRole('cliente')])->all();
+        $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
+        $desconto = 0.00;
+        $ValorPoupado = 0.00;
+        $custoEnvio = 0.00;
 
-
-        //vai buscar o perfil do Utilizador
-        $profile = Profile::find()->where(['user_id' => $clienteId])->one();
-
-        //criar a encomenda
-        $encomenda = new Encomenda();
-        $encomenda->data = date('Y-m-d');
-        $encomenda->hora = date('H:i:s');
-        $encomenda->morada = $morada;
-        $encomenda->telefone = $telefone;
-        $encomenda->email = $email;
-        $encomenda->estadoEncomenda = "Em processamento";
-        $encomenda->profile_id = $profile->id;
-        $encomenda->save();
-
-        //criar a base da fatura
-        $fatura = new Fatura();
-        $fatura->dataEmissao = date('Y-m-d');
-        $fatura->horaEmissao = date('H:i:s');
-        $fatura->valorTotal = 0.00;
-        $fatura->ivaTotal = 0.00;
-        //se o campo nif estiver preenchido
-        if ($nif != null) {
-            $fatura->nif = $nif;
+        // Calcular o valor total dos produtos no carrinho
+        $valorProdutos = 0;
+        foreach ($carrinho as $item) {
+            $valorProdutos += $item['preco'] * $item['quantidade'];
         }
-        $fatura->metodopagamento_id = $metodoPagamentoId;
-        $fatura->metodoentrega_id = $metodoEntregaId;
-        $fatura->encomenda_id = $encomenda->id;
-        $fatura->profile_id = $profile->id;
 
-        //se correr tudo bem com a criação da fatura
-        if ($fatura->save()) {
-            //percorre todos os objetos armazenados na sessão 'carrinho'
-            foreach ($carrinho as $produto) {
-                //seleciona o o produto
-                $produtoID = Produto::find()->where(['id' => $produto['id']])->one();
-                //criar linhas da fatura
-                $linhaFatura = new LinhaFatura();
-                $linhaFatura->dataVenda = date('Y-m-d');
-                //se for um produto que contenha tamanho associado
-                if ($produto['tamanho'] != null) {
-                    //acrescenta no nome do produto o respetivo tamanho
-                    $linhaFatura->nomeProduto = $produto['nomeProduto'] . " - " . $produto['tamanho'];
-                } else {
-                    //caso contrario, atribui apenas o nome do produto
-                    $linhaFatura->nomeProduto = $produto['nomeProduto'];
-                }
-                $linhaFatura->quantidade = $produto['quantidade'];
-                $linhaFatura->precoUnit = $produtoID->preco;
-                $linhaFatura->valorIva = $produtoID->iva->percentagem;
-                $linhaFatura->valorComIva = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
-                $linhaFatura->subtotal = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
-                $linhaFatura->fatura_id = $fatura->id;
-                $linhaFatura->produto_id = $produtoID->id;
-                //se correr tudo bem com a criação da linha de fatura
-                if ($linhaFatura->save()) {
-                    //atualiza os dados totais da fatura
-                    $fatura->valorTotal += round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
-                    $fatura->ivaTotal += $produtoID->iva->percentagem;
-                    $fatura->save();
-                }
+        // Calcular o valor do desconto e do cupão
+        if ($cupao && strtotime($cupao->dataFim) >= time()) {
+            $desconto = $cupao->desconto;
+            $ValorPoupado = ($cupao->desconto * $valorProdutos);
+        }
+
+        // Calcular o custo de envio
+        if ($metodoEntregaId) {
+            $metodoEntrega = Metodoentrega::findOne($metodoEntregaId);
+            if ($metodoEntrega) {
+                $custoEnvio = $metodoEntrega->preco;
             }
-            //vai buscar o metodo de entrega selecionado (base dados)
-            $metodoentrega = Metodoentrega::find()->where(['id' => $metodoEntregaId])->one();
-            //atribui ao valor total da fatura o valor referente ao metodo de entrega
-            $fatura->valorTotal += $metodoentrega->preco;
-            $fatura->save();
+        }
 
-            //se existir um cupão inserido
-            if ($cupaoCodigo != null) {
-                //vai buscar à base dados o cupão de desconto inserido
-                $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
+        // Calcular o valor final
+        $valorFinal = ($valorProdutos - $ValorPoupado) + $custoEnvio;
 
-                //desconto no valor total da compra
-                $fatura->valorTotal = $fatura->valorTotal - round($cupao->desconto / 100, 2);
+        $dados = [
+            'metodosPagamento' => $metodosPagamento,
+            'clientes' => $clientes,
+            'metodosEntrega' => $metodosEntrega,
+            'cupao' => $cupao,
+            'desconto' => $desconto,
+            'ValorPoupado' => $ValorPoupado,
+            'custoEnvio' => $custoEnvio,
+            'clienteId' => $clienteId,
+            'metodoPagamentoId' => $metodoPagamentoId,
+            'metodoEntregaId' => $metodoEntregaId,
+            'email' => $email,
+            'nif' => $nif,
+            'morada' => $morada,
+            'telefone' => $telefone,
+            'valorProdutos' => $valorProdutos,
+            'valorFinal' => $valorFinal,
+            'cupaoCodigo' => $cupaoCodigo, // Adiciona o código do cupão
+        ];
+
+        if (empty($clienteId)) {
+            Yii::$app->session->setFlash('error', 'Não tem o cliente associado à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else if (empty($metodoPagamentoId)) {
+            Yii::$app->session->setFlash('error', 'Não tem um método pagamento associado à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else if (empty($metodoEntregaId)) {
+            Yii::$app->session->setFlash('error', 'Não tem um método entrega associado à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else if (empty($email)) {
+            Yii::$app->session->setFlash('error', 'Não tem um email associado à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else if (empty($morada)) {
+            Yii::$app->session->setFlash('error', 'Não tem uma morada associada à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else if (empty($telefone)) {
+            Yii::$app->session->setFlash('error', 'Não tem um telefone associado à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else {
+            // Vai buscar o perfil do Utilizador
+            $profile = Profile::find()->where(['user_id' => $clienteId])->one();
+            // Criar a encomenda
+            $encomenda = new Encomenda();
+            $encomenda->data = date('Y-m-d');
+            $encomenda->hora = date('H:i:s');
+            $encomenda->morada = $morada;
+            $encomenda->telefone = $telefone;
+            $encomenda->email = $email;
+            $encomenda->estadoEncomenda = "Em processamento";
+            $encomenda->profile_id = $profile->id;
+            $encomenda->save();
+
+            // Criar a base da fatura
+            $fatura = new Fatura();
+            $fatura->dataEmissao = date('Y-m-d');
+            $fatura->horaEmissao = date('H:i:s');
+            $fatura->valorTotal = 0.00;
+            $fatura->ivaTotal = 0.00;
+            if (!empty($nif)) {
+                $fatura->nif = $nif;
+            }
+            $fatura->metodopagamento_id = $metodoPagamentoId;
+            $fatura->metodoentrega_id = $metodoEntregaId;
+            $fatura->encomenda_id = $encomenda->id;
+            $fatura->profile_id = $profile->id;
+
+            // Se correr tudo bem com a criação da fatura
+            if ($fatura->save()) {
+                // Percorrer todos os objetos armazenados na sessão 'carrinho'
+                foreach ($carrinho as $produto) {
+                    $produtoID = Produto::find()->where(['id' => $produto['id']])->one();
+                    $linhaFatura = new LinhaFatura();
+                    $linhaFatura->dataVenda = date('Y-m-d');
+                    $linhaFatura->nomeProduto = !empty($produto['tamanho']) ? $produto['nomeProduto'] . " - " . $produto['tamanho'] : $produto['nomeProduto'];
+                    $linhaFatura->quantidade = $produto['quantidade'];
+                    $linhaFatura->precoUnit = $produtoID->preco;
+                    $linhaFatura->valorIva = $produtoID->iva->percentagem;
+                    $linhaFatura->valorComIva = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+                    $linhaFatura->subtotal = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+                    $linhaFatura->fatura_id = $fatura->id;
+                    $linhaFatura->produto_id = $produtoID->id;
+
+                    if ($linhaFatura->save()) {
+                        $fatura->valorTotal += round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+                        $fatura->ivaTotal += $produtoID->iva->percentagem;
+                        $fatura->save();
+                    }
+                }
+
+                $metodoentrega = Metodoentrega::find()->where(['id' => $metodoEntregaId])->one();
+                $fatura->valorTotal += $metodoentrega->preco;
                 $fatura->save();
 
-                //cria um registo de uso do cupão pelo utilizador selecionado
-                $Usocupao = new UsoCupao();
-                $Usocupao->cupaodesconto_id = $cupao->id;
-                $Usocupao->profile_id = $profile->id;
-                $Usocupao->dataUso = date('Y-m-d');
-                $Usocupao->save();
+                if (!empty($cupaoCodigo)) {
+                    $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
+                    $valorCupao = ($fatura->valorTotal * $cupao->desconto) / 100; // cálculo correto do valor do cupão
+                    $fatura->valorTotal -= $valorCupao; // aplicar o desconto na fatura
+                    $fatura->save();
+
+                    $usoCupao = new UsoCupao();
+                    $usoCupao->cupaodesconto_id = $cupao->id;
+                    $usoCupao->profile_id = $profile->id;
+                    $usoCupao->dataUso = date('Y-m-d');
+                    $usoCupao->save();
+                }
+
+                $this->actionGeneratePdf($fatura->id, $cupao ?? null, $ValorPoupado ?? 0.00);
             }
-            //criar a fatura em pdf
-            $this->actionGeneratePdf($fatura->id);
-        }
-        //verificar se a sessão carrinho existe
-        if (Yii::$app->session->has('carrinho')) {
-            //apagar a variavel de sessão carrinho
-            Yii::$app->session->remove('carrinho');
-        }
 
-        //verificar se a sessão cupao existe
-        if (Yii::$app->session->has('cupao')) {
-            //apagar variavel de sessão cupao
-            Yii::$app->session->remove('cupao');
+            if (Yii::$app->session->has('carrinho')) {
+                Yii::$app->session->remove('carrinho');
+            }
+
+            if (Yii::$app->session->has('cupao')) {
+                Yii::$app->session->remove('cupao');
+            }
+
+            return $this->redirect(['index']);
         }
-
-        return $this->redirect(['index']);
-
     }
 
-    public function actionGeneratePdf($faturaID)
+    public function actionGeneratePdf($faturaID, $Cupao, $ValorPoupado)
     {
         //procurar a fatura na base dados
         $fatura = Fatura::find()->where(['id' => $faturaID])->one();
@@ -576,10 +622,15 @@ class RealizarvendaController extends Controller
             throw new NotFoundHttpException("Fatura não encontrada.");
         }
 
+        $subtotalDesconto = $fatura->valorTotal + $ValorPoupado;
+
         //armazenar os dados da fatura
         $data = [
             'fatura' => $fatura,
             'items' => $fatura->linhasfaturas,
+            'Cupao' => $Cupao,
+            'ValorPoupado' => $ValorPoupado,
+            'subtotalDesconto' => $subtotalDesconto,
         ];
 
         //gerar o conteúdo da fatura (HTML)

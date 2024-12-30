@@ -1,16 +1,16 @@
 <?php
+
 namespace frontend\controllers;
+
+use common\models\Carrinhocompra;
 use common\models\Cupaodesconto;
 use common\models\Encomenda;
 use common\models\Fatura;
+use common\models\Linhacarrinho;
 use common\models\Linhafatura;
 use common\models\Metodoentrega;
-use common\models\Produto;
-use common\models\Profile;
-use common\models\Usocupao;
-use frontend\models\Carrinhocompra;
 use common\models\Metodopagamento;
-use frontend\models\Linhacarrinho;
+use common\models\Usocupao;
 use Mpdf\Mpdf;
 use Yii;
 use yii\filters\VerbFilter;
@@ -226,7 +226,7 @@ class FinalizarcompraController extends Controller
                 $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
 
                 if ($cupao) {
-                    // Calcular o valor do desconto como porcentagem do subtotal com IVA
+                    // Calcular o valor do desconto como percentagem do subtotal com IVA
                     $ValorPoupado = ($cupao->desconto) * $subtotalComIva;
 
                     // Aplica o desconto no valor total, mas sem considerar o custo de envio
@@ -243,7 +243,7 @@ class FinalizarcompraController extends Controller
             $fatura->save();
 
 
-            $this->actionGeneratePdf($fatura->id);
+            $this->actionGeneratePdf($fatura->id, $cupao ?? null, $ValorPoupado ?? 0.00);
         }
 
         // Verifica se a sessão do carrinho existe
@@ -266,13 +266,12 @@ class FinalizarcompraController extends Controller
         Yii::$app->session->set('carrinho', []);
 
 
-
         // Redireciona para a página principal após concluir a compra
         return $this->redirect(['site/index']);
 
     }
 
-    public function actionGeneratePdf($faturaID)
+    public function actionGeneratePdf($faturaID, $Cupao, $ValorPoupado)
     {
         //procurar a fatura na base dados
         $fatura = Fatura::find()->where(['id' => $faturaID])->one();
@@ -281,10 +280,15 @@ class FinalizarcompraController extends Controller
             throw new NotFoundHttpException("Fatura não encontrada.");
         }
 
+        $subtotalDesconto = $fatura->valorTotal + $ValorPoupado;
+
         //armazenar os dados da fatura
         $data = [
             'fatura' => $fatura,
             'items' => $fatura->linhasfaturas,
+            'Cupao' => $Cupao,
+            'ValorPoupado' => $ValorPoupado,
+            'subtotalDesconto' => $subtotalDesconto,
         ];
 
         //gerar o conteúdo da fatura (HTML)

@@ -29,27 +29,34 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h4 class="mb-0">Aplicar Cupão</h4>
                 </div>
                 <div class="card-body">
-                    <!-- Mostrar o formulário de cupão -->
-                    <?php $formCupao = ActiveForm::begin(['action' => ['compra'], 'method' => 'post']); ?>
-                    <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
-                    <?= Html::hiddenInput('cupao', Yii::$app->request->post('cupao') ?? ($cupao ? $cupao->codigo : null)) ?>
-                    <?= Html::hiddenInput('metodo_entrega', Yii::$app->request->post('metodo_entrega') ?? null) ?>
-                    <?= Html::hiddenInput('metodo_pagamento', Yii::$app->request->post('metodo_pagamento') ?? null) ?>
-                    <?= Html::hiddenInput('cliente', Yii::$app->request->post('cliente') ?? null) ?>
-                    <?= Html::hiddenInput('email', Yii::$app->request->post('email') ?? '') ?>
-                    <?= Html::hiddenInput('nif', Yii::$app->request->post('nif') ?? '') ?>
-                    <?= Html::hiddenInput('morada', Yii::$app->request->post('morada') ?? '') ?>
-                    <?= Html::hiddenInput('telefone', Yii::$app->request->post('telefone') ?? '') ?>
-                    <?= Html::textInput('cupao', '', ['placeholder' => 'Código do cupão', 'class' => 'form-control mb-2', 'id' => 'cupao']) ?>
-                    <?= Html::dropDownList('cliente', null,
-                        \yii\helpers\ArrayHelper::map($clientes, 'id', 'username'),
-                        [
-                            'prompt' => 'Selecione um cliente',
-                            'class' => 'form-control',
-                        ]
-                    ) ?>
-                    <button type="submit" class="btn btn-primary">Aplicar</button>
-                    <?php ActiveForm::end(); ?>
+                    <?php if ($cupao && strtotime($cupao->dataFim) >= time()): ?>
+                        <!-- Exibe o cupão válido -->
+                        <p style="color: #28a745; font-weight: bold;">
+                            <strong>Cupão Aplicado:</strong> <?= Html::encode($cupao->codigo) ?>
+                        </p>
+                    <?php else: ?>
+                        <!-- Mostrar o formulário de cupão -->
+                        <?php $formCupao = ActiveForm::begin(['action' => ['compra'], 'method' => 'post']); ?>
+                        <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
+                        <?= Html::hiddenInput('cupao', Yii::$app->request->post('cupao') ?? ($cupao ? $cupao->codigo : null)) ?>
+                        <?= Html::hiddenInput('metodo_entrega', Yii::$app->request->post('metodo_entrega') ?? null) ?>
+                        <?= Html::hiddenInput('metodo_pagamento', Yii::$app->request->post('metodo_pagamento') ?? null) ?>
+                        <?= Html::hiddenInput('cliente', Yii::$app->request->post('cliente') ?? null) ?>
+                        <?= Html::hiddenInput('email', Yii::$app->request->post('email') ?? '') ?>
+                        <?= Html::hiddenInput('nif', Yii::$app->request->post('nif') ?? '') ?>
+                        <?= Html::hiddenInput('morada', Yii::$app->request->post('morada') ?? '') ?>
+                        <?= Html::hiddenInput('telefone', Yii::$app->request->post('telefone') ?? '') ?>
+                        <?= Html::textInput('cupao', '', ['placeholder' => 'Código do cupão', 'class' => 'form-control mb-2', 'id' => 'cupao']) ?>
+                        <?= Html::dropDownList('cliente', null,
+                            \yii\helpers\ArrayHelper::map($clientes, 'id', 'username'),
+                            [
+                                'prompt' => 'Selecione um cliente',
+                                'class' => 'form-control',
+                            ]
+                        ) ?>
+                        <button type="submit" class="btn btn-primary">Aplicar</button>
+                        <?php ActiveForm::end(); ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -76,7 +83,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'prompt' => 'Selecione um método de entrega',
                             'class' => 'form-control',
-                            'onchange' => 'this.form.submit()'
+                            'onchange' => 'this.form.submit()',
+                            'required' => true
                         ]
                     ) ?>
                     <?php ActiveForm::end(); ?>
@@ -105,7 +113,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'prompt' => 'Selecione um método de pagamento',
                             'class' => 'form-control',
-                            'onchange' => 'this.form.submit()'
+                            'onchange' => 'this.form.submit()',
+                            'required' => true
                         ]
                     ) ?>
 
@@ -118,9 +127,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div id="paypal-formulario" style="margin-top: 20px;">
                             <div class="form-group">
                                 <label for="email_paypal">E-mail do PayPal:</label>
-                                <input type="email" class="form-control" name="email_paypal"
-                                       value="<?= Yii::$app->request->post('email_paypal') ?? '' ?>"
-                                       placeholder="Digite seu e-mail do PayPal" required>
+                                <?= Html::input('email', 'email_paypal', Yii::$app->request->post('email_paypal', ''), [
+                                    'class' => 'form-control',
+                                    'id' => 'email_paypal',
+                                    'placeholder' => 'email_paypal',
+                                    'required' => true
+                                ]) ?>
                             </div>
                         </div>
                     <?php elseif ($metodoPagamentoSelecionado == '2'): ?>
@@ -128,20 +140,30 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div id="cartao-formulario" style="margin-top: 20px;">
                             <div class="form-group">
                                 <label for="numero_cartao">Número do Cartão:</label>
-                                <input type="text" class="form-control" name="numero_cartao"
-                                       value="<?= Yii::$app->request->post('numero_cartao') ?? '' ?>"
-                                       placeholder="Digite o número do cartão" required>
+                                <?= Html::input('text', 'numero_cartao', Yii::$app->request->post('numero_cartao', ''), [
+                                    'class' => 'form-control',
+                                    'id' => 'numero_cartao',
+                                    'placeholder' => 'numero_cartao',
+                                    'required' => true
+                                ]) ?>
                             </div>
                             <div class="form-group">
                                 <label for="data_validade">Data de Validade:</label>
-                                <input type="month" class="form-control" name="data_validade"
-                                       value="<?= Yii::$app->request->post('data_validade') ?? '' ?>" required>
+                                <?= Html::input('month', 'data_validade', Yii::$app->request->post('data_validade', ''), [
+                                    'class' => 'form-control',
+                                    'id' => 'data_validade',
+                                    'placeholder' => 'data_validade',
+                                    'required' => true
+                                ]) ?>
                             </div>
                             <div class="form-group">
                                 <label for="codigo_seguranca">Código de Segurança (CVV):</label>
-                                <input type="text" class="form-control" name="codigo_seguranca"
-                                       value="<?= Yii::$app->request->post('codigo_seguranca') ?? '' ?>"
-                                       placeholder="Digite o código CVV" required>
+                                <?= Html::input('text', 'codigo_seguranca', Yii::$app->request->post('codigo_seguranca', ''), [
+                                    'class' => 'form-control',
+                                    'id' => 'codigo_seguranca',
+                                    'placeholder' => 'codigo_seguranca',
+                                    'required' => true
+                                ]) ?>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -173,7 +195,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'prompt' => 'Selecione um cliente',
                                 'class' => 'form-control',
                                 'id' => 'cliente',
-                                'onchange' => 'this.form.submit()'
+                                'onchange' => 'this.form.submit()',
+                                'required' => true
                             ]
                         ) ?>
                         <?php ActiveForm::end(); ?>
@@ -196,7 +219,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::hiddenInput('telefone', Yii::$app->request->post('telefone') ?? '') ?>
                             <!-- Campo Email -->
                             <label>Email:</label>
-                            <?= Html::input('text', 'email', Yii::$app->request->post('email', ''), [
+                            <?= Html::input('text', 'email', Yii::$app->request->post('email'), [
                                 'class' => 'form-control',
                                 'id' => 'email',
                                 'placeholder' => 'Email',
@@ -205,16 +228,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <!-- Campo NIF -->
                             <label>Nif:</label>
-                            <?= Html::input('number', 'nif', Yii::$app->request->post('nif', ''), [
+                            <?= Html::input('number', 'nif', Yii::$app->request->post('nif'), [
                                 'class' => 'form-control',
                                 'id' => 'nif',
                                 'placeholder' => 'Nif',
-                                'required' => true
                             ]) ?>
 
                             <!-- Campo Morada -->
                             <label>Morada:</label>
-                            <?= Html::input('text', 'morada', Yii::$app->request->post('morada', ''), [
+                            <?= Html::input('text', 'morada', Yii::$app->request->post('morada'), [
                                 'class' => 'form-control',
                                 'id' => 'morada',
                                 'placeholder' => 'Morada',
@@ -223,7 +245,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <!-- Campo Telefone -->
                             <label>Telefone:</label>
-                            <?= Html::input('number', 'telefone', Yii::$app->request->post('telefone', ''), [
+                            <?= Html::input('number', 'telefone', Yii::$app->request->post('telefone'), [
                                 'class' => 'form-control',
                                 'id' => 'telefone',
                                 'placeholder' => 'Telefone',

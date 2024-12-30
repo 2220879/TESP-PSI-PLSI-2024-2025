@@ -5,7 +5,7 @@ use yii\helpers\Url;
 
 /** @var yii\web\View $this */
 /** @var array $linhasCarrinho */
-/** @var \frontend\models\Carrinhocompra $carrinho */
+/** @var \common\models\Carrinhocompra $carrinho */
 
 $this->title = 'Carrinho de Compras';
 $this->params['breadcrumbs'][] = $this->title;

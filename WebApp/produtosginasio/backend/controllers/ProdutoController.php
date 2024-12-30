@@ -3,22 +3,25 @@
 namespace backend\controllers;
 
 use backend\models\ImagemForm;
+use backend\models\Linhacompra;
 use common\models\Avaliacao;
+use common\models\Categoria;
+use common\models\Favorito;
+use common\models\Genero;
 use common\models\Imagem;
+use common\models\Iva;
+use common\models\Linhacarrinho;
+use common\models\Linhafatura;
+use common\models\Marca;
 use common\models\Produto;
 use common\models\ProdutoSearch;
-use common\models\Marca;
-use common\models\Categoria;
-use common\models\Genero;
 use common\models\ProdutosHasTamanho;
 use common\models\Tamanho;
-use common\models\Iva;
-use frontend\models\Favorito;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 
 /**
@@ -99,13 +102,16 @@ class ProdutoController extends Controller
     {
         //iniciliaza a variavel para a criação de um user
         $model = new Produto();
+
+        //definir o cenário de criação
+        $model->scenario = Produto::SCENARIO_CREATE;
+
         //iniciliaza a variavel do modelo ImagemForm
         $imagemForm = new ImagemForm();
 
         //buscar todos os dados destas categorias de dados
         $marcas = Marca::find()->select(['nomeMarca', 'id'])->indexBy('id')->column();
         $categorias = Categoria::find()->select(['nomeCategoria', 'id'])->indexBy('id')->column();
-        $tamanhos = Tamanho::find()->select(['referencia', 'id'])->indexBy('id')->column();
         $generos = Genero::find()->select(['referencia', 'id'])->indexBy('id')->column();
         $ivas = Iva::find()->where(['vigor' => 1])->select(['percentagem', 'id'])->indexBy('id')->column();
 
@@ -113,31 +119,6 @@ class ProdutoController extends Controller
         if ($this->request->isPost) {
             //guardar na base dados o novo produto
             if ($model->load($this->request->post()) && $model->save()) {
-
-                //selecionar as quantidades dos tamanhos
-                $quantidades = Yii::$app->request->post('quantidade_tamanho');
-
-                //se existir tamanhos associados ao novo produto
-                if (is_array($quantidades) && !empty($quantidades) && array_filter($quantidades)) {
-                    //atribui 0 à quantidade da tabela de produtos
-                    $model->quantidade = 0;
-
-                    //percorre todos os campos preenchidos na vista
-                    foreach ($quantidades as $tamanho_id => $quantidade) {
-                        //criar o registo na base dados
-                        $tamanho = new ProdutosHasTamanho();
-                        $tamanho->produto_id = $model->id;
-                        $tamanho->tamanho_id = $tamanho_id;
-                        $tamanho->quantidade = $quantidade;
-                        //atribui a respetiva quantidade do produto na tabela de Produtos (tira o 0 e coloca a quantidade correta)
-                        $model->quantidade += (int)$quantidade;
-
-                        //guardar o registo na tabela de ProdutosHasTamanho
-                        $tamanho->save();
-                    }
-                    //guardar o registo na tabela de Produtos
-                    $model->save();
-                }
 
                 //chamar o metodo para tatar do upload das imagens
                 $this->actionUpload($model->id, $imagemForm);
@@ -154,7 +135,6 @@ class ProdutoController extends Controller
         return $this->render('create', [
             'model' => $model,
             'marcas' => $marcas,
-            'tamanhos' => $tamanhos,
             'categorias' => $categorias,
             'ivas' => $ivas,
             'generos' => $generos,
@@ -313,23 +293,21 @@ class ProdutoController extends Controller
      */
     public function actionDelete($id)
     {
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Linhacompra::find()->where(['produto_id' => $model->id])->exists() || Avaliacao::find()->where(['produto_id' => $model->id])->exists() || Favorito::find()->where(['produto_id' => $model->id])->exists() || Linhacarrinho::find()->where(['produto_id' => $model->id])->exists() || Linhafatura::find()->where(['produto_id' => $model->id])->exists() || ProdutosHasTamanho::find()->where(['produto_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar o produto, devido a estar a ser utilizado.');
+            return $this->redirect(['index']);
+        }
+
         //criar a instância do modelo
         $imagemForm = new ImagemForm();
 
         //chamar o metodo do modelo
         $imagemForm->deleteAll($id);
 
-        //apagar todos os favoritos na tabela Favoritos que correspondem ao produto selecionado
-        Favorito::deleteAll(['produto_id' => $id]);
-
-        //apagar todos as avaliações na tabela Avalicoes que correspondem ao produto selecionado
-        Avaliacao::deleteAll(['produto_id' => $id]);
-
-        //apagar todos os tamanhos na tabela ProdutosHasTamanho que correspondem ao produto selecionado
-        ProdutosHasTamanho::deleteAll(['produto_id' => $id]);
-
-        //apagar na base dados o produto selecionado
-        $this->findModel($id)->delete();
+        $model->delete();
 
         //redireciona para a página de index
         return $this->redirect(['index']);

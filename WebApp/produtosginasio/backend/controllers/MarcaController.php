@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use common\models\Marca;
 use common\models\MarcaSearch;
+use common\models\Produto;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,7 +31,7 @@ class MarcaController extends Controller
                         [
                             'actions' => ['index', 'create', 'view', 'update', 'delete', 'model'],
                             'allow' => true,
-                            'roles' => ['admin','funcionario'],
+                            'roles' => ['admin', 'funcionario'],
                         ],
                     ],
                 ],
@@ -123,7 +125,15 @@ class MarcaController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Produto::find()->where(['marca_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar esta marca, pois existem produtos relacionados.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

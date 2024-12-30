@@ -15,7 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tamanho-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Yii::$app->session->getFlash('error') ?>
+        </div>
+    <?php endif; ?>
 
     <p>
         <?= Html::a('Criar Tamanho', ['create'], ['class' => 'btn btn-success']) ?>
@@ -35,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Tamanho $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>

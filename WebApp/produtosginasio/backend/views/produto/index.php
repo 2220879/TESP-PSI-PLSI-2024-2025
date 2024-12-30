@@ -15,7 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="produto-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Yii::$app->session->getFlash('error') ?>
+        </div>
+    <?php endif; ?>
 
     <p>
         <?= Html::a('Create Produto', ['create'], ['class' => 'btn btn-success']) ?>
@@ -72,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 'label' => 'Gênero',
             ],
-            
+
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Produto $model, $key, $index, $column) {

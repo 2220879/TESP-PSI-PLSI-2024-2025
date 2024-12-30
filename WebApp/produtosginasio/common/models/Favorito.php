@@ -1,9 +1,6 @@
 <?php
 
-namespace frontend\models;
-
-use common\models\Produto;
-use common\models\Profile;
+namespace common\models;
 
 /**
  * This is the model class for table "favoritos".

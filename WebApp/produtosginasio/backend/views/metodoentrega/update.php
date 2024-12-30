@@ -12,7 +12,6 @@ $this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="metodoentrega-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <?php if (Yii::$app->session->hasFlash('error')): ?>
         <div class="alert alert-danger">
             <?= Yii::$app->session->getFlash('error') ?>

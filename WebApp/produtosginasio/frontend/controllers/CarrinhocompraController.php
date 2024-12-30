@@ -2,14 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\models\Carrinhocompra;
+use common\models\Linhacarrinho;
 use common\models\ProdutosHasTamanho;
-use frontend\models\Carrinhocompra;
-use frontend\models\CarrinhocompraSearch;
-use frontend\models\Linhacarrinho;
 use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * CarrinhocompraController implements the CRUD actions for Carrinhocompra model.

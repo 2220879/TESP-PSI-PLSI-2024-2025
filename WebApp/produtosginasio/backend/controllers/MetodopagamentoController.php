@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use common\models\Fatura;
 use common\models\Metodopagamento;
 use common\models\MedodopagamentoSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,6 +24,17 @@ class MetodopagamentoController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin', 'funcionario'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -136,7 +149,17 @@ class MetodopagamentoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if ($id != 1 && $id != 2) {
+            $model = $this->findModel($id);
+
+            //verificar se existem produtos relacionados à marca
+            if (Fatura::find()->where(['metodopagamento_id' => $model->id])->exists()) {
+                Yii::$app->session->setFlash('error', 'Não é possível apagar este método pagamento, devido a estar a ser utilizado.');
+                return $this->redirect(['index']);
+            }
+
+            $model->delete();
+        }
 
         return $this->redirect(['index']);
     }

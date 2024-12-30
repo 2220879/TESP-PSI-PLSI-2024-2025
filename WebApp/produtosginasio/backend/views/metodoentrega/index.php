@@ -14,8 +14,13 @@ $this->title = 'Metodo Entregas';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="metodoentrega-index">
+    
+    <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <div class="alert alert-danger">
+            <?= Yii::$app->session->getFlash('error') ?>
+        </div>
+    <?php endif; ?>
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <?php if (Yii::$app->session->hasFlash('success')): ?>
         <div class="alert alert-success">
             <?= Yii::$app->session->getFlash('success') ?>
@@ -43,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Metodoentrega $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>

@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use common\models\Categoria;
 use common\models\CategoriaSearch;
+use common\models\Produto;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,7 +31,7 @@ class CategoriaController extends Controller
                         [
                             'actions' => ['index', 'create', 'view', 'update', 'delete', 'model'],
                             'allow' => true,
-                            'roles' => ['admin','funcionario'],
+                            'roles' => ['admin', 'funcionario'],
                         ],
                     ],
                 ],
@@ -123,7 +125,16 @@ class CategoriaController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        // Verificar se existem produtos relacionados ao fornecedor
+        if (Produto::find()->where(['categoria_id' => $model->id])->exists()) {
+            // Se houver produtos relacionados, impedir a exclusão e exibir uma mensagem de erro
+            Yii::$app->session->setFlash('error', 'Não é possível apagar esta categoria, pois existem produtos relacionados.');
+            return $this->redirect(['index']); // Redireciona de volta para a página de índice
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

@@ -2,9 +2,7 @@
 
 namespace common\models;
 
-use frontend\models\Linhacarrinho;
 use backend\models\Linhacompra;
-use frontend\models\Favorito;
 
 /**
  * This is the model class for table "produtos".
@@ -33,6 +31,8 @@ use frontend\models\Favorito;
  */
 class Produto extends \yii\db\ActiveRecord
 {
+    const SCENARIO_CREATE = 'create';
+
     /**
      * {@inheritdoc}
      */
@@ -47,17 +47,18 @@ class Produto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nomeProduto', 'preco', 'quantidade', 'descricaoProduto', 'marca_id', 'categoria_id', 'iva_id'], 'required'],
+            [['nomeProduto', 'preco', 'descricaoProduto', 'marca_id', 'categoria_id', 'iva_id'], 'required'],
             [['preco'], 'number'],
             [['quantidade', 'marca_id', 'categoria_id', 'iva_id', 'genero_id'], 'integer'],
             [['descricaoProduto'], 'string'],
             [['nomeProduto'], 'string', 'max' => 50],
-            [['quantidade'], 'integer', 'min' => 0, 'message' => 'A quantidade do estoque não pode ser negativa.'],
+            [['quantidade'], 'integer', 'min' => 0, 'message' => 'A quantidade do stock não pode ser negativa.'],
             [['preco'], 'number', 'min' => 0.01, 'message' => 'O preço deve ser maior que zero.'],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categoria::class, 'targetAttribute' => ['categoria_id' => 'id']],
             [['genero_id'], 'exist', 'skipOnError' => true, 'targetClass' => Genero::class, 'targetAttribute' => ['genero_id' => 'id']],
             [['iva_id'], 'exist', 'skipOnError' => true, 'targetClass' => Iva::class, 'targetAttribute' => ['iva_id' => 'id']],
             [['marca_id'], 'exist', 'skipOnError' => true, 'targetClass' => Marca::class, 'targetAttribute' => ['marca_id' => 'id']],
+            ['quantidade', 'default', 'value' => 0, 'on' => self::SCENARIO_CREATE],
         ];
     }
 

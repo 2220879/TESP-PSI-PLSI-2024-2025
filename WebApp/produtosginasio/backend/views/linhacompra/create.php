@@ -11,12 +11,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="linhacompra-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_form', [
         'model' => $model,
         'compra' => $compra,
         'produtos' => $produtos,
+        'tamanhos' => $tamanhos,
     ]) ?>
 
 </div>

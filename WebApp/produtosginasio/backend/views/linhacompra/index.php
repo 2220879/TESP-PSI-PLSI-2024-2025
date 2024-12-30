@@ -15,8 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="linhacompra-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Adicionar Linha', ['create', 'id' => $id], ['class' => 'btn btn-success']) ?>
     </p>

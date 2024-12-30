@@ -2,10 +2,19 @@
 
 namespace backend\controllers;
 
+use backend\models\Linhacompra;
 use backend\models\UserForm;
+use common\models\Avaliacao;
+use common\models\Carrinhocompra;
+use common\models\Encomenda;
+use common\models\Fatura;
+use common\models\Favorito;
+use common\models\Linhacarrinho;
+use common\models\Linhafatura;
 use common\models\Profile;
 use common\models\User;
 use common\models\UserSearch;
+use common\models\Usocupao;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -215,6 +224,80 @@ class UserController extends Controller
         if ($id != 1) {
             //selecionar o perfil do utilizador
             $profile = Profile::findOne(['user_id' => $id]);
+
+            //carrinho de compras
+            $carrinho = Carrinhocompra::find()->where(['profile_id' => $profile->id])->one();
+
+            if ($carrinho != null) {
+                //linhas carrinho de compras
+                $linhasCarrinho = Linhacarrinho::find()->where(['carrinhocompras_id' => $carrinho->id])->all();
+                if ($linhasCarrinho != null) {
+                    foreach ($linhasCarrinho as $linha) {
+                        $linha->delete();
+                    }
+                }
+
+                $carrinho->delete();
+            }
+
+            //avaliações produtos criados pelo Utilizador
+            $avaliacoes = Avaliacao::find()->where(['profile_id' => $profile->id])->all();
+
+            if ($avaliacoes != null) {
+
+                foreach ($avaliacoes as $avaliacao) {
+                    $avaliacao->delete();
+                }
+            }
+
+            //faturas
+            $faturas = Fatura::find()->where(['profile_id' => $profile->id])->all();
+
+            if ($faturas != null) {
+                foreach ($faturas as $fatura) {
+                    $linhasFatura = Linhafatura::find()->where(['fatura_id' => $fatura->id])->all();
+
+                    //verifica se há linhas associadas à fatura
+                    if ($linhasFatura != null) {
+                        foreach ($linhasFatura as $linhaFatura) {
+                            $linhaFatura->delete();
+                        }
+                    }
+
+                    $fatura->delete();
+                }
+            }
+
+            //encomendas do Utilizador
+            $encomendas = Encomenda::find()->where(['profile_id' => $profile->id])->all();
+
+            if ($encomendas != null) {
+
+                foreach ($encomendas as $encomenda) {
+                    $encomenda->delete();
+                }
+            }
+
+            //favoritos do Utilizador
+            $favoritos = Favorito::find()->where(['profile_id' => $profile->id])->all();
+
+            if ($favoritos != null) {
+
+                foreach ($favoritos as $favorito) {
+                    $favorito->delete();
+                }
+            }
+
+            //cupões utilizados pelo Utilizador - (Tabela Uso Cupoes)
+            $cupoes = Usocupao::find()->where(['profile_id' => $profile->id])->all();
+
+            if ($cupoes != null) {
+
+                foreach ($cupoes as $cupao) {
+                    $cupao->delete();
+                }
+            }
+
             //apagar registo de perfil
             $profile->delete();
             //apagar o utilizador na base dados

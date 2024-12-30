@@ -1,15 +1,14 @@
 <?php
 
-namespace frontend\models;
+namespace common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Favorito;
 
 /**
- * FavoritoSearch represents the model behind the search form of `frontend\models\Favorito`.
+ * FavoritoSearch represents the model behind the search form of `common\models\Favorito`.
  */
-class FavoritoSearch extends Favorito
+class FavoritoSearch extends \common\models\Favorito
 {
     /**
      * {@inheritdoc}
@@ -39,7 +38,7 @@ class FavoritoSearch extends Favorito
      */
     public function search($params)
     {
-        $query = Favorito::find();
+        $query = \common\models\Favorito::find();
 
         // add conditions that should always apply here
 

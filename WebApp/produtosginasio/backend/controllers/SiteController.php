@@ -2,6 +2,8 @@
 
 namespace backend\controllers;
 
+use common\models\Cupaodesconto;
+use common\models\Fatura;
 use common\models\LoginForm;
 use Yii;
 use yii\filters\VerbFilter;
@@ -62,7 +64,24 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $contagemVendas = Fatura::find()->count();
+        $contagemCupoes = Cupaodesconto::find()->count();
+
+        $contagemCupoesValidos = Cupaodesconto::find()
+            ->where(['>=', 'dataFim', date('Y-m-d')])  // Verifica se a data de validade é maior ou igual à data atual
+            ->count();
+
+        // Obtém os códigos dos cupões válidos
+        $cupoesValidos = Cupaodesconto::find()
+            ->where(['>=', 'dataFim', date('Y-m-d')])  // Verifica se a data de validade é maior ou igual à data atual
+            ->all();
+
+// Recupera os códigos dos cupões válidos
+        $codigosCupoes = [];
+        foreach ($cupoesValidos as $cupao) {
+            $codigosCupoes[] = $cupao->codigo;  // Supondo que o campo que armazena o código do cupão seja 'codigo'
+        }
+        return $this->render('index', ['contagemVendas' => $contagemVendas, 'contagemCupoes' => $contagemCupoes, 'contagemCupoesValidos' => $contagemCupoesValidos, 'codigosCupoes' => $codigosCupoes]);
     }
 
     /**

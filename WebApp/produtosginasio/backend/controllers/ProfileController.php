@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\Profile;
 use common\models\User;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -21,6 +22,17 @@ class ProfileController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'model'],
+                            'allow' => true,
+                            'roles' => ['admin'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [
@@ -36,20 +48,20 @@ class ProfileController extends Controller
      *
      * @return string
      */
-   /* public function actionIndex()
-    {
-        $searchModel = new ProfileSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+    /* public function actionIndex()
+     {
+         $searchModel = new ProfileSearch();
+         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }*/
+         return $this->render('index', [
+             'searchModel' => $searchModel,
+             'dataProvider' => $dataProvider,
+         ]);
+     }*/
 
     public function actionIndex($id)
     {
-        $user = User::find()->where(['id'=>$id])->one();
+        $user = User::find()->where(['id' => $id])->one();
 
         return $this->render('index', ['user' => $user]);
     }
@@ -62,9 +74,9 @@ class ProfileController extends Controller
      */
     public function actionView($id)
     {
-        $user = User::find()->where(['id'=>$id])->one();
+        $user = User::find()->where(['id' => $id])->one();
 
-        $model = Profile::find()->where(['id'=>$id])->one();
+        $model = Profile::find()->where(['id' => $id])->one();
 
         return $this->render('view', [
             'user' => $user, 'model' => $model,

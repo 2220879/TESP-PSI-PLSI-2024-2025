@@ -1,9 +1,6 @@
 <?php
 
-namespace frontend\models;
-
-use common\models\Produto;
-use common\models\Tamanho;
+namespace common\models;
 
 /**
  * This is the model class for table "linhascarrinhos".

@@ -7,9 +7,9 @@ use common\models\User;
 use Yii;
 use yii\rest\ActiveController;
 
-class TamanhoController extends ActiveController
+class CupaodescontoController extends ActiveController
 {
-    public $modelClass = 'common\models\Tamanho';
+    public $modelClass = 'common\models\Cupaodesconto';
 
     public function behaviors()
     {
@@ -30,15 +30,15 @@ class TamanhoController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
-                $tamanhoModel = new $this->modelClass;
-                $recs = $tamanhoModel::find()->all();
+                $cupaodescontomodel = new $this->modelClass;
+                $recs = $cupaodescontomodel::find()->all();
                 return ['count' => count($recs)];
             }
         }
-        return 'Não foi possivel contar os tamanhos.';
+        return 'Não foi possível contar os cupões de desconto.';
     }
 
-    public function actionTamanhos()
+    public function actionCupaodesconto()
     {
         $userID = Yii::$app->params['id'];
 
@@ -47,11 +47,11 @@ class TamanhoController extends ActiveController
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 return 'O Utilizador introduzido não tem permissões de cliente';
             } else {
-                $tamanhoModel = new $this->modelClass;
-                $recs = $tamanhoModel::find()->all();
-                return ['tamanhos' => $recs];
+                $cupaodescontomodel = new $this->modelClass;
+                $recs = $cupaodescontomodel::find()->all();
+                return ['cupaodesconto' => $recs];
             }
         }
-        return 'Não foi possivel obter os tamanhos.';
+        return 'Não foi possível obter os cupões de desconto.';
     }
 }

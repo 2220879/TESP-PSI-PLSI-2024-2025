@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\Iva;
 use common\models\IvaSearch;
+use common\models\Produto;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -30,7 +31,7 @@ class IvaController extends Controller
                         [
                             'actions' => ['index', 'create', 'view', 'update', 'delete', 'model'],
                             'allow' => true,
-                            'roles' => ['admin','funcionario'],
+                            'roles' => ['admin', 'funcionario'],
                         ],
                     ],
                 ],
@@ -81,7 +82,7 @@ class IvaController extends Controller
     public function actionCreate()
     {
         $model = new Iva();
-        $vigor = [0=>'não vigor', 1=>'vigor'];
+        $vigor = [0 => 'não vigor', 1 => 'vigor'];
 
         if ($this->request->isPost) {
             // Carregar os dados do formulário no modelo
@@ -144,7 +145,15 @@ class IvaController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (Produto::find()->where(['iva_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este iva, pois existem produtos relacionados.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

@@ -27,10 +27,10 @@ class EncomendaController extends Controller
             [
                 'access' => [
                     'class' => AccessControl::class,
-                    'only' => ['index', 'view', 'update', 'delete', 'model'],
+                    'only' => ['index', 'view', 'update', 'model'],
                     'rules' => [
                         [
-                            'actions' => ['index', 'view', 'update', 'delete', 'model'],
+                            'actions' => ['index', 'view', 'update', 'model'],
                             'allow' => true,
                             'roles' => ['admin', 'funcionario'],
                         ],
@@ -97,22 +97,6 @@ class EncomendaController extends Controller
             'model' => $model,
             'status' => $status,
         ]);
-    }
-
-    /**
-     * Deletes an existing Encomenda model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        //apaga a encomenda da base dados
-        $this->findModel($id)->delete();
-
-        //faz redirect para a página index
-        return $this->redirect(['index']);
     }
 
     /**

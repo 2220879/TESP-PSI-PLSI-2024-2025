@@ -2,11 +2,11 @@
 
 namespace backend\models;
 
-use frontend\models\Carrinhocompra;
+use common\models\Carrinhocompra;
+use common\models\Profile;
+use common\models\User;
 use Yii;
 use yii\base\Model;
-use common\models\User;
-use common\models\Profile;
 
 class UserForm extends Model
 {
@@ -133,7 +133,18 @@ class UserForm extends Model
                 //verifica se o campo da role foi alterada
                 if ($roleUser != $this->role) {
                     // Se a role foi alterada, atribui a nova role
-
+                    if ($this->role == 'cliente' && $roleUser != 'cliente') {
+                        // Se a role for alterada para 'cliente', cria o carrinho de compras
+                        $perfil = Profile::findOne(['user_id' => $user->id]);
+                        $carrinhoCompras = new Carrinhocompra();
+                        $carrinhoCompras->quantidade = 0;
+                        $carrinhoCompras->valorTotal = 0.00;
+                        $carrinhoCompras->profile_id = $perfil->id;
+                        $carrinhoCompras->save();
+                    } else if ($roleUser == 'cliente' && $this->role != 'cliente') {
+                        // Bloqueia a alteração de 'cliente' para outra role
+                        return false;
+                    }
                     //remove a role antiga
                     $auth = Yii::$app->authManager;
                     $auth->revoke($auth->getRole($roleUser), $user->id);

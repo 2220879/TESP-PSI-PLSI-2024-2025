@@ -4,19 +4,17 @@ namespace frontend\controllers;
 
 use common\models\Avaliacao;
 use common\models\Categoria;
+use common\models\Favorito;
 use common\models\Genero;
 use common\models\Imagem;
 use common\models\Marca;
 use common\models\Produto;
-use common\models\ProdutoSearch;
 use common\models\ProdutosHasTamanho;
 use common\models\Profile;
-use frontend\models\Favorito;
 use Yii;
-use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProdutoController implements the CRUD actions for Produto model.

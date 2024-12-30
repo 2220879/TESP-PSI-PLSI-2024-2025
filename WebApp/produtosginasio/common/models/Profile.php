@@ -2,9 +2,6 @@
 
 namespace common\models;
 
-use frontend\models\Carrinhocompra;
-use frontend\models\Favorito;
-
 /**
  * This is the model class for table "profiles".
  *

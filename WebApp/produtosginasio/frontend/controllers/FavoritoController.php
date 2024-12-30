@@ -2,13 +2,12 @@
 
 namespace frontend\controllers;
 
-use frontend\models\Favorito;
-use frontend\models\FavoritoSearch;
+use common\models\Favorito;
 use Yii;
 use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * FavoritoController implements the CRUD actions for Favorito model.
@@ -173,7 +172,7 @@ class FavoritoController extends Controller
      * Finds the Favorito model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Favorito the loaded model
+     * @return \common\models\Favorito the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)

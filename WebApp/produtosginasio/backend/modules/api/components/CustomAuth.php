@@ -13,13 +13,13 @@ class CustomAuth extends AuthMethod
         $authToken = $request->getQueryParam('auth_key');
 
         if (empty($authToken)) {
-            return 'Token de acesso inválido';
+            throw new \yii\web\ForbiddenHttpException('Token de acesso ausente ou inválido na URL');
         }
 
         $user = User::findIdentityByAccessToken($authToken);
 
         if (!$user) {
-            return 'Não autenticado';
+            throw new \yii\web\ForbiddenHttpException('Não autenticado');
         }
 
         Yii::$app->params['id'] = $user->id;

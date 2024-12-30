@@ -15,11 +15,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cupaodesconto-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Apagar', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -41,28 +39,28 @@ $this->params['breadcrumbs'][] = $this->title;
     <h3>Uso de Cupões:</h3>
 
     <?= GridView::widget([
-            'dataProvider' => new \yii\data\ArrayDataProvider([
-                'allModels' => $model->usocupos,
-                'pagination' => [
-                        'pageSize' => 20,
-                ],
-            ]),
-            'columns' => [
-                [
-                    'attribute' => 'profile_id',
-                    'label' => 'Cliente',
-                    'value' => function ($model) {
-                        return $model->profile->user->username;
-                    },
-                ],
-                [
-                    'attribute' => 'dataUso',
-                    'label' => 'Data de Uso',
-                    'value' => function ($model) {
-                        return $model->dataUso;
-                    }
-                ],
+        'dataProvider' => new \yii\data\ArrayDataProvider([
+            'allModels' => $model->usocupos,
+            'pagination' => [
+                'pageSize' => 20,
             ],
-]);?>
+        ]),
+        'columns' => [
+            [
+                'attribute' => 'profile_id',
+                'label' => 'Cliente',
+                'value' => function ($model) {
+                    return $model->profile->user->username;
+                },
+            ],
+            [
+                'attribute' => 'dataUso',
+                'label' => 'Data de Uso',
+                'value' => function ($model) {
+                    return $model->dataUso;
+                }
+            ],
+        ],
+    ]); ?>
 
 </div>

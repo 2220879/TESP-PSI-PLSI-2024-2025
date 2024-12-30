@@ -1,13 +1,12 @@
 <?php
 
-namespace frontend\models;
+namespace common\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use frontend\models\Carrinhocompra;
 
 /**
- * CarrinhocompraSearch represents the model behind the search form of `frontend\models\Carrinhocompra`.
+ * CarrinhocompraSearch represents the model behind the search form of `common\models\Carrinhocompra`.
  */
 class CarrinhocompraSearch extends Carrinhocompra
 {
@@ -40,7 +39,7 @@ class CarrinhocompraSearch extends Carrinhocompra
      */
     public function search($params)
     {
-        $query = Carrinhocompra::find();
+        $query = \common\models\Carrinhocompra::find();
 
         // add conditions that should always apply here
 

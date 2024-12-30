@@ -2,8 +2,10 @@
 
 namespace backend\controllers;
 
+use common\models\ProdutosHasTamanho;
 use common\models\Tamanho;
 use common\models\TamanhoSearch;
+use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,7 +31,7 @@ class TamanhoController extends Controller
                         [
                             'actions' => ['index', 'create', 'view', 'update', 'delete', 'model'],
                             'allow' => true,
-                            'roles' => ['admin','funcionario'],
+                            'roles' => ['admin', 'funcionario'],
                         ],
                     ],
                 ],
@@ -123,7 +125,15 @@ class TamanhoController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+
+        //verificar se existem produtos relacionados à marca
+        if (ProdutosHasTamanho::find()->where(['tamanho_id' => $model->id])->exists()) {
+            Yii::$app->session->setFlash('error', 'Não é possível apagar este tamanho, pois existem produtos relacionados.');
+            return $this->redirect(['index']);
+        }
+
+        $model->delete();
 
         return $this->redirect(['index']);
     }

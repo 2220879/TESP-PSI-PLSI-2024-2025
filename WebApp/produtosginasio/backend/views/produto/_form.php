@@ -21,8 +21,6 @@ use common\models\Tamanho;
 
     <?= $form->field($model, 'preco')->textInput() ?>
 
-    <?= $form->field($model, 'quantidade')->textInput() ?>
-
     <?= $form->field($model, 'descricaoProduto')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'marca_id')->dropDownList($marcas, ['prompt' => 'Selecione uma Marca']) ?>
@@ -32,18 +30,6 @@ use common\models\Tamanho;
     <?= $form->field($model, 'iva_id')->dropDownList($ivas, ['prompt' => 'Selecione um Iva']) ?>
 
     <?= $form->field($model, 'genero_id')->dropDownList($generos, ['prompt' => 'Selecione um Genero']) ?>
-
-    <div class="form-group">
-        <label for="tamanhos_quantidades">Tamanhos e Quantidades</label>
-        <div id="tamanhos_quantidades">
-            <?php foreach ($tamanhos as $id => $referencia): ?>
-                <div class="tamanho-group">
-                    <label><?= $referencia ?></label>
-                    <?= Html::input('number', 'quantidade_tamanho[' . $id . ']', '', ['class' => 'form-control', 'placeholder' => 'Quantidade', 'min' => 0]) ?>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
 
     <?= $form->field($imagemForm, 'imagens[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 
