@@ -29,6 +29,7 @@ class Iva extends \yii\db\ActiveRecord
         return [
             [['percentagem', 'vigor'], 'required'],
             [['percentagem'], 'number'],
+            [['percentagem'], 'unique'],
             [['vigor'], 'integer'],
         ];
     }
