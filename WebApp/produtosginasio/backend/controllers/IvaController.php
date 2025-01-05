@@ -126,6 +126,7 @@ class IvaController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $vigor = [0 => 'não vigor', 1 => 'vigor'];
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['index']);
@@ -133,6 +134,7 @@ class IvaController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'vigor' => $vigor,
         ]);
     }
 
