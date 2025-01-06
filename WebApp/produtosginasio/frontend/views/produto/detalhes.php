@@ -53,9 +53,9 @@ $this->title = $model->nomeProduto;
 
             <!-- Tamanhos e Quantidades -->
             <div class="tamanhos-container">
-                <p><strong>Escolha o tamanho e a quantidade:</strong></p>
                 <div class="row">
                     <?php foreach ($tamanhos as $produtoHasTamanho): ?>
+                        <p><strong>Escolha o tamanho e a quantidade:</strong></p>
                         <div class="col-3 text-center">
                             <button
                                     class="tamanho-button <?= $produtoHasTamanho->quantidade > 0 ? '' : 'disabled' ?>"
@@ -165,27 +165,36 @@ $this->title = $model->nomeProduto;
         });
     });
 
-    document.getElementById('adicionar-carrinho').addEventListener('click', function() {
-        const quantidadeInput = document.querySelector('.quantidade-input:enabled'); // Buscar o input habilitado (somente o que corresponde ao tamanho selecionado)
+    document.getElementById('adicionar-carrinho').addEventListener('click', function () {
+        // Verificar se o produto tem tamanhos associados
+        const tamanhoButtons = document.querySelectorAll('.tamanho-button');
+        const produtoTemTamanho = tamanhoButtons.length > 0;
 
-        if (!quantidadeInput) {
-            alert('Selecione um tamanho antes de adicionar ao carrinho.');
-            return;
+        if (produtoTemTamanho) {
+            // Verificar se um tamanho foi selecionado
+            const quantidadeInput = document.querySelector('.quantidade-input:enabled');
+
+            if (!quantidadeInput) {
+                alert('Selecione um tamanho antes de adicionar ao carrinho.');
+                return;
+            }
+
+            const tamanhoId = quantidadeInput.dataset.tamanhoId; // Tamanho ID
+            const quantidadeEscolhida = quantidadeInput.value; // Quantidade escolhida
+
+            if (quantidadeEscolhida <= 0) {
+                alert('Escolha uma quantidade válida.');
+                return;
+            }
+
+            // Construir a URL para o controlador Carrinhocompra -> actionCreate com o tamanho
+            const url = '<?= Url::to(["carrinhocompra/create"]) ?>?produto_id=<?= $model->id ?>&tamanho_id=' + tamanhoId + '&quantidade=' + quantidadeEscolhida;
+            window.location.href = url;
+        } else {
+            // Produto sem tamanhos associados, adicionar ao carrinho diretamente
+            const url = '<?= Url::to(["carrinhocompra/create"]) ?>?produto_id=<?= $model->id ?>&quantidade=1'; // Adiciona quantidade padrão
+            window.location.href = url;
         }
-
-        const tamanhoId = quantidadeInput.dataset.tamanhoId; // Tamanho ID
-        const quantidadeEscolhida = quantidadeInput.value; // Quantidade escolhida
-
-        if (quantidadeEscolhida <= 0) {
-            alert('Escolha uma quantidade válida.');
-            return;
-        }
-
-        // Construir a URL para o controlador Carrinhocompra -> actionCreate
-        const url = '<?= Url::to(["carrinhocompra/create"]) ?>?produto_id=<?= $model->id ?>&tamanho_id=' + tamanhoId + '&quantidade=' + quantidadeEscolhida;
-
-        // Redirecionar para a URL gerada
-        window.location.href = url;
     });
 </script>
 
