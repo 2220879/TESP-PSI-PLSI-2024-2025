@@ -135,39 +135,46 @@ $this->title = $model->nomeProduto;
 
 <script>
     document.querySelectorAll('.tamanho-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const tamanhoId = this.dataset.tamanhoId;
+        if (!button.classList.contains('disabled')) {
+            button.addEventListener('click', function () {
+                const tamanhoId = this.dataset.tamanhoId;
 
-            // Remover estilo ativo de todos os botões
-            document.querySelectorAll('.tamanho-button').forEach(b => {
-                b.style.border = "2px solid white"; // Borda branca
-                b.style.backgroundColor = "transparent"; // Fundo transparente
-                b.style.color = "white"; // Texto branco
+                // Remover estilo ativo de todos os botões
+                document.querySelectorAll('.tamanho-button').forEach(b => {
+                    b.style.border = "2px solid white"; // Borda branca
+                    b.style.backgroundColor = "transparent"; // Fundo transparente
+                    b.style.color = "white"; // Texto branco
+                });
+
+                // Adicionar estilo ativo no botão clicado
+                this.style.border = "2px solid #007bff"; // Borda azul
+                this.style.backgroundColor = "#007bff"; // Fundo azul
+                this.style.color = "white"; // Texto branco
+
+                // Desabilitar e esconder todos os inputs de quantidade
+                document.querySelectorAll('.quantidade-input').forEach(input => {
+                    input.disabled = true;
+                    input.style.display = 'none';
+                });
+
+                // Habilitar e mostrar o campo de quantidade correspondente
+                const quantidadeInput = document.getElementById('quantidade-' + tamanhoId);
+                quantidadeInput.style.display = 'block';
+                quantidadeInput.disabled = false;
+
+                // Definir valor padrão e limite máximo
+                quantidadeInput.max = quantidadeInput.getAttribute('max');
+                quantidadeInput.value = quantidadeInput.max > 0 ? 1 : 0;
             });
-
-            // Adicionar estilo ativo no botão clicado
-            this.style.border = "2px solid #007bff"; // Borda azul
-            this.style.backgroundColor = "#007bff"; // Fundo azul
-            this.style.color = "white"; // Texto branco
-
-            // Desabilitar e esconder todos os inputs de quantidade
-            document.querySelectorAll('.quantidade-input').forEach(input => {
-                input.disabled = true;
-                input.style.display = 'none';
-            });
-
-            // Habilitar e mostrar o campo de quantidade correspondente
-            const quantidadeInput = document.getElementById('quantidade-' + tamanhoId);
-            quantidadeInput.style.display = 'block';
-            quantidadeInput.disabled = false;
-
-            // Definir valor padrão e limite máximo
-            quantidadeInput.max = quantidadeInput.getAttribute('max');
-            quantidadeInput.value = quantidadeInput.max > 0 ? 1 : 0;
-        });
+        }
     });
 
     document.getElementById('adicionar-carrinho').addEventListener('click', function () {
+        if (<?= $produtoIndisponivel ? 'true' : 'false' ?>) {
+            alert('Produto indisponível.');
+            return;
+        }
+
         // Verificar se o produto tem tamanhos associados
         const tamanhoButtons = document.querySelectorAll('.tamanho-button');
         const produtoTemTamanho = tamanhoButtons.length > 0;

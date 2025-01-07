@@ -87,12 +87,12 @@ class CarrinhocompraController extends Controller
      */
     public function actionCreate($produto_id, $quantidade, $tamanho_id = null)
     {
-        //se o produto não possui tamanhos e o tamanho_id não for fornecido, faz sem validação para tamanho_id
+        // Se o produto não possui tamanhos e o tamanho_id não for fornecido, faz sem validação para tamanho_id
         if (!$produto_id || !$quantidade) {
             throw new NotFoundHttpException('Dados inválidos.');
         }
 
-        //verifica se o utilizador tem sessão iniciada
+        // Verifica se o utilizador tem sessão iniciada
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         }
@@ -103,26 +103,26 @@ class CarrinhocompraController extends Controller
             throw new NotFoundHttpException('Perfil não encontrado.');
         }
 
-        //verifica se o carrinho já existe
+        // Verifica se o carrinho já existe
         $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
         if (!$carrinho) {
             throw new NotFoundHttpException('Carrinho de compras não encontrado.');
         }
 
-        //busca o produto
+        // Busca o produto
         $produto = \common\models\Produto::findOne($produto_id);
         if (!$produto) {
             throw new NotFoundHttpException('Produto não encontrado.');
         }
 
-        //caso o produto tenha tamanho, verifica se o tamanho_id foi passado e se o tamanho existe
+        // Caso o produto tenha tamanho, verifica se o tamanho_id foi passado e se o tamanho existe
         if ($tamanho_id !== null) {
             $tamanho = \common\models\Tamanho::findOne($tamanho_id);
             if (!$tamanho) {
                 throw new NotFoundHttpException('Tamanho não encontrado.');
             }
 
-            //busca a quantidade do produto no tamanho selecionado na tabela produtoshastamanho
+            // Busca a quantidade do produto no tamanho selecionado na tabela ProdutosHasTamanho
             $produtostamanho = ProdutosHasTamanho::findOne([
                 'produto_id' => $produto_id,
                 'tamanho_id' => $tamanho_id,
@@ -132,18 +132,18 @@ class CarrinhocompraController extends Controller
                 throw new NotFoundHttpException('Stock do produto para o tamanho selecionado não encontrado.');
             }
         } else {
-            //se não foi passado um tamanho_id, significa que o produto não possui tamanho, então não precisa verificar o stock baseado no tamanho
+            // Se não foi passado um tamanho_id, significa que o produto não possui tamanho, então não precisa verificar o stock baseado no tamanho
             $produtostamanho = null;
         }
 
-        //verifica se o produto já está no carrinho
+        // Verifica se o produto já está no carrinho
         $linhaCarrinho = Linhacarrinho::findOne([
             'carrinhocompras_id' => $carrinho->id,
             'produto_id' => $produto_id,
             'tamanho_id' => $tamanho_id,
         ]);
 
-        //se o produto já estiver no carrinho de compras
+        // Se o produto já estiver no carrinho de compras
         if ($linhaCarrinho) {
             Yii::$app->session->setFlash('info', 'O produto já se encontra no carrinho de compras.');
         } else {
@@ -152,13 +152,24 @@ class CarrinhocompraController extends Controller
                 return $this->redirect(['produto/detalhes', 'id' => $produto_id]);
             }
 
-            //atualiza a quantidade do produto no tamanho selecionado ou adiciona o produto sem tamanho
+            // Atualiza a quantidade do produto no tamanho selecionado ou adiciona o produto sem tamanho
             if ($produtostamanho !== null) {
                 $produtostamanho->quantidade -= $quantidade;
                 if (!$produtostamanho->save()) {
                     Yii::$app->session->setFlash('error', 'Erro ao atualizar o stock do produto no tamanho selecionado.');
                     return $this->redirect(['produto/detalhes', 'id' => $produto_id]);
                 }
+            }
+
+            // Atualiza a quantidade total do produto
+            $produto->quantidade -= $quantidade;
+            if ($produto->quantidade < 0) {
+                Yii::$app->session->setFlash('warning', 'Quantidade insuficiente no estoque.');
+                return $this->redirect(['produto/detalhes', 'id' => $produto_id]);
+            }
+            if (!$produto->save()) {
+                Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade total do produto.');
+                return $this->redirect(['produto/detalhes', 'id' => $produto_id]);
             }
 
             $linhaCarrinho = new Linhacarrinho();
@@ -173,18 +184,18 @@ class CarrinhocompraController extends Controller
             $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-            //atribuir os valores calculados ao resumo do carrinho
+            // Atribuir os valores calculados ao resumo do carrinho
             $linhaCarrinho->valorIva = round($valorIvaAplicado, 2);
             $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
             $linhaCarrinho->subtotal = round($subtotalComIva, 2);
 
-            //guardar na base de dados
+            // Guardar na base de dados
             if (!$linhaCarrinho->save()) {
                 Yii::$app->session->setFlash('error', 'Erro ao adicionar o produto ao carrinho.');
                 return $this->redirect(['site/produto', 'id' => $produto_id]);
             }
 
-            //atualiza os totais do carrinho
+            // Atualiza os totais do carrinho
             $carrinho->quantidade += $quantidade;
             $carrinho->valorTotal += $linhaCarrinho->subtotal;
             if (!$carrinho->save()) {
@@ -236,18 +247,27 @@ class CarrinhocompraController extends Controller
         $carrinho = $linhaCarrinho->carrinhocompras;
 
         // Recupera a relação do produto com o tamanho
-        $produtostamanho = ProdutosHasTamanho::findOne([
-            'produto_id' => $linhaCarrinho->produto_id,
-            'tamanho_id' => $linhaCarrinho->tamanho_id,
-        ]);
+        if ($linhaCarrinho->tamanho_id !== null) {
+            $produtostamanho = ProdutosHasTamanho::findOne([
+                'produto_id' => $linhaCarrinho->produto_id,
+                'tamanho_id' => $linhaCarrinho->tamanho_id,
+            ]);
 
-        if ($produtostamanho) {
-            // Atualiza o estoque incrementando a quantidade removida do carrinho
-            $produtostamanho->quantidade += $linhaCarrinho->quantidade;
-            if (!$produtostamanho->save()) {
-                Yii::$app->session->setFlash('error', 'Erro ao atualizar o estoque do produto.');
-                return $this->redirect(['index']);
+            if ($produtostamanho) {
+                // Atualiza o estoque incrementando a quantidade removida do carrinho
+                $produtostamanho->quantidade += $linhaCarrinho->quantidade;
+                if (!$produtostamanho->save()) {
+                    Yii::$app->session->setFlash('error', 'Erro ao atualizar o estoque do produto.');
+                    return $this->redirect(['index']);
+                }
             }
+        }
+
+        // Atualiza a quantidade na tabela Produtos
+        $produto = \common\models\Produto::findOne($linhaCarrinho->produto_id);
+        if ($produto) {
+            $produto->quantidade += $linhaCarrinho->quantidade;
+            $produto->save();
         }
 
         // Remove a linha do carrinho
@@ -257,64 +277,70 @@ class CarrinhocompraController extends Controller
         $this->updateCarrinhoTotal($carrinho->id);
 
         return $this->redirect(['index']);
-
     }
 
     public function actionDiminuir($id)
     {
-        //encontra a linha do carrinho pelo ID
+        // encontra a linha do carrinho pelo ID
         $linhaCarrinho = Linhacarrinho::findOne($id);
 
         if (!$linhaCarrinho) {
             throw new NotFoundHttpException('Produto não encontrado no carrinho.');
         }
 
-        //verifica se o produto tem tamanho associado
-        if ($linhaCarrinho->tamanho_id !== null) {
-            //produto com tamanho: busca o produto na tabela ProdutosHasTamanho
-            $produtostamanho = ProdutosHasTamanho::findOne([
-                'produto_id' => $linhaCarrinho->produto_id,
-                'tamanho_id' => $linhaCarrinho->tamanho_id,
-            ]);
-
-            if (!$produtostamanho) {
-                throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
-            }
-
-            //atualiza o stock do tamanho
-            $produtostamanho->quantidade += 1;
-            $produtostamanho->save();
-        } else {
-            //produto sem tamanho: não há necessidade de buscar na tabela ProdutosHasTamanho
-            $produto = \common\models\Produto::findOne($linhaCarrinho->produto_id);
-            if ($produto && $produto->quantidade > 0) {
-                //aumenta o estoque do produto
-                $produto->quantidade += 1;
-                $produto->save();
-            } else {
-                Yii::$app->session->setFlash('warning', 'Stock insuficiente para diminuir a quantidade.');
-                return $this->redirect(['index']);
-            }
-        }
-
-        //verifica se a quantidade no carrinho é maior que 1 antes de diminuir
+        // verifica se a quantidade no carrinho é maior que 1 antes de diminuir
         if ($linhaCarrinho->quantidade > 1) {
+            // verifica se o produto tem tamanho associado
+            if ($linhaCarrinho->tamanho_id !== null) {
+                // produto com tamanho: busca o produto na tabela ProdutosHasTamanho
+                $produtostamanho = ProdutosHasTamanho::findOne([
+                    'produto_id' => $linhaCarrinho->produto_id,
+                    'tamanho_id' => $linhaCarrinho->tamanho_id,
+                ]);
+
+                if (!$produtostamanho) {
+                    throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
+                }
+
+                // atualiza o stock do tamanho
+                $produtostamanho->quantidade += 1;
+                $produtostamanho->save();
+
+                // atualiza a quantidade na tabela Produtos
+                $produto = \common\models\Produto::findOne($linhaCarrinho->produto_id);
+                if ($produto) {
+                    $produto->quantidade += 1;
+                    $produto->save();
+                }
+            } else {
+                // produto sem tamanho: não há necessidade de buscar na tabela ProdutosHasTamanho
+                $produto = \common\models\Produto::findOne($linhaCarrinho->produto_id);
+                if ($produto && $produto->quantidade > 0) {
+                    // aumenta o estoque do produto
+                    $produto->quantidade += 1;
+                    $produto->save();
+                } else {
+                    Yii::$app->session->setFlash('warning', 'Stock insuficiente para diminuir a quantidade.');
+                    return $this->redirect(['index']);
+                }
+            }
+
             // Decrementa a quantidade do carrinho
             $linhaCarrinho->quantidade -= 1;
 
-            //recalcular o subtotal com IVA
+            // recalcular o subtotal com IVA
             $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
             $percentualIva = $linhaCarrinho->produto->iva->percentagem;
             $valorIvaAplicado = $subtotalSemIva * $percentualIva;
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-            //atualizar o subtotal e o valor com IVA
+            // atualizar o subtotal e o valor com IVA
             $linhaCarrinho->subtotal = round($subtotalComIva, 2);
             $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
 
-            //atualiza o carrinho
+            // atualiza o carrinho
             if ($linhaCarrinho->save()) {
-                //atualiza os totais no resumo do carrinho
+                // atualiza os totais no resumo do carrinho
                 $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
             } else {
                 Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade do produto no carrinho.');
@@ -328,14 +354,14 @@ class CarrinhocompraController extends Controller
 
     public function actionAumentar($id)
     {
-        //encontra a linha do carrinho pelo ID
+        // Encontra a linha do carrinho pelo ID
         $linhaCarrinho = Linhacarrinho::findOne($id);
 
         if (!$linhaCarrinho) {
             throw new NotFoundHttpException('Produto não encontrado no carrinho.');
         }
 
-        //verifica se o produto tem tamanho associado
+        // Verifica se o produto tem tamanho associado
         if ($linhaCarrinho->tamanho_id !== null) {
             // Produto com tamanho: busca o produto na tabela ProdutosHasTamanho
             $produtostamanho = ProdutosHasTamanho::findOne([
@@ -347,28 +373,39 @@ class CarrinhocompraController extends Controller
                 throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
             }
 
-            //verifica se há estoque disponível para o tamanho
+            // Verifica se há estoque disponível para o tamanho
             if ($produtostamanho->quantidade > 0) {
-                //incrementa a quantidade no carrinho
+                // Incrementa a quantidade no carrinho
                 $linhaCarrinho->quantidade += 1;
 
-                //recalcular o subtotal com IVA
+                // Recalcula o subtotal com IVA
                 $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
                 $percentualIva = $linhaCarrinho->produto->iva->percentagem;
                 $valorIvaAplicado = $subtotalSemIva * $percentualIva;
                 $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-                //atualizar os valores do carrinho
+                // Atualiza os valores do carrinho
                 $linhaCarrinho->subtotal = round($subtotalComIva, 2);
                 $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
 
-                //atualiza o carrinho
+                // Atualiza o carrinho
                 if ($linhaCarrinho->save()) {
-                    //decrementa o estoque do tamanho
+                    // Decrementa o estoque do tamanho
                     $produtostamanho->quantidade -= 1;
-                    $produtostamanho->save();
+                    if (!$produtostamanho->save()) {
+                        Yii::$app->session->setFlash('error', 'Erro ao atualizar o stock do tamanho.');
+                    }
 
-                    //atualiza os totais do carrinho
+                    // Atualiza a quantidade total do produto
+                    $produto = \common\models\Produto::findOne($linhaCarrinho->produto_id);
+                    if ($produto) {
+                        $produto->quantidade -= 1;
+                        if (!$produto->save()) {
+                            Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade total do produto.');
+                        }
+                    }
+
+                    // Atualiza os totais do carrinho
                     $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
                 } else {
                     Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade do produto no carrinho.');
@@ -377,29 +414,31 @@ class CarrinhocompraController extends Controller
                 Yii::$app->session->setFlash('warning', 'Stock insuficiente para aumentar a quantidade.');
             }
         } else {
-            //produto sem tamanho: atualiza o stock do produto
+            // Produto sem tamanho: atualiza o stock do produto
             $produto = \common\models\Produto::findOne($linhaCarrinho->produto_id);
             if ($produto && $produto->quantidade > 0) {
-                //incrementa a quantidade no carrinho
+                // Incrementa a quantidade no carrinho
                 $linhaCarrinho->quantidade += 1;
 
-                //recalcular o subtotal com IVA
+                // Recalcula o subtotal com IVA
                 $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
                 $percentualIva = $linhaCarrinho->produto->iva->percentagem;
                 $valorIvaAplicado = $subtotalSemIva * $percentualIva;
                 $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
-                //atualizar os valores no resumo do carrinho
+                // Atualiza os valores no resumo do carrinho
                 $linhaCarrinho->subtotal = round($subtotalComIva, 2);
                 $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
 
-                //atualiza o carrinho
+                // Atualiza o carrinho
                 if ($linhaCarrinho->save()) {
-                    //decrementa o stock do produto
+                    // Decrementa o stock do produto
                     $produto->quantidade -= 1;
-                    $produto->save();
+                    if (!$produto->save()) {
+                        Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade total do produto.');
+                    }
 
-                    //atualiza os totais do carrinho
+                    // Atualiza os totais do carrinho
                     $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
                 } else {
                     Yii::$app->session->setFlash('error', 'Erro ao atualizar a quantidade do produto no carrinho.');

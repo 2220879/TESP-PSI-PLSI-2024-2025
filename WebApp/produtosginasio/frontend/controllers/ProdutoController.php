@@ -155,19 +155,25 @@ class ProdutoController extends Controller
         // Busca os tamanhos disponíveis para o produto
         $tamanhos = ProdutosHasTamanho::find()
             ->where(['produto_id' => $id])
-            ->andWhere(['>', 'quantidade', 0])  // Garante que apenas tamanhos com estoque disponível sejam retornados
+            ->andWhere(['>', 'quantidade', 0])
             ->all();
+
+        // Verifica se há qualquer tamanho com quantidade disponível
+        $temTamanhoDisponivel = array_filter($tamanhos, fn($produtoHasTamanho) => $produtoHasTamanho->quantidade > 0);
+
+        // Verifica se o produto está indisponível
+        $produtoIndisponivel = empty($tamanhos) && $produto->quantidade == 0 || empty($tamanhos) && $produto->quantidade > 0 && $produto->quantidade == 0;
 
         // Renderiza a página de detalhes, passando os dados necessários
         return $this->render('detalhes', [
-            'model' => $produto,  // Passa o modelo do produto
-            'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),  // Busca as imagens do produto
-            'tamanhos' => $tamanhos,  // Passa os tamanhos disponíveis
-            'avaliacao' => new Avaliacao(),  // Passa um novo modelo de avaliação para o formulário
-            'avaliacoes' => $avaliacoes,  // Passa as avaliações existentes
+            'model' => $produto,
+            'imagens' => Imagem::find()->where(['produto_id' => $id])->all(),
+            'tamanhos' => $tamanhos,
+            'avaliacao' => new Avaliacao(),
+            'avaliacoes' => $avaliacoes,
+            'produtoIndisponivel' => $produtoIndisponivel,
         ]);
     }
-
 
 
     /**
