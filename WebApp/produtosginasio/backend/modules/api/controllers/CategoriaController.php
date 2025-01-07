@@ -28,14 +28,16 @@ class CategoriaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $categoriaModel = new $this->modelClass;
                 $recs = $categoriaModel::find()->all();
                 return ['count' => count($recs)];
             }
         }
-        return 'Não foi possível contar as categorias.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível contar as categorias.'];
     }
 
     public function actionCategorias()
@@ -45,13 +47,15 @@ class CategoriaController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $categoriaModel = new $this->modelClass;
                 $recs = $categoriaModel::find()->all();
                 return ['categorias' => $recs];
             }
         }
-        return 'Não foi possível obter as categorias.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível obter as categorias.'];
     }
 }

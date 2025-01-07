@@ -3,7 +3,11 @@ actor: AcceptanceTester
 modules:
   enabled:
     - WebDriver:
-        url: http://127.0.0.1:8080
-        browser: firefox
+        url: 'http://127.0.0.1/produtosginasio/frontend/web'
+        browser: chrome
+        window_size: maximize
+        capabilities:
+          chromeOptions:
+            binary: 'C:/wamp64/www/produtosginasio/selenium/chromedriver.exe'
     - Yii2:
         part: init

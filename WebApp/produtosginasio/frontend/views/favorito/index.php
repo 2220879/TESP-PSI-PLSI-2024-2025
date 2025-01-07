@@ -22,9 +22,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php foreach ($favoritos as $favorito): ?>
                         <div class="col-sm-6 col-md-4">
                             <div class="box">
-                                <a href="#" class="p_cart">
-                                    <i class="fa fa-cart-plus" aria-hidden="true"></i>
-                                </a>
                                 <div class="img-box">
                                     <?php if (!empty($favorito->produto->imagens) && isset($favorito->produto->imagens[0])): ?>
                                         <img src="<?= htmlspecialchars("../../../backend/web/uploads/" . $favorito->produto->imagens[0]->filename) ?>"

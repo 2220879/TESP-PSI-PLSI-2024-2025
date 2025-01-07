@@ -30,7 +30,8 @@ class UsocupaoController extends ActiveController
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $request = Yii::$app->request;
                 $cupaoCodigo = $request->post('cupao');
@@ -41,13 +42,16 @@ class UsocupaoController extends ActiveController
                     // Verifica se o cupão é válido e não expirou
                     if ($cupao == null) {
                         // Se o cupão for inválido, exibe mensagem de erro
-                        return 'Cupão inexistente.';
+                        Yii::$app->response->statusCode = 400;
+                        return ['message' => 'Cupão inexistente.'];
                     } else if ($cupao && strtotime($cupao->dataFim) < time()) {
                         //Mensagem de erro, caso o cupão tenha expirado
-                        return 'Cupão expirado.';
+                        Yii::$app->response->statusCode = 400;
+                        return ['message' => 'Cupão expirado.'];
                     } else if (Usocupao::find()->where(['cupaodesconto_id' => $cupao->id, 'profile_id' => $profile->id])->one()) {
                         // Se o cupão for inválido, exibe mensagem de erro
-                        return 'Cupão inválido.';
+                        Yii::$app->response->statusCode = 400;
+                        return ['message' => 'Cupão inválido.'];
                     } else if ($cupao && strtotime($cupao->dataFim) >= time()) {
                         $usocupao = new Usocupao();
                         $usocupao->cupaodesconto_id = $cupao->id;
@@ -60,6 +64,7 @@ class UsocupaoController extends ActiveController
                 }
             }
         }
-        return 'Não foi possível registar o cupão.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível registar o cupão.'];
     }
 }

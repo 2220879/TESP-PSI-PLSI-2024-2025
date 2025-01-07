@@ -29,19 +29,67 @@ class CarrinhocompraController extends ActiveController
         return $behaviors;
     }
 
-    public function actionAdicionarcarrinho($produto_id,$tamanho_id)
+    public function actionCarrinho()
+    {
+        // Vai obter o ID do user autenticado
+        $userId = Yii::$app->params['id'];
+
+        // Vai buscar o perfil associado ao usuário
+        $profile = Profile::findOne(['user_id' => $userId]);
+        if (!$profile) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
+        }
+
+        // Vai buscar o carrinho associado ao perfil
+        $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
+        if (!$carrinho) {
+            Yii::$app->response->statusCode = 404;
+            return ['message' => 'Carrinho não encontrado.'];
+        }
+
+        // Estruturar os dados para resposta
+        $linhasCarrinho = [];
+        foreach ($carrinho->linhascarrinhos as $linha) {
+            $produto = $linha->produto;
+            $tamanho = $linha->tamanho;
+
+            $linhasCarrinho[] = [
+                'produto_nome' => $produto ? $produto->nomeProduto : 'Produto não encontrado',
+                'tamanho_nome' => $tamanho ? $tamanho->referencia : 'Tamanho não encontrado',
+                'quantidade' => $linha->quantidade,
+                'precoUnit' => $linha->precoUnit,
+                'subtotal' => $linha->subtotal,
+                'valorComIva' => $linha->valorComIva,
+            ];
+        }
+
+        return [
+            'quantidade_total' => $carrinho->quantidade,
+            'valorTotal' => $carrinho->valorTotal,
+            'linhasCarrinho' => $linhasCarrinho,
+        ];
+    }
+
+
+
+
+
+    public function actionAdicionarcarrinho($produto_id, $tamanho_id)
     {
 
         // Verificar se o produto existe
         $produto = Produto::findOne($produto_id);
         if (!$produto) {
-            throw new NotFoundHttpException('Produto não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Produto não encontrado.'];
         }
 
         // Verifica se o tamanho existe
         $tamanho = \common\models\Tamanho::findOne($tamanho_id);
         if (!$tamanho) {
-            throw new NotFoundHttpException('Tamanho não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Tamanho não encontrado.'];
         }
 
         // vai buscar a quantidade do produto no tamanho selecionado na tabela ProdutosHasTamanho
@@ -51,7 +99,8 @@ class CarrinhocompraController extends ActiveController
         ]);
 
         if (!$produtostamanho) {
-            throw new NotFoundHttpException('Estoque do produto para o tamanho selecionado não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Stock do produto para o tamanho selecionado não encontrado.'];
         }
 
         // Vai obter o user autenticado
@@ -60,13 +109,15 @@ class CarrinhocompraController extends ActiveController
         // Vai obter o perfil associado ao user
         $profile = Profile::findOne(['user_id' => $userId]);
         if (!$profile) {
-            throw new NotFoundHttpException('Perfil não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Perfil não encontrado.'];
         }
 
         // Vai obter o carrinho do perfil
         $carrinho = Carrinhocompra::findOne(['profile_id' => $profile->id]);
         if (!$carrinho) {
-            throw new NotFoundHttpException('Carrinho não encontrado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Carrinho não encontrado.'];
         }
 
         // Verifica se o produto já está no carrinho com o tamanho especificado
@@ -83,21 +134,21 @@ class CarrinhocompraController extends ActiveController
 
         if ($linhaCarrinho) {
             // Produto já está no carrinho
-            return [
-                'status' => 'error',
-                'message' => 'O produto já está adicionado ao carrinho.',
-            ];
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'O produto já está adicionado ao carrinho.',];
         }
 
         // Verifica se há estoque suficiente antes de adicionar ao carrinho
         if ($produtostamanho->quantidade < $quantidade) {
-            throw new \yii\web\ConflictHttpException('Quantidade insuficiente para o tamanho selecionado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Quantidade insuficiente para o tamanho selecionado.'];
         }
 
         // Atualiza a quantidade do produto no tamanho selecionado
         $produtostamanho->quantidade -= $quantidade;
         if (!$produtostamanho->save()) {
-            throw new ServerErrorHttpException('Erro ao atualizar o estoque do produto no tamanho selecionado.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao atualizar o estoque do produto no tamanho selecionado.'];
         }
 
         // Adiciona o produto como nova linha no carrinho
@@ -119,7 +170,8 @@ class CarrinhocompraController extends ActiveController
         $linhaCarrinho->subtotal = round($subtotalComIva, 2);
 
         if (!$linhaCarrinho->save()) {
-            throw new ServerErrorHttpException('Erro ao adicionar o produto ao carrinho.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao adicionar o produto ao carrinho.'];
         }
 
         // Atualiza o total do carrinho
@@ -127,7 +179,8 @@ class CarrinhocompraController extends ActiveController
         $carrinho->valorTotal += $linhaCarrinho->subtotal;
 
         if (!$carrinho->save()) {
-            throw new ServerErrorHttpException('Erro ao atualizar o carrinho.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao atualizar o carrinho.'];
         }
 
         // Retorna a resposta de sucesso
@@ -142,13 +195,14 @@ class CarrinhocompraController extends ActiveController
         // Verifica se a linha do carrinho existe
         $linhaCarrinho = Linhacarrinho::findOne($id);
         if (!$linhaCarrinho) {
-            throw new NotFoundHttpException('Linha do carrinho não encontrada.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Linha do carrinho não encontrada.'];
         }
 
         // Vai obter o carrinho relacionado à linha do carrinho
         $carrinho = Carrinhocompra::findOne($linhaCarrinho->carrinhocompras_id);
         if (!$carrinho) {
-            throw new NotFoundHttpException('Carrinho não encontrado.');
+            return ['message' => 'Carrinho não encontrado.'];
         }
 
         // Atualiza a quantidade do tamanho do produto correspondente
@@ -160,7 +214,7 @@ class CarrinhocompraController extends ActiveController
         if ($produtostamanho) {
             $produtostamanho->quantidade += $linhaCarrinho->quantidade;
             if (!$produtostamanho->save()) {
-                throw new ServerErrorHttpException('Erro ao atualizar o estoque do produto.');
+                return ['message' => 'Erro ao atualizar o estoque do produto.'];
             }
         }
 
@@ -169,11 +223,13 @@ class CarrinhocompraController extends ActiveController
         $carrinho->valorTotal -= $linhaCarrinho->subtotal;
 
         if (!$carrinho->save()) {
-            throw new ServerErrorHttpException('Erro ao atualizar os totais do carrinho.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao atualizar os totais do carrinho.'];
         }
 
         if (!$linhaCarrinho->delete()) {
-            throw new ServerErrorHttpException('Erro ao apagar a linha do carrinho.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Erro ao apagar a linha do carrinho.'];
         }
 
         return [
@@ -187,7 +243,7 @@ class CarrinhocompraController extends ActiveController
         $linhaCarrinho = Linhacarrinho::findOne($id);
 
         if (!$linhaCarrinho) {
-            throw new NotFoundHttpException('Produto não encontrado no carrinho.');
+            return ['message' => 'Produto não encontrado no carrinho.'];
         }
 
         $produtostamanho = ProdutosHasTamanho::findOne([
@@ -196,7 +252,8 @@ class CarrinhocompraController extends ActiveController
         ]);
 
         if (!$produtostamanho) {
-            throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Tamanho não encontrado no estoque para este produto.'];
         }
 
         if ($linhaCarrinho->quantidade > 1) {
@@ -221,10 +278,10 @@ class CarrinhocompraController extends ActiveController
                     'message' => 'Quantidade diminuída com sucesso.',
                 ];
             } else {
-                throw new ServerErrorHttpException('Erro ao atualizar a linha do carrinho.');
+                return ['message' => 'Erro ao atualizar a linha do carrinho.'];
             }
         } else {
-            throw new \yii\web\BadRequestHttpException('A quantidade não pode ser menor que 1. Use a rota de remoção para excluir o produto.');
+            return ['message' => 'A quantidade não pode ser menor que 1. Use a rota de remoção para excluir o produto.'];
         }
     }
 
@@ -234,7 +291,7 @@ class CarrinhocompraController extends ActiveController
         $linhaCarrinho = Linhacarrinho::findOne($id);
 
         if (!$linhaCarrinho) {
-            throw new NotFoundHttpException('Produto não encontrado no carrinho.');
+            return ['message' => 'Produto não encontrado no carrinho.'];
         }
 
         $produtostamanho = ProdutosHasTamanho::findOne([
@@ -243,7 +300,8 @@ class CarrinhocompraController extends ActiveController
         ]);
 
         if (!$produtostamanho) {
-            throw new NotFoundHttpException('Tamanho não encontrado no estoque para este produto.');
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Tamanho não encontrado no estoque para este produto.'];
         }
 
         if ($produtostamanho->quantidade > 0) {
@@ -268,10 +326,10 @@ class CarrinhocompraController extends ActiveController
                     'message' => 'Quantidade aumentada com sucesso.',
                 ];
             } else {
-                throw new ServerErrorHttpException('Erro ao atualizar a linha do carrinho.');
+                return ['message' => 'Erro ao atualizar a linha do carrinho.'];
             }
         } else {
-            throw new \yii\web\ConflictHttpException('Estoque insuficiente para aumentar a quantidade.');
+            return ['message' => 'Stock insuficiente para aumentar a quantidade.'];
         }
     }
 
@@ -290,7 +348,7 @@ class CarrinhocompraController extends ActiveController
             }
 
             if (!$carrinho->save()) {
-                throw new ServerErrorHttpException('Erro ao atualizar o total do carrinho.');
+                return ['message' => 'Erro ao atualizar o total do carrinho.'];
             }
         }
     }

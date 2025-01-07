@@ -2,8 +2,8 @@
 
 namespace backend\modules\api\controllers;
 
-use backend\models\UserForm;
 use backend\modules\api\components\CustomAuth;
+use common\models\Profile;
 use common\models\User;
 use Yii;
 use yii\rest\ActiveController;
@@ -30,10 +30,9 @@ class UserController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
-                //instancia o UserForm
-                $model = new UserForm();
 
                 $request = Yii::$app->request;
 
@@ -44,14 +43,37 @@ class UserController extends ActiveController
                 $morada = $request->getBodyParam('morada');
                 $telefone = $request->getBodyParam('telefone');
 
-                if ($model->update($user->id, $username, $email, $password, $nif, $morada, $telefone)) {
-                    return 'Cliente atualizado com sucesso!';
+                //altera os respetivos os dados do user a editar
+                $user->username = $username;
+                $user->email = $email;
+
+                //se o campo da password não estiver vazia, edita a password
+                if ($password != null) {
+                    $user->setPassword($password);
                 }
 
-                return 'Falha na atualização do cliente pretendido';
+                $user->generateAuthKey();
+
+                //se a alteração dos dados do user foram gravados com sucesso
+                if ($user->save(false)) {
+
+                    //seleciona o perfil do user a editar
+                    $profile = Profile::findOne(['user_id' => $user->id]);
+
+                    //altera os respetivos os dados do perfil do user a editar
+                    $profile->nif = $nif;
+                    $profile->morada = $morada;
+                    $profile->telefone = $telefone;
+
+                    //se o registo do perfil foi concluído
+                    if ($profile->save()) {
+                        return ['auth_key' => $user->auth_key];
+                    }
+                }
             }
         }
-        return 'Não foi realizado a atualização dos dados.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi realizado a atualização dos dados.'];
 
     }
 
@@ -62,26 +84,22 @@ class UserController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
-                $request = Yii::$app->request;
 
-                $user_id = $request->getBodyParam('user_id');
+                $cliente = User::find()->where(['id' => $userID])->one();
+                $profile = Profile::find()->where(['user_id' => $userID])->one();
 
-                $cliente = User::find()
-                    ->join('INNER JOIN', 'profiles', 'profiles.user_id = user.id')
-                    ->select(['user.', 'profiles.'])
-                    ->where(['user.id' => $user_id])
-                    ->asArray()
-                    ->one();
-
-                if ($cliente != null) {
-                    return $cliente;
+                if ($cliente != null && $profile != null) {
+                    return ['username' => $cliente->username, 'email' => $cliente->email, 'nif' => $profile->nif, 'morada' => $profile->morada, 'telefone' => $profile->telefone];
                 } else {
-                    return 'Falha no obter dos dados do cliente especifico';
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Falha a obter dos dados do cliente especifico'];
                 }
             }
         }
-        return 'Não foi possivel os dados do utilizador';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel os dados do utilizador'];
     }
 }

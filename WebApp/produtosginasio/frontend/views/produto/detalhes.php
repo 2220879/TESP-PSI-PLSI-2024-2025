@@ -54,8 +54,10 @@ $this->title = $model->nomeProduto;
             <!-- Tamanhos e Quantidades -->
             <div class="tamanhos-container">
                 <div class="row">
-                    <?php foreach ($tamanhos as $produtoHasTamanho): ?>
+                    <?php if (array_filter($tamanhos, fn($produtoHasTamanho) => $produtoHasTamanho->quantidade > 0)): ?>
                         <p><strong>Escolha o tamanho e a quantidade:</strong></p>
+                    <?php endif; ?>
+                    <?php foreach ($tamanhos as $produtoHasTamanho): ?>
                         <div class="col-3 text-center">
                             <button
                                     class="tamanho-button <?= $produtoHasTamanho->quantidade > 0 ? '' : 'disabled' ?>"
@@ -197,4 +199,3 @@ $this->title = $model->nomeProduto;
         }
     });
 </script>
-

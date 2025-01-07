@@ -3,64 +3,60 @@
 namespace frontend\tests\functional;
 
 use frontend\tests\FunctionalTester;
-use common\fixtures\UserFixture;
 
 class LoginCest
 {
-    /**
-     * Load fixtures before db transaction begin
-     * Called in _before()
-     * @see \Codeception\Module\Yii2::_before()
-     * @see \Codeception\Module\Yii2::loadFixtures()
-     * @return array
-     */
-    public function _fixtures()
-    {
-        return [
-            'user' => [
-                'class' => UserFixture::class,
-                'dataFile' => codecept_data_dir() . 'login_data.php',
-            ],
-        ];
-    }
+    protected $formId = '#login-form';
 
     public function _before(FunctionalTester $I)
     {
         $I->amOnRoute('site/login');
     }
 
-    protected function formParams($login, $password)
+    public function loginWithEmptyFields(FunctionalTester $I)
     {
-        return [
-            'LoginForm[username]' => $login,
-            'LoginForm[password]' => $password,
-        ];
-    }
-
-    public function checkEmpty(FunctionalTester $I)
-    {
-        $I->submitForm('#login-form', $this->formParams('', ''));
+        /*$I->see('Login', 'h1');
+        $I->see('Please fill out the following fields to login:');
+        $I->submitForm($this->formId, []);
         $I->seeValidationError('Username cannot be blank.');
-        $I->seeValidationError('Password cannot be blank.');
+        $I->seeValidationError('Password cannot be blank.');*/
+        $I->amOnRoute('/site/login');
+        $I->click('button[name="login-button"]');
+        $I->see('Username cannot be blank.');
+        $I->see('Password cannot be blank.');
+    }
+    public function loginWithWrongCredentials(FunctionalTester $I)
+    {
+        /*$I->submitForm($this->formId, [
+            'LoginForm[username]' => 'incorrect_username',
+            'LoginForm[password]' => 'incorrect_password',
+        ]);
+        $I->see('Incorrect username or password.');*/
+        $I->amOnRoute('/site/login');
+        $I->fillField('LoginForm[username]', 'ruben');
+        $I->fillField('LoginForm[password]', 'admin1234567');
+        $I->click('button[name="login-button"]');
+        $I->see('Incorrect username or password.');
     }
 
-    public function checkWrongPassword(FunctionalTester $I)
+    public function loginSuccessfully(FunctionalTester $I)
     {
-        $I->submitForm('#login-form', $this->formParams('admin', 'wrong'));
-        $I->seeValidationError('Incorrect username or password.');
-    }
+        /*$I->submitForm($this->formId, [
+            'LoginForm[username]' => 'ruben',
+            'LoginForm[password]' => 'Admin*1234567',
+        ]);
+        $I->see('Logout');
+        $I->dontSee('Login');
+        $I->amOnPage('/web');*/
 
-    public function checkInactiveAccount(FunctionalTester $I)
-    {
-        $I->submitForm('#login-form', $this->formParams('test.test', 'Test1234'));
-        $I->seeValidationError('Incorrect username or password');
-    }
+        $I->amOnRoute('/site/login');
+        $I->fillField('LoginForm[username]', 'ruben');
+        $I->fillField('LoginForm[password]', 'Admin*1234567');
+        $I->click('button[name="login-button"]');
 
-    public function checkValidLogin(FunctionalTester $I)
-    {
-        $I->submitForm('#login-form', $this->formParams('erau', 'password_0'));
-        $I->see('Logout (erau)', 'form button[type=submit]');
-        $I->dontSeeLink('Login');
-        $I->dontSeeLink('Signup');
+        $I->see('Logout');
+        $I->dontSee('Login');
+        $I->amOnPage('/web');
     }
 }
+

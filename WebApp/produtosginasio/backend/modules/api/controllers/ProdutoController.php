@@ -3,6 +3,9 @@
 namespace backend\modules\api\controllers;
 
 use backend\modules\api\components\CustomAuth;
+use common\models\Categoria;
+use common\models\Genero;
+use common\models\Marca;
 use common\models\Produto;
 use common\models\User;
 use Yii;
@@ -29,14 +32,16 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtosmodel = new $this->modelClass;
                 $recs = $produtosmodel::find()->all();
                 return ['count' => count($recs)];
             }
         }
-        return 'Não foi possivel contar os produtos.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel contar os produtos.'];
 
     }
 
@@ -47,7 +52,8 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtos = Produto::find()
                     ->with(['imagens' => function ($query) {
@@ -61,7 +67,7 @@ class ProdutoController extends ActiveController
                 $resultado = [];
 
                 foreach ($produtos as $produto) {
-                    // Inicie o array do produto
+                    //array dos produto
                     $produtoData = [
                         'id' => $produto->id,
                         'nomeProduto' => $produto->nomeProduto,
@@ -90,7 +96,8 @@ class ProdutoController extends ActiveController
                 return $resultado;
             }
         }
-        return 'Não foi possível obter os produtos.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível obter os produtos.'];
 
     }
 
@@ -101,14 +108,16 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtosmodel = new $this->modelClass;
                 $produtos = $produtosmodel::find()->where(['nomeProduto' => $nomeProduto])->all();
                 return $produtos;
             }
         }
-        return 'Não foi possivel obter os produtos pelo nome pretendido.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel obter os produtos pelo nome pretendido.'];
     }
 
     public function actionBuscarportamanho($tamanho_id)
@@ -118,7 +127,8 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtosmodel = new $this->modelClass;
 
@@ -140,7 +150,8 @@ class ProdutoController extends ActiveController
                 ];
             }
         }
-        return 'Não foi possivel obter os produtos pelo tamanho selecionado.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel obter os produtos pelo tamanho selecionado.'];
     }
 
     public function actionBuscarpormarca($marca_id)
@@ -150,7 +161,8 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtosmodel = new $this->modelClass;
                 $produtos = $produtosmodel::find()->where(['marca_id' => $marca_id])->all();
@@ -162,7 +174,8 @@ class ProdutoController extends ActiveController
                 return $produtos;
             }
         }
-        return 'Não foi possivel obter os produtos pela marca selecionada.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel obter os produtos pela marca selecionada.'];
     }
 
     public function actionBuscarporcategoria($categoria_id)
@@ -172,7 +185,8 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtosmodel = new $this->modelClass;
                 $produtos = $produtosmodel::find()->where(['categoria_id' => $categoria_id])->all();
@@ -184,7 +198,8 @@ class ProdutoController extends ActiveController
                 return $produtos;
             }
         }
-        return 'Não foi possivel obter os produtos pela categoria selecionada.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel obter os produtos pela categoria selecionada.'];
     }
 
     public function actionBuscarporgenero($genero_id)
@@ -194,7 +209,8 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtosmodel = new $this->modelClass;
                 $produtos = $produtosmodel::find()->where(['genero_id' => $genero_id])->all();
@@ -206,7 +222,8 @@ class ProdutoController extends ActiveController
                 return $produtos;
             }
         }
-        return 'Não foi possivel obter os produtos pela genero selecionado.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel obter os produtos pela genero selecionado.'];
     }
 
     public function actionImagens($produto_id)
@@ -216,7 +233,8 @@ class ProdutoController extends ActiveController
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtomodel = new $this->modelClass;
 
@@ -244,17 +262,19 @@ class ProdutoController extends ActiveController
                 ];
             }
         }
-        return 'Não foi possivel obter os imagems do produto selecionado.';
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possivel obter os imagems do produto selecionado.'];
     }
 
-    public function actionDetalhes($id)
+    /*public function actionDetalhes($id)
     {
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                return 'O Utilizador introduzido não tem permissões de cliente';
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
             } else {
                 $produtomodel = new $this->modelClass;
                 //$produto = $produtomodel::findOne(['id' => $id]);
@@ -279,6 +299,7 @@ class ProdutoController extends ActiveController
                 ];
             }
         }
-        return 'Não foi possível obter os detalhes do produto pretendido.';
-    }
+        Yii::$app->response->statusCode = 400;
+        return ['message' => 'Não foi possível obter os detalhes do produto pretendido.'];
+    }*/
 }
