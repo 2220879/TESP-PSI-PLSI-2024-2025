@@ -113,7 +113,7 @@ AppAsset::register($this);
                             <i class="fa fa-cart-plus" aria-hidden="true"></i>
                         </a>
                         <!-- Ícone de Favoritos -->
-                        <a href="<?= Url::to(['favorito/index']) ?>" class="ms-3">
+                        <a href="<?= Url::to(['favorito/index']) ?>" id="ver-favoritos" class="ms-3">
                             <i class="fa fa-heart" aria-hidden="true"></i>
                         </a>
                         <?php

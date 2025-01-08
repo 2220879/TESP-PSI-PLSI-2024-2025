@@ -42,6 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="actions">
                                     <?= Html::a('<i class="fa fa-trash"></i>Remover', ['favorito/delete', 'produto_id' => $favorito->produto->id], [
                                         'class' => 'btn btn-danger',
+                                        'id' => 'apagar-favorito-' . $favorito->produto->id,
                                         'data' => [
                                             'confirm' => 'Tem certeza que deseja remover este produto dos favoritos?',
                                             'method' => 'post',

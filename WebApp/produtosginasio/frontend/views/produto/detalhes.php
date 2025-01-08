@@ -81,13 +81,13 @@ $this->title = $model->nomeProduto;
             </div>
 
             <!-- Botão para Adicionar ao Carrinho -->
-            <a href="#" id="adicionar-carrinho" class="ms-3">
-                <i class="fa fa-cart-plus" aria-hidden="true" style="color: white;"></i>
+            <a href="#" id="adicionar-carrinho" class="btn btn-success">
+                <i class="fa fa-cart-plus"></i>
             </a>
 
-
-            <a href="<?= Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" class="ms-3">
-                <i class="fa fa-heart" aria-hidden="true" style="color: white;"></i>
+            <a href="<?= Url::to(['favorito/create', 'produto_id' => $model->id]) ?>" id="adicionar-favorito"
+               class="btn btn-info">
+                <i class="fa fa-heart"></i>
             </a>
         </div>
     </div>

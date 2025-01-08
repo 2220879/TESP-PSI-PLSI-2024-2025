@@ -71,7 +71,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             'class' => 'form-control',
                         ]
                     ) ?>
-                    <button type="submit" class="btn btn-primary mt-2">Aplicar Método de Entrega</button>
+                    <button type="submit" id="aplicar-metodo-entrega" class="btn btn-primary mt-2">Aplicar Método de
+                        Entrega
+                    </button>
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>
@@ -242,7 +244,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'required' => true
                             ]) ?>
 
-                            <button type="submit" class="btn btn-primary mt-2">Guardar Dados</button>
+                            <button type="submit" id="guardar-dados" class="btn btn-primary mt-2">Guardar Dados</button>
                             <?php ActiveForm::end(); ?>
                         </div>
                     </div>
@@ -292,7 +294,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                    value="<?= Yii::$app->request->post('telefone') ?? '' ?>">
 
                             <!-- Botão para concluir a compra -->
-                            <button type="submit" class="btn btn-success w-100">Confirmar Compra</button>
+                            <button type="submit" id="confirmar-compra" class="btn btn-success w-100">Confirmar Compra
+                            </button>
                         </form>
                     </div>
                 </div>
