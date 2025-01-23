@@ -29,30 +29,54 @@ class AvaliacaoController extends ActiveController
         // Obtém o ID do usuário autenticado
         $userID = Yii::$app->params['id'];
 
-        // Busca o usuário no banco de dados
         if ($user = User::find()->where(['id' => $userID])->one()) {
             // Verifica se o utilizador tem o papel "cliente"
             if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
                 Yii::$app->response->statusCode = 400;
                 return ['message' => 'O Utilizador não tem permissões de cliente'];
             } else {
-                // Busca o perfil do usuário
                 $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
                 if ($profile !== null) {
-                    // Busca todas as avaliações associadas ao perfil do usuário
                     $avaliacoes = Avaliacao::find()->where(['profile_id' => $profile->id])->all();
 
-                    return $avaliacoes;
+                    $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+                    $resultado = [];
+
+                    foreach ($avaliacoes as $avaliacao) {
+                        //array das avaliações
+                        $avaliacaoData = [
+                            'id' => $avaliacao->id,
+                            'descricao' => $avaliacao->descricao,
+                            'nomeProduto' => $avaliacao->produto->nomeProduto,
+                            'imagemProduto' => null,
+                            'produto_id' => $avaliacao->produto->id,
+                            'profile_id' => $avaliacao->profile_id,
+                        ];
+
+                        // Verifica se o produto avaliado tem imagens associadas
+                        if (!empty($avaliacao->produto->imagens)) {
+                            // Vai buscar a primeira imagem
+                            $primeiraImagem = $avaliacao->produto->imagens[0];
+
+                            // Monta a URL completa da imagem
+                            $avaliacaoData['imagemProduto'] = $baseUrl . $primeiraImagem->filename;
+                        }
+
+                        //adiciona os dados da avaliação ao array de resultados
+                        $resultado[] = $avaliacaoData;
+                    }
+
+                    return $resultado;
                 } else {
                     Yii::$app->response->statusCode = 400;
-                    return ['message' => 'Perfil não encontrado para o usuário.'];
+                    return ['message' => 'Perfil não encontrado.'];
                 }
             }
         }
 
-        Yii::$app->response->statusCode = 400;
-        return ['message' => 'Usuário não encontrado ou não autorizado.'];
+        Yii::$app->response->statusCode = 500;
+        return ['message' => 'Utilizador não encontrado ou não autorizado.'];
     }
 
     public function actionCriaravaliacao()
