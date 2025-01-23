@@ -93,13 +93,7 @@ class ProdutoController extends ActiveController
 
     public function actionProdutos()
     {
-        $produtos = Produto::find()
-            ->with(['imagens' => function ($query) {
-                // Carrega apenas a primeira imagem associada
-                $query->orderBy(['id' => SORT_ASC])->limit(1);
-            }])
-            ->orderBy(['id' => SORT_DESC])
-            ->all();
+        $produtos = Produto::find()->orderBy(['id' => SORT_DESC])->all();
 
         $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
         $resultado = [];
@@ -299,41 +293,4 @@ class ProdutoController extends ActiveController
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possivel obter os imagems do produto selecionado.'];
     }
-
-    /*public function actionDetalhes($id)
-    {
-        $userID = Yii::$app->params['id'];
-
-        if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $produtomodel = new $this->modelClass;
-                //$produto = $produtomodel::findOne(['id' => $id]);
-                $produto = $produtomodel::find()->with('imagens')->where(['id' => $id])->one();
-                if (!$produto) {
-                    return [
-                        'status' => 'error',
-                        'message' => 'Nenhum produto encontrado.'
-                    ];
-                }
-                if ($produto) {
-                    $imagens = $produto->imagens;
-                    foreach ($imagens as $imagem) {
-                        //
-                    }
-                }
-
-                return [
-                    'status' => 'success',
-                    'data' => $produto,
-                    'images' => $imagens
-                ];
-            }
-        }
-        Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possível obter os detalhes do produto pretendido.'];
-    }*/
 }
