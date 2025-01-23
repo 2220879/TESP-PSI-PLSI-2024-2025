@@ -48,14 +48,7 @@ class ProdutoController extends ActiveController
 
     public function actionUltimosprodutosinseridos()
     {
-        $produtos = Produto::find()
-            ->with(['imagens' => function ($query) {
-                // Carrega apenas a primeira imagem associada
-                $query->orderBy(['id' => SORT_ASC])->limit(1);
-            }])
-            ->orderBy(['id' => SORT_DESC])
-            ->limit(9)
-            ->all();
+        $produtos = Produto::find()->orderBy(['id' => SORT_DESC])->limit(9)->all();
 
         $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
         $resultado = [];
