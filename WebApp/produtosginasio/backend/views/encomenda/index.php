@@ -29,8 +29,14 @@ $this->params['breadcrumbs'][] = $this->title;
             //'morada:ntext',
             //'telefone',
             //'email:ntext',
-            //'estadoEncomenda:ntext',
-            //'profile_id',
+            'estadoEncomenda:ntext',
+            [
+                'attribute' => 'profile_id',
+                'value' => function ($model) {
+                    return $model->profile->user->username ? $model->profile->user->username : 'N/A'; // Exibe o nome da marca
+                },
+                'label' => 'Cliente',
+            ],
             [
                 'class' => ActionColumn::className(),
                 'template' => '{view} {update}', // Aqui você define as ações que quer mostrar (view e update)

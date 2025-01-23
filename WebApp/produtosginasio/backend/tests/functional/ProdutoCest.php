@@ -157,7 +157,7 @@ class ProdutoCest
         $I->seeInCurrentUrl('/marca/update');
 
         // Preenche os campos do formulário de atualização da Categoria
-        $I->fillField('Marca[nomeMarca]', 'Nikes');
+        $I->fillField('Marca[nomeMarca]', 'Nike2');
 
         // Clica no botão de salvar para enviar o formulário
         $I->click('Save');
@@ -228,7 +228,7 @@ class ProdutoCest
         $I->seeInCurrentUrl('/genero/update');
 
         // Preenche os campos do formulário de atualização da Categoria
-        $I->fillField('Genero[referencia]', 'Masculino');
+        $I->fillField('Genero[referencia]', 'Masculino2');
 
         // Clica no botão de salvar para enviar o formulário
         $I->click('Save');
@@ -302,7 +302,7 @@ class ProdutoCest
         $I->seeInCurrentUrl('/iva/update');
 
         // Preenche os campos do formulário de atualização da Categoria
-        $I->fillField('Iva[percentagem]', '0.26');
+        $I->fillField('Iva[percentagem]', '0.27');
         $I->selectOption('Iva[vigor]', '1');
 
         // Clica no botão de salvar para enviar o formulário
@@ -375,7 +375,7 @@ class ProdutoCest
         $I->seeInCurrentUrl('/tamanho/update');
 
         // Preenche os campos do formulário de atualização da Categoria
-        $I->fillField('Tamanho[referencia]', 'XS');
+        $I->fillField('Tamanho[referencia]', 'L');
 
         // Clica no botão de salvar para enviar o formulário
         $I->click('Save');
@@ -428,10 +428,10 @@ class ProdutoCest
         $I->fillField('Produto[descricaoProduto]', 'Calção elegante!!!');
 
         // Seleciona opções nos campos de dropdown
-        $I->selectOption('Produto[marca_id]', '1');
-        $I->selectOption('Produto[categoria_id]', '1');
-        $I->selectOption('Produto[iva_id]', '1');
-        $I->selectOption('Produto[genero_id]', '1');
+        $I->selectOption('Produto[marca_id]', '10');
+        $I->selectOption('Produto[categoria_id]', '10');
+        $I->selectOption('Produto[iva_id]', '9');
+        $I->selectOption('Produto[genero_id]', '10');
 
         // Clica no botão de salvar para enviar o formulário
         $I->click('Save');
@@ -464,15 +464,15 @@ class ProdutoCest
         $I->seeInCurrentUrl('/produto/update');
 
         // Preenche os campos do formulário de criação de produto
-        $I->fillField('Produto[nomeProduto]', 'Calção Adida');
+        $I->fillField('Produto[nomeProduto]', 'Calção Adidas v1');
         $I->fillField('Produto[preco]', 22.40);
         $I->fillField('Produto[descricaoProduto]', 'Calção elegante!!');
 
         // Seleciona opções nos campos de dropdown
-        $I->selectOption('Produto[marca_id]', '1');
-        $I->selectOption('Produto[categoria_id]', '1');
-        $I->selectOption('Produto[iva_id]', '1');
-        $I->selectOption('Produto[genero_id]', '1');
+        $I->selectOption('Produto[marca_id]', '10');
+        $I->selectOption('Produto[categoria_id]', '10');
+        $I->selectOption('Produto[iva_id]', '9');
+        $I->selectOption('Produto[genero_id]', '10');
 
         // Clica no botão de salvar para enviar o formulário
         $I->click('Save');
@@ -499,7 +499,7 @@ class ProdutoCest
         // Verifica se a URL está correta e se a página de produtos foi carregada
         $I->seeInCurrentUrl('/produto/index'); // Verifica que estamos na página de produtos
 
-        $I->click(['xpath' => '//tr[td[normalize-space()="Calção Adida"]]/td/a[@title="View"]']);
+        $I->click(['xpath' => '//tr[td[normalize-space()="Calção Adidas v1"]]/td/a[@title="View"]']);
 
         $I->seeInCurrentUrl('/produto/view');
 

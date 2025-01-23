@@ -32,7 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
             //'metodopagamento_id',
             //'metodoentrega_id',
             //'encomenda_id',
-            //'profile_id',
+            [
+                'attribute' => 'profile_id',
+                'value' => function ($model) {
+                    return $model->profile->user->username ? $model->profile->user->username : 'N/A'; // Exibe o nome da marca
+                },
+                'label' => 'Cliente',
+            ],
             [
                 'class' => ActionColumn::className(),
                 'template' => '{view} {delete}',

@@ -22,8 +22,8 @@ class AdicionarCarrinhoCest
         $I->see('Produtos');
         $I->click('Produtos');
 
-        $I->see('Camisola');
-        $I->click('Camisola');
+        $I->see('Calção Adida');
+        $I->click('Calção Adida');
 
         // Verificar se o botão de tamanho é exibido e clicar nele
         $I->seeElement('button[data-tamanho-id="1"]');
@@ -34,6 +34,6 @@ class AdicionarCarrinhoCest
         $I->click('#adicionar-carrinho i.fa.fa-cart-plus');
 
         // Verificar se o produto foi realmente adicionado ao carrinho
-        $I->see('Camisola');
+        $I->see('Calção Adida');
     }
 }

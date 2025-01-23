@@ -13,7 +13,7 @@ class CustomAuth extends AuthMethod
         $authToken = $request->getQueryParam('auth_key');
 
         if (empty($authToken)) {
-            throw new \yii\web\ForbiddenHttpException('Token de acesso ausente ou inválido na URL');
+            throw new \yii\web\ForbiddenHttpException('Não tem sessão iniciada');
         }
 
         $user = User::findIdentityByAccessToken($authToken);

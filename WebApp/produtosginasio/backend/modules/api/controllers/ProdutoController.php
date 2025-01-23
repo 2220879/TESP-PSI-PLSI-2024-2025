@@ -21,6 +21,7 @@ class ProdutoController extends ActiveController
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => CustomAuth::className(),
+            'except' => ['produtos', 'ultimosprodutosinseridos'],
         ];
         return $behaviors;
     }
@@ -45,59 +46,92 @@ class ProdutoController extends ActiveController
 
     }
 
+    public function actionUltimosprodutosinseridos()
+    {
+        $produtos = Produto::find()
+            ->with(['imagens' => function ($query) {
+                // Carrega apenas a primeira imagem associada
+                $query->orderBy(['id' => SORT_ASC])->limit(1);
+            }])
+            ->orderBy(['id' => SORT_DESC])
+            ->limit(9)
+            ->all();
+
+        $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+        $resultado = [];
+
+        foreach ($produtos as $produto) {
+            //array dos produto
+            $produtoData = [
+                'id' => $produto->id,
+                'nomeProduto' => $produto->nomeProduto,
+                'preco' => $produto->preco,
+                'quantidade' => $produto->quantidade,
+                'descricaoProduto' => $produto->descricaoProduto,
+                'marca' => $produto->marca->nomeMarca,
+                'categoria' => $produto->categoria->nomeCategoria,
+                'iva' => $produto->iva->percentagem,
+                'genero' => $produto->genero->referencia,
+                'imagem' => null
+            ];
+
+            // Verifica se o produto tem imagens associadas
+            if (!empty($produto->imagens)) {
+                // Vai buscar a primeira imagem
+                $primeiraImagem = $produto->imagens[0];
+
+                // Monta a URL completa da imagem
+                $produtoData['imagem'] = $baseUrl . $primeiraImagem->filename;
+            }
+
+            //adiciona os dados do produto ao array de resultados
+            $resultado[] = $produtoData;
+        }
+        return $resultado;
+
+    }
+
     public function actionProdutos()
     {
-        $userID = Yii::$app->params['id'];
+        $produtos = Produto::find()
+            ->with(['imagens' => function ($query) {
+                // Carrega apenas a primeira imagem associada
+                $query->orderBy(['id' => SORT_ASC])->limit(1);
+            }])
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
 
-        if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $produtos = Produto::find()
-                    ->with(['imagens' => function ($query) {
-                        // Carrega apenas a primeira imagem associada
-                        $query->orderBy(['id' => SORT_ASC])->limit(1);
-                    }])
-                    ->orderBy(['id' => SORT_DESC])
-                    ->all();
+        $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+        $resultado = [];
 
-                $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
-                $resultado = [];
+        foreach ($produtos as $produto) {
+            //array dos produto
+            $produtoData = [
+                'id' => $produto->id,
+                'nomeProduto' => $produto->nomeProduto,
+                'preco' => $produto->preco,
+                'quantidade' => $produto->quantidade,
+                'descricaoProduto' => $produto->descricaoProduto,
+                'marca' => $produto->marca->nomeMarca,
+                'categoria' => $produto->categoria->nomeCategoria,
+                'iva' => $produto->iva->percentagem,
+                'genero' => $produto->genero->referencia,
+                'imagem' => null
+            ];
 
-                foreach ($produtos as $produto) {
-                    //array dos produto
-                    $produtoData = [
-                        'id' => $produto->id,
-                        'nomeProduto' => $produto->nomeProduto,
-                        'preco' => $produto->preco,
-                        'quantidade' => $produto->quantidade,
-                        'descricaoProduto' => $produto->descricaoProduto,
-                        'marca' => $produto->marca->nomeMarca,
-                        'categoria' => $produto->categoria->nomeCategoria,
-                        'iva' => $produto->iva->percentagem,
-                        'genero' => $produto->genero->referencia,
-                        'imagem' => null
-                    ];
+            // Verifica se o produto tem imagens associadas
+            if (!empty($produto->imagens)) {
+                // Vai buscar a primeira imagem
+                $primeiraImagem = $produto->imagens[0];
 
-                    // Verifica se o produto tem imagens associadas
-                    if (!empty($produto->imagens)) {
-                        // Vai buscar a primeira imagem
-                        $primeiraImagem = $produto->imagens[0];
-
-                        // Monta a URL completa da imagem
-                        $produtoData['imagem'] = $baseUrl . $primeiraImagem->filename;
-                    }
-
-                    //adiciona os dados do produto ao array de resultados
-                    $resultado[] = $produtoData;
-                }
-                return $resultado;
+                // Monta a URL completa da imagem
+                $produtoData['imagem'] = $baseUrl . $primeiraImagem->filename;
             }
+
+            //adiciona os dados do produto ao array de resultados
+            $resultado[] = $produtoData;
         }
-        Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possível obter os produtos.'];
+        return $resultado;
 
     }
 

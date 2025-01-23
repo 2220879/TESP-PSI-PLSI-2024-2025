@@ -43,13 +43,6 @@ class AvaliacaoController extends ActiveController
                     // Busca todas as avaliações associadas ao perfil do usuário
                     $avaliacoes = Avaliacao::find()->where(['profile_id' => $profile->id])->all();
 
-                    // Se não houver avaliações, retorna uma mensagem informando
-                    if (empty($avaliacoes)) {
-                        Yii::$app->response->statusCode = 200;
-                        return ['message' => 'Nenhuma avaliação encontrada para este usuário.'];
-                    }
-
-                    // Caso contrário, retorna as avaliações
                     return $avaliacoes;
                 } else {
                     Yii::$app->response->statusCode = 400;
@@ -112,7 +105,7 @@ class AvaliacaoController extends ActiveController
                 $avaliacao = Avaliacao::find()->where(['id' => $avaliacaoId, 'profile_id' => $profile->id])->one();
 
                 if ($avaliacao != null) {
-                    $avaliacao->descricao=$descricao;
+                    $avaliacao->descricao = $descricao;
                     $avaliacao->update();
                     return 'Avaliação alterada com sucesso!';
                 } else {

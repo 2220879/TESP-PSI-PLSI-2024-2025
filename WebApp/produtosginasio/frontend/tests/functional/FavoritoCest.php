@@ -9,7 +9,7 @@ class FavoritoCest
     public function _before(FunctionalTester $I)
     {
         $I->amOnPage('/login');
-        $I->fillField('LoginForm[username]', 'ruben');
+        $I->fillField('LoginForm[username]', 'Tuga Francisco');
         $I->fillField('LoginForm[password]', 'Admin*1234567');
         $I->click('button[name="login-button"]');
     }
@@ -23,8 +23,8 @@ class FavoritoCest
         $I->see('Produtos');
         $I->click('Produtos');
 
-        $I->see('Calças Trefoil Essentials');
-        $I->click('Calças Trefoil Essentials');
+        $I->see('Calção Adida');
+        $I->click('Calção Adida');
 
         $I->click('#adicionar-favorito');
 

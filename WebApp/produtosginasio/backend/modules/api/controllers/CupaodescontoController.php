@@ -17,6 +17,7 @@ class CupaodescontoController extends ActiveController
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => CustomAuth::className(),
+            'except' => ['cupoesdescontovalidos'],
         ];
         return $behaviors;
     }
@@ -58,4 +59,25 @@ class CupaodescontoController extends ActiveController
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível obter os cupões de desconto.'];
     }
+
+    public function actionCupoesdescontovalidos()
+    {
+        $cupaodescontomodel = new $this->modelClass;
+
+        $currentDate = date('Y-m-d');
+
+        $recs = $cupaodescontomodel::find()
+            ->where(['>=', 'dataFim', $currentDate])
+            ->all();
+
+        $cupoesDesconto = [];
+        foreach ($recs as $rec) {
+            $rec->desconto = $rec->desconto * 100;
+            $rec->dataFim = date('d-m-Y', strtotime($rec->dataFim));
+            $cupoesDesconto[] = $rec;
+        }
+
+        return $cupoesDesconto;
+    }
+
 }

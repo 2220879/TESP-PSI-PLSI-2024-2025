@@ -100,10 +100,14 @@ class FavoritoController extends ActiveController
 
                 $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
-                $favorito = new Favorito();
-
                 $produtoId = $request->getBodyParam('produto');
 
+                if (Favorito::find()->where(['produto_id' => $produtoId, 'profile_id' => $profile->id])->exists()) {
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Produto já adicionado nos favoritos.'];
+                }
+
+                $favorito = new Favorito();
                 $favorito->produto_id = $produtoId;
                 $favorito->profile_id = $profile->id;
                 if ($favorito->save()) {

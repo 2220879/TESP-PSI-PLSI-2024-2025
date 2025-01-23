@@ -57,6 +57,6 @@ class MetodopagamentoController extends ActiveController
             }
         }
         Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possivel obter as marcas.'];
+        return ['message' => 'Não foi possivel obter os métodos de pagamento.'];
     }
 }

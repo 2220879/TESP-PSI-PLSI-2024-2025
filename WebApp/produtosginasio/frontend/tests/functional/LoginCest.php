@@ -24,7 +24,7 @@ class LoginCest
     public function loginWithWrongCredentials(FunctionalTester $I)
     {
         $I->amOnRoute('/site/login');
-        $I->fillField('LoginForm[username]', 'ruben');
+        $I->fillField('LoginForm[username]', 'Tuga Francisco');
         $I->fillField('LoginForm[password]', 'admin1234567');
         $I->click('button[name="login-button"]');
         $I->see('Incorrect username or password.');
@@ -33,7 +33,7 @@ class LoginCest
     public function loginSuccessfully(FunctionalTester $I)
     {
         $I->amOnRoute('/site/login');
-        $I->fillField('LoginForm[username]', 'ruben');
+        $I->fillField('LoginForm[username]', 'Tuga Francisco');
         $I->fillField('LoginForm[password]', 'Admin*1234567');
         $I->click('button[name="login-button"]');
 
