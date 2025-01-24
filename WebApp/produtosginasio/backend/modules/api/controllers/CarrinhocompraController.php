@@ -135,56 +135,79 @@ class CarrinhocompraController extends ActiveController
         }
 
         $request = Yii::$app->request;
-        $produto = $request->getBodyParam('produto');
+        $produtoId = $request->getBodyParam('produto');
+        $tamanhoId = $request->getBodyParam('tamanho');
 
-        $produto = Produto::find()->where(['id' => $produto])->one();
+        // Verifica se o produto tem tamanhos associados
+        $produtoHasTamanhos = ProdutosHasTamanho::find()->where(['produto_id' => $produtoId])->all();
+        $produto = Produto::find()->where(['id' => $produtoId])->one();
 
         if ($produto == null) {
             Yii::$app->response->statusCode = 400;
             return ['message' => 'Produto não encontrado.'];
         }
 
-        if ($produto->quantidade > 0) {
-            //atualizar a quantidade do Produto
-            $produto->quantidade -= 1;
-            $produto->save();
-
-            $linhaCarrinho = Linhacarrinho::find()->where(['carrinhocompras_id' => $carrinho->id, 'produto_id' => $produto->id])->one();
-
-            if ($linhaCarrinho) {
-                $linhaCarrinho->quantidade += 1;
+        if ($produtoHasTamanhos) {
+            if ($tamanhoId != null) {
+                $produtoTamanho = ProdutosHasTamanho::find()->where(['produto_id' => $produtoId, 'tamanho_id' => $tamanhoId])->one();
+                if (!$produtoTamanho || $produtoTamanho->quantidade <= 0) {
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'Stock insuficiente.'];
+                }
             } else {
-                $linhaCarrinho = new Linhacarrinho();
-                $linhaCarrinho->quantidade = 1;
-                $linhaCarrinho->carrinhocompras_id = $carrinho->id;
-                $linhaCarrinho->produto_id = $produto->id;
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Tamanho não especificado ou não encontrado para este produto.'];
             }
-
-            $linhaCarrinho->precoUnit = $produto->preco;
-            $linhaCarrinho->valorIva = $produto->iva->percentagem;
-
-            $percentualIva = $produto->iva->percentagem;
-            $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
-            $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
-            $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
-
-            $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
-            $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
-
-            if ($linhaCarrinho->save()) {
-                $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
-            }
-
-            return [
-                'linhaCarrinho' => $linhaCarrinho,
-            ];
         } else {
-            Yii::$app->response->statusCode = 400;
-            return ['message' => 'Stock insuficiente.'];
+            if ($produto->quantidade <= 0) {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Stock insuficiente.'];
+            }
         }
 
-        Yii::$app->response->statusCode = 400;
-        return ['message' => 'Não foi possivel adicionar o produto ao carrinho.'];
+        // Atualiza a quantidade de produto ou produto com tamanho
+        if ($produtoHasTamanhos) {
+            $produtoTamanho->quantidade -= 1;
+            $produtoTamanho->save();
+
+            // Atualiza a quantidade total do produto na tabela Produtos
+            $produto->quantidade -= 1;
+            $produto->save();
+        } else {
+            $produto->quantidade -= 1;
+            $produto->save();
+        }
+
+        $linhaCarrinho = Linhacarrinho::find()->where(['carrinhocompras_id' => $carrinho->id, 'produto_id' => $produto->id])->one();
+
+        if ($linhaCarrinho) {
+            $linhaCarrinho->quantidade += 1;
+        } else {
+            $linhaCarrinho = new Linhacarrinho();
+            $linhaCarrinho->quantidade = 1;
+            $linhaCarrinho->carrinhocompras_id = $carrinho->id;
+            $linhaCarrinho->produto_id = $produto->id;
+            if ($produtoHasTamanhos) {
+                $linhaCarrinho->tamanho_id = $produtoTamanho->tamanho_id;
+            }
+        }
+
+        $linhaCarrinho->precoUnit = $produto->preco;
+        $linhaCarrinho->valorIva = $produto->iva->percentagem;
+
+        $percentualIva = $produto->iva->percentagem;
+        $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
+        $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
+        $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
+
+        $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
+        $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+
+        if ($linhaCarrinho->save()) {
+            $this->updateCarrinhoTotal($linhaCarrinho->carrinhocompras_id);
+        }
+
+        return ['linhaCarrinho' => $linhaCarrinho];
     }
 
     public function actionAumentarquantidade()

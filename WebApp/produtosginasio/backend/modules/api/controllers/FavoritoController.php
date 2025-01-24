@@ -69,7 +69,7 @@ class FavoritoController extends ActiveController
                         'produto_id' => $favorito->produto_id,
                         'profile_id' => $favorito->profile_id,
                         'nomeProduto' => $produto->nomeProduto,
-                        'preco' => $produto->preco,
+                        'preco' => number_format($produto->preco, 2),
                         'imagem' => null,];
                     if (!empty($produto->imagens)) {
                         //vai buscar a primeira imagem
