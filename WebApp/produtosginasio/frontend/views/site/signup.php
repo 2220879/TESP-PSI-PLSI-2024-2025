@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="site-signup">
         <h1><?= Html::encode($this->title) ?></h1>
 
-        <p>Please fill out the following fields to signup:</p>
+        <p>Preencha todos os campos para efetuar o registo:</p>
 
         <?php if (Yii::$app->session->hasFlash('error')): ?>
             <div class="alert alert-danger">
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'telefone')->textInput() ?>
 
                 <div class="form-group">
-                    <?= Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                    <?= Html::submitButton('Registar', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
                 </div>
 
                 <?php ActiveForm::end(); ?>

@@ -26,15 +26,9 @@ class MarcaController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $marcaModel = new $this->modelClass;
-                $recs = $marcaModel::find()->all();
-                return ['count' => count($recs)];
-            }
+            $marcaModel = new $this->modelClass;
+            $recs = $marcaModel::find()->all();
+            return ['count' => count($recs)];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possivel contar as marcas.'];
@@ -45,15 +39,9 @@ class MarcaController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $marcaModel = new $this->modelClass;
-                $recs = $marcaModel::find()->all();
-                return ['marcas' => $recs];
-            }
+            $marcaModel = new $this->modelClass;
+            $recs = $marcaModel::find()->all();
+            return ['marcas' => $recs];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possivel obter as marcas.'];

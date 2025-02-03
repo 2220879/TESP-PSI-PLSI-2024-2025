@@ -27,15 +27,9 @@ class MetodopagamentoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $metodoPagamentoModel = new $this->modelClass;
-                $recs = $metodoPagamentoModel::find()->all();
-                return ['count' => count($recs)];
-            }
+            $metodoPagamentoModel = new $this->modelClass;
+            $recs = $metodoPagamentoModel::find()->all();
+            return ['count' => count($recs)];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível contar os métodos de pagamento.'];
@@ -46,15 +40,9 @@ class MetodopagamentoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $metodopagamentoModel = new $this->modelClass;
-                $recs = $metodopagamentoModel::find()->all();
-                return ['metodopagamentos' => $recs];
-            }
+            $metodopagamentoModel = new $this->modelClass;
+            $recs = $metodopagamentoModel::find()->all();
+            return ['metodopagamentos' => $recs];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possivel obter os métodos de pagamento.'];

@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var common\models\Cupaodesconto $model */
 
-$this->title = $model->id;
+$this->title = $model->codigo;
 $this->params['breadcrumbs'][] = ['label' => 'Cupaodescontos    ', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);

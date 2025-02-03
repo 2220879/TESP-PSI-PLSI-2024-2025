@@ -84,34 +84,28 @@ class EncomendaController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $profile = Profile::find()->where(['user_id' => $userID])->one();
-                $encomendas = Encomenda::find()->where(['profile_id' => $profile->id])->all();
+            $profile = Profile::find()->where(['user_id' => $userID])->one();
+            $encomendas = Encomenda::find()->where(['profile_id' => $profile->id])->all();
 
-                $resultado = [];
+            $resultado = [];
 
-                foreach ($encomendas as $encomenda) {
-                    //array das encomendas
-                    $encomendaData = [
-                        'encomendaID' => $encomenda->id,
-                        'data' => date('d-m-Y', strtotime($encomenda->data)),
-                        'hora' => $encomenda->hora,
-                        'morada' => $encomenda->morada,
-                        'telefone' => $encomenda->telefone,
-                        'email' => $encomenda->email,
-                        'estadoEncomenda' => $encomenda->estadoEncomenda,
-                        'profile_id' => $encomenda->profile_id,
-                    ];
+            foreach ($encomendas as $encomenda) {
+                //array das encomendas
+                $encomendaData = [
+                    'encomendaID' => $encomenda->id,
+                    'data' => date('d-m-Y', strtotime($encomenda->data)),
+                    'hora' => $encomenda->hora,
+                    'morada' => $encomenda->morada,
+                    'telefone' => $encomenda->telefone,
+                    'email' => $encomenda->email,
+                    'estadoEncomenda' => $encomenda->estadoEncomenda,
+                    'profile_id' => $encomenda->profile_id,
+                ];
 
-                    //adiciona os dados das encomendas ao array de resultados
-                    $resultado[] = $encomendaData;
-                }
-                return $resultado;
+                //adiciona os dados das encomendas ao array de resultados
+                $resultado[] = $encomendaData;
             }
+            return $resultado;
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível obter as encomendas.'];
@@ -123,51 +117,45 @@ class EncomendaController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $request = Yii::$app->request;
-                $encomendaID = $request->getBodyParam('encomenda');
+            $request = Yii::$app->request;
+            $encomendaID = $request->getBodyParam('encomenda');
 
-                // Buscar o perfil e a encomenda
-                $profile = Profile::find()->where(['user_id' => $userID])->one();
-                $encomenda = Encomenda::find()->where(['id' => $encomendaID, 'profile_id' => $profile->id])->one();
+            // Buscar o perfil e a encomenda
+            $profile = Profile::find()->where(['user_id' => $userID])->one();
+            $encomenda = Encomenda::find()->where(['id' => $encomendaID, 'profile_id' => $profile->id])->one();
 
-                //fatura associada
-                $fatura = Fatura::find()->where(['encomenda_id' => $encomendaID, 'profile_id' => $profile->id])->one();
+            //fatura associada
+            $fatura = Fatura::find()->where(['encomenda_id' => $encomendaID, 'profile_id' => $profile->id])->one();
 
-                //linhas da fatura
-                $linhasFatura = Linhafatura::find()->where(['fatura_id' => $fatura->id])->all();
-                $produtos = [];
+            //linhas da fatura
+            $linhasFatura = Linhafatura::find()->where(['fatura_id' => $fatura->id])->all();
+            $produtos = [];
 
-                foreach ($linhasFatura as $linha) {
-                    //guardar os dados do produto no array
-                    $produtos[] = [
-                        'nomeProduto' => $linha->nomeProduto,
-                        'preco' => number_format($linha->subtotal, 2, ',', '.'),
-                        'quantidade' => $linha->quantidade,
-                    ];
-                }
-
-                //detalhes da encomenda
-                $encomendaDetalhes = [
-                    'encomendaID' => $encomenda->id,
-                    'data' => date('d-m-Y', strtotime($encomenda->data)),
-                    'hora' => $encomenda->hora,
-                    'morada' => $encomenda->morada,
-                    'telefone' => $encomenda->telefone,
-                    'email' => $encomenda->email,
-                    'estadoEncomenda' => $encomenda->estadoEncomenda,
-                    'profile_id' => $encomenda->profile_id,
-                ];
-
-                return [
-                    'encomenda' => $encomendaDetalhes,
-                    'produtos' => $produtos
+            foreach ($linhasFatura as $linha) {
+                //guardar os dados do produto no array
+                $produtos[] = [
+                    'nomeProduto' => $linha->nomeProduto,
+                    'preco' => number_format($linha->subtotal, 2, ',', '.'),
+                    'quantidade' => $linha->quantidade,
                 ];
             }
+
+            //detalhes da encomenda
+            $encomendaDetalhes = [
+                'encomendaID' => $encomenda->id,
+                'data' => date('d-m-Y', strtotime($encomenda->data)),
+                'hora' => $encomenda->hora,
+                'morada' => $encomenda->morada,
+                'telefone' => $encomenda->telefone,
+                'email' => $encomenda->email,
+                'estadoEncomenda' => $encomenda->estadoEncomenda,
+                'profile_id' => $encomenda->profile_id,
+            ];
+
+            return [
+                'encomenda' => $encomendaDetalhes,
+                'produtos' => $produtos
+            ];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível obter os detalhes da encomenda pretendida.'];

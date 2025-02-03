@@ -73,23 +73,6 @@ $this->title = 'Produtos de Ginásio';
                                 <?php endif; ?>
                             </div>
                             <div class="detail-box">
-                <span class="p_rating">
-                  <a href="">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                  </a>
-                  <a href="">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                  </a>
-                </span>
                                 <a href="<?= Url::to(['produto/detalhes', 'id' => $produtoRecente->id]) ?>"
                                    class="p_name">
                                     <?= Html::Encode($produtoRecente->nomeProduto) ?>

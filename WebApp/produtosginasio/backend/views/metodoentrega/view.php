@@ -31,7 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'descricao:ntext',
             'diasEntrega:ntext',
             'preco',
-            'vigor',
+            //'vigor',
+            [
+                'label' => 'Vigor',
+                'value' => $model->vigor ? 'Está em vigor' : 'Não está em vigor',
+            ],
         ],
     ]) ?>
 

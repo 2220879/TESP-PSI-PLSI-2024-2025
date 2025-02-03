@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\CupaodescontoSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Cupaodescontos';
+$this->title = 'Cupões Descontos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cupaodesconto-index">
@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <p>
-        <?= Html::a('Criar Cupaodesconto', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Criar Cupão Desconto', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

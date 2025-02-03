@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Html;
+
 ?>
 <div class="card">
     <div class="card-body login-card-body">
@@ -13,7 +15,7 @@ use yii\helpers\Html;
 
         <?php $form = \yii\bootstrap4\ActiveForm::begin(['id' => 'login-form']) ?>
 
-        <?= $form->field($model,'username', [
+        <?= $form->field($model, 'username', [
             'options' => ['class' => 'form-group has-feedback'],
             'inputTemplate' => '{input}<div class="input-group-append"><div class="input-group-text"><span class="fas fa-envelope"></span></div></div>',
             'template' => '{beginWrapper}{input}{error}{endWrapper}',
@@ -33,7 +35,7 @@ use yii\helpers\Html;
 
         <div class="row">
             <div class="col-4">
-                <?= Html::submitButton('Sign In', ['class' => 'btn btn-primary btn-block']) ?>
+                <?= Html::submitButton('Entrar', ['class' => 'btn btn-primary btn-block']) ?>
             </div>
         </div>
 

@@ -29,7 +29,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             //'id',
             'percentagem',
-            'vigor',
+            [
+                'label' => 'Vigor',
+                'value' => $model->vigor ? 'Está em vigor' : 'Não está em vigor',
+            ],
         ],
     ]) ?>
 

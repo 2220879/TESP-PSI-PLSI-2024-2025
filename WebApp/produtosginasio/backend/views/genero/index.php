@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\GeneroSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Gêneros';
+$this->title = 'Géneros';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="genero-index">
@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php endif; ?>
 
     <p>
-        <?= Html::a('Criar Gênero', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Criar Género', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

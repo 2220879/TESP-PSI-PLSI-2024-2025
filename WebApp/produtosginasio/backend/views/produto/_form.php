@@ -34,7 +34,7 @@ use common\models\Tamanho;
     <?= $form->field($imagemForm, 'imagens[]')->fileInput(['multiple' => true, 'accept' => 'image/*']) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

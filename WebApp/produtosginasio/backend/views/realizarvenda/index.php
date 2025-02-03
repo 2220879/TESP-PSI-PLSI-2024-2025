@@ -93,10 +93,12 @@ foreach (Yii::$app->session->getAllFlashes() as $type => $message) {
                     <div class="row"> <?php foreach ($produtos as $produto): ?>
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="box">
-                                    <div class="img-box"> <?php foreach ($produto->imagens as $imagem): ?>
-                                            <div class="image-container"> <?= Html::img(Yii::getAlias('@web/uploads/') . $imagem->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?> </div> <?php endforeach; ?>
+                                    <div class="img-box"> <?php if (!empty($produto->imagens)): ?>
+                                            <div class="image-container"> <?= Html::img(Yii::getAlias('@web/uploads/') . $produto->imagens[0]->filename, ['class' => 'product-image', 'style' => 'width: 200px; height: 200px;']) ?> </div> <?php endif; ?>
                                     </div>
-                                    <div class="detail-box"><p><?= Html::encode($produto->nomeProduto) ?></p> <h6
+                                    <div class="detail-box"><p><?= Html::encode($produto->nomeProduto) ?></p>
+                                        <p>Iva: <?= Html::encode($produto->iva->percentagem) ?>%</p>
+                                        <h6
                                                 class="p_price"><span
                                                     class="new_price"><?= Html::encode(number_format($produto->preco, 2, ',', '.')) ?>€</span>
                                         </h6></div> <?php if (!empty($produto->produtosHasTamanhos)): ?>

@@ -185,9 +185,9 @@ class CarrinhocompraController extends Controller
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
             // Atribuir os valores calculados ao resumo do carrinho
-            $linhaCarrinho->valorIva = round($valorIvaAplicado, 2);
-            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
-            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
+            $linhaCarrinho->valorIva = $produto->iva->percentagem;
+            $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
+            $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
 
             // Guardar na base de dados
             if (!$linhaCarrinho->save()) {
@@ -335,8 +335,8 @@ class CarrinhocompraController extends Controller
             $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
             // atualizar o subtotal e o valor com IVA
-            $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-            $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+            $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+            $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
             // atualiza o carrinho
             if ($linhaCarrinho->save()) {
@@ -385,8 +385,8 @@ class CarrinhocompraController extends Controller
                 $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
                 // Atualiza os valores do carrinho
-                $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-                $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+                $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+                $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
                 // Atualiza o carrinho
                 if ($linhaCarrinho->save()) {
@@ -427,8 +427,8 @@ class CarrinhocompraController extends Controller
                 $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
                 // Atualiza os valores no resumo do carrinho
-                $linhaCarrinho->subtotal = round($subtotalComIva, 2);
-                $linhaCarrinho->valorComIva = round($subtotalComIva, 2);
+                $linhaCarrinho->subtotal = number_format($subtotalComIva, 2);
+                $linhaCarrinho->valorComIva = number_format($subtotalComIva, 2);
 
                 // Atualiza o carrinho
                 if ($linhaCarrinho->save()) {

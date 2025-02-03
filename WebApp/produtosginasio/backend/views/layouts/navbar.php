@@ -11,14 +11,7 @@ use yii\helpers\Html;
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="<?=\yii\helpers\Url::home()?>" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Dropdown</a>
-            <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                <li><a href="#" class="dropdown-item">Some action </a></li>
-                <li><a href="#" class="dropdown-item">Some other action</a></li>
-            </ul>
+            <a href="<?= \yii\helpers\Url::home() ?>" class="nav-link">Home</a>
         </li>
     </ul>
 

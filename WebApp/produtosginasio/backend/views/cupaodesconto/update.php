@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Cupaodesconto $model */
 
-$this->title = 'Atualizar Cupaodesconto';
+$this->title = 'Atualizar Cupão Desconto';
 $this->params['breadcrumbs'][] = ['label' => 'Cupaodescontos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

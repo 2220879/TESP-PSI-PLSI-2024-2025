@@ -26,15 +26,9 @@ class GeneroController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $generoModel = new $this->modelClass;
-                $recs = $generoModel::find()->all();
-                return ['count' => count($recs)];
-            }
+            $generoModel = new $this->modelClass;
+            $recs = $generoModel::find()->all();
+            return ['count' => count($recs)];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível contar os géneros'];
@@ -45,15 +39,9 @@ class GeneroController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $generoModel = new $this->modelClass;
-                $recs = $generoModel::find()->all();
-                return ['generos' => $recs];
-            }
+            $generoModel = new $this->modelClass;
+            $recs = $generoModel::find()->all();
+            return ['generos' => $recs];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível obter os géneros.'];

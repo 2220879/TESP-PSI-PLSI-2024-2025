@@ -26,15 +26,9 @@ class IvaController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $ivaModel = new $this->modelClass;
-                $recs = $ivaModel::find()->all();
-                return ['count' => count($recs)];
-            }
+            $ivaModel = new $this->modelClass;
+            $recs = $ivaModel::find()->all();
+            return ['count' => count($recs)];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possível contar os ivas.'];
@@ -45,15 +39,9 @@ class IvaController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $ivaModel = new $this->modelClass;
-                $recs = $ivaModel::find()->all();
-                return ['ivas' => $recs];
-            }
+            $ivaModel = new $this->modelClass;
+            $recs = $ivaModel::find()->all();
+            return ['ivas' => $recs];
         }
         Yii::$app->response->statusCode = 400;
         return ['message' => 'Não foi possivel obter os ivas.'];

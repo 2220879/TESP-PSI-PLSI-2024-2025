@@ -195,7 +195,7 @@ class CarrinhocompraController extends ActiveController
         $linhaCarrinho->precoUnit = $produto->preco;
         $linhaCarrinho->valorIva = $produto->iva->percentagem;
 
-        $percentualIva = $produto->iva->percentagem;
+        $percentualIva = $produto->iva->percentagem * 100;
         $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
         $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
         $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
@@ -266,7 +266,7 @@ class CarrinhocompraController extends ActiveController
         $linhaCarrinho->quantidade += 1;
 
         $subtotalSemIva = $linhaCarrinho->precoUnit * $linhaCarrinho->quantidade;
-        $percentualIva = $linhaCarrinho->produto->iva->percentagem;
+        $percentualIva = $linhaCarrinho->produto->iva->percentagem * 100;
         $valorIvaAplicado = $subtotalSemIva * ($percentualIva / 100);
         $subtotalComIva = $subtotalSemIva + $valorIvaAplicado;
 
@@ -513,7 +513,7 @@ class CarrinhocompraController extends ActiveController
             $cupao = Cupaodesconto::find()->where(['codigo' => $cupao])->one();
 
             if ($cupao && strtotime($cupao->dataFim) >= time()) {
-                $valorPoupado = (($cupao->desconto / 100) * $subTotal);
+                $valorPoupado = $cupao->desconto * $subTotal;
                 $desconto = $cupao->desconto;
             }
         }
@@ -624,7 +624,7 @@ class CarrinhocompraController extends ActiveController
 
                 $linhaFatura->quantidade = $linhaCarrinho->quantidade;
                 $linhaFatura->precoUnit = $produto->preco;
-                $linhaFatura->valorIva = $percentualIva;
+                $linhaFatura->valorIva = $produto->iva->percentagem;
                 $linhaFatura->valorComIva = number_format($subtotalComIva, 2);
                 $linhaFatura->subtotal = number_format($subtotalComIva, 2);
                 $linhaFatura->fatura_id = $fatura->id;
@@ -632,7 +632,7 @@ class CarrinhocompraController extends ActiveController
 
                 if ($linhaFatura->save()) {
                     $fatura->valorTotal += number_format($subtotalComIva, 2); // Adiciona o subtotal com IVA ao total da fatura
-                    $fatura->ivaTotal += number_format($valorIvaAplicado, 2); // Acumula o valor do IVA total
+                    $fatura->ivaTotal += number_format($produto->iva->percentagem, 2); // Acumula o valor do IVA total
                 }
 
             }
@@ -651,10 +651,10 @@ class CarrinhocompraController extends ActiveController
 
                 if ($cupao) {
                     // Calcular o valor do desconto como percentagem do subtotal com IVA
-                    $ValorPoupado = ($fatura->valorTotal * $cupao->desconto) / 100;
+                    $ValorPoupado = ($cupao->desconto * $carrinho->valorTotal);
 
                     // Aplica o desconto no valor total, mas sem considerar o custo de envio
-                    $fatura->valorTotal -= $ValorPoupado;
+                    $fatura->valorTotal -= number_format($ValorPoupado, 2);
                 }
 
                 // Registra o uso do cupão
@@ -667,7 +667,7 @@ class CarrinhocompraController extends ActiveController
             $fatura->save();
 
 
-            $this->actionGeneratePdf($fatura->id, $cupao ?? null, $ValorPoupado ?? 0.00);
+            $this->actionGeneratePdf($fatura->id, $cupao ?? null, number_format($ValorPoupado, 2) ?? 0.00);
         }
 
         //Apaga as linhas carrinho do cliente auntenticado
@@ -734,7 +734,6 @@ class CarrinhocompraController extends ActiveController
 
     public function actionAdicionarcarrinho($produto_id, $tamanho_id)
     {
-
         // Verificar se o produto existe
         $produto = Produto::findOne($produto_id);
         if (!$produto) {

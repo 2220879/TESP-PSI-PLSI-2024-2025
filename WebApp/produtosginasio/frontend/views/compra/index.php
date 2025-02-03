@@ -19,8 +19,9 @@ $this->title = 'Minhas Compras';
         <?php foreach ($faturas as $fatura): ?>
             <div class="compra-descricao">
                 <h3>Fatura Nº <?= $fatura->id ?></h3>
-                <?= Html::a('Ver Fatura', ['view', 'id' => $fatura->id], ['class' => 'fa-solid fa-file-pdf']) ?>
-
+                <p>
+                    <?= Html::a('Ver Fatura', ['view', 'id' => $fatura->id], ['class' => 'btn btn-primary']) ?>
+                </p>
             </div>
             <hr>
         <?php endforeach; ?>

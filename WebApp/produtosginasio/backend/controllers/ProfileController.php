@@ -43,22 +43,6 @@ class ProfileController extends Controller
         );
     }
 
-    /**
-     * Lists all Profile models.
-     *
-     * @return string
-     */
-    /* public function actionIndex()
-     {
-         $searchModel = new ProfileSearch();
-         $dataProvider = $searchModel->search($this->request->queryParams);
-
-         return $this->render('index', [
-             'searchModel' => $searchModel,
-             'dataProvider' => $dataProvider,
-         ]);
-     }*/
-
     public function actionIndex($id)
     {
         $user = User::find()->where(['id' => $id])->one();

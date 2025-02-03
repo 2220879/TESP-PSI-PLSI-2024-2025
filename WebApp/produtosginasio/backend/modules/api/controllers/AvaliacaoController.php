@@ -30,48 +30,42 @@ class AvaliacaoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador não tem permissões de cliente'];
-            } else {
-                $profile = Profile::find()->where(['user_id' => $user->id])->one();
+            $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
-                if ($profile !== null) {
-                    $avaliacoes = Avaliacao::find()->where(['profile_id' => $profile->id])->all();
+            if ($profile !== null) {
+                $avaliacoes = Avaliacao::find()->where(['profile_id' => $profile->id])->all();
 
-                    $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
-                    $resultado = [];
+                $baseUrl = 'http://172.22.21.204' . Yii::getAlias('@web/uploads/');
+                $resultado = [];
 
-                    foreach ($avaliacoes as $avaliacao) {
-                        //array das avaliações
-                        $avaliacaoData = [
-                            'id' => $avaliacao->id,
-                            'descricao' => $avaliacao->descricao,
-                            'nomeProduto' => $avaliacao->produto->nomeProduto,
-                            'imagemProduto' => null,
-                            'produto_id' => $avaliacao->produto->id,
-                            'profile_id' => $avaliacao->profile_id,
-                        ];
+                foreach ($avaliacoes as $avaliacao) {
+                    //array das avaliações
+                    $avaliacaoData = [
+                        'id' => $avaliacao->id,
+                        'descricao' => $avaliacao->descricao,
+                        'nomeProduto' => $avaliacao->produto->nomeProduto,
+                        'imagemProduto' => null,
+                        'produto_id' => $avaliacao->produto->id,
+                        'profile_id' => $avaliacao->profile_id,
+                    ];
 
-                        // Verifica se o produto avaliado tem imagens associadas
-                        if (!empty($avaliacao->produto->imagens)) {
-                            // Vai buscar a primeira imagem
-                            $primeiraImagem = $avaliacao->produto->imagens[0];
+                    // Verifica se o produto avaliado tem imagens associadas
+                    if (!empty($avaliacao->produto->imagens)) {
+                        // Vai buscar a primeira imagem
+                        $primeiraImagem = $avaliacao->produto->imagens[0];
 
-                            // Monta a URL completa da imagem
-                            $avaliacaoData['imagemProduto'] = $baseUrl . $primeiraImagem->filename;
-                        }
-
-                        //adiciona os dados da avaliação ao array de resultados
-                        $resultado[] = $avaliacaoData;
+                        // Monta a URL completa da imagem
+                        $avaliacaoData['imagemProduto'] = $baseUrl . $primeiraImagem->filename;
                     }
 
-                    return $resultado;
-                } else {
-                    Yii::$app->response->statusCode = 400;
-                    return ['message' => 'Perfil não encontrado.'];
+                    //adiciona os dados da avaliação ao array de resultados
+                    $resultado[] = $avaliacaoData;
                 }
+
+                return $resultado;
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Perfil não encontrado.'];
             }
         }
 
@@ -85,25 +79,19 @@ class AvaliacaoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
-            } else {
-                $profile = Profile::find()->where(['user_id' => $user->id])->one();
+            $profile = Profile::find()->where(['user_id' => $user->id])->one();
 
-                $avaliacao = new Avaliacao();
+            $avaliacao = new Avaliacao();
 
-                $descricao = $request->getBodyParam('descricao');
-                $produtoId = $request->getBodyParam('produto');
+            $descricao = $request->getBodyParam('descricao');
+            $produtoId = $request->getBodyParam('produto');
 
-                $avaliacao->descricao = $descricao;
-                $avaliacao->produto_id = $produtoId;
-                $avaliacao->profile_id = $profile->id;
-                $avaliacao->save();
+            $avaliacao->descricao = $descricao;
+            $avaliacao->produto_id = $produtoId;
+            $avaliacao->profile_id = $profile->id;
+            $avaliacao->save();
 
-                return $avaliacao;
-            }
+            return $avaliacao;
         }
 
         Yii::$app->response->statusCode = 400;
@@ -115,27 +103,21 @@ class AvaliacaoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
+            $request = Yii::$app->request;
+            $avaliacaoId = $request->getBodyParam('avaliacao');
+            $descricao = $request->getBodyParam('descricao');
+
+
+            $profile = Profile::find()->where(['user_id' => $user->id])->one();
+            $avaliacao = Avaliacao::find()->where(['id' => $avaliacaoId, 'profile_id' => $profile->id])->one();
+
+            if ($avaliacao != null) {
+                $avaliacao->descricao = $descricao;
+                $avaliacao->update();
+                return 'Avaliação alterada com sucesso!';
             } else {
-                $request = Yii::$app->request;
-                $avaliacaoId = $request->getBodyParam('avaliacao');
-                $descricao = $request->getBodyParam('descricao');
-
-
-                $profile = Profile::find()->where(['user_id' => $user->id])->one();
-                $avaliacao = Avaliacao::find()->where(['id' => $avaliacaoId, 'profile_id' => $profile->id])->one();
-
-                if ($avaliacao != null) {
-                    $avaliacao->descricao = $descricao;
-                    $avaliacao->update();
-                    return 'Avaliação alterada com sucesso!';
-                } else {
-                    Yii::$app->response->statusCode = 400;
-                    return ['message' => 'Avaliação não encontrada.'];
-                }
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Avaliação não encontrada.'];
             }
         }
 
@@ -148,24 +130,18 @@ class AvaliacaoController extends ActiveController
         $userID = Yii::$app->params['id'];
 
         if ($user = User::find()->where(['id' => $userID])->one()) {
-            // Verifica se o utilizador tem o papel "cliente"
-            if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'O Utilizador introduzido não tem permissões de cliente'];
+            $request = Yii::$app->request;
+            $avaliacaoId = $request->getBodyParam('avaliacao');
+
+            $profile = Profile::find()->where(['user_id' => $user->id])->one();
+            $avaliacao = Avaliacao::find()->where(['id' => $avaliacaoId, 'profile_id' => $profile->id])->one();
+
+            if ($avaliacao != null) {
+                $avaliacao->delete();
+                return 'Avaliação apagada com sucesso!';
             } else {
-                $request = Yii::$app->request;
-                $avaliacaoId = $request->getBodyParam('avaliacao');
-
-                $profile = Profile::find()->where(['user_id' => $user->id])->one();
-                $avaliacao = Avaliacao::find()->where(['id' => $avaliacaoId, 'profile_id' => $profile->id])->one();
-
-                if ($avaliacao != null) {
-                    $avaliacao->delete();
-                    return 'Avaliação apagada com sucesso!';
-                } else {
-                    Yii::$app->response->statusCode = 400;
-                    return ['message' => 'Avaliação não encontrada.'];
-                }
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'Avaliação não encontrada.'];
             }
         }
 

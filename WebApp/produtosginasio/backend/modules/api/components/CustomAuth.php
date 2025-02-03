@@ -22,6 +22,11 @@ class CustomAuth extends AuthMethod
             throw new \yii\web\ForbiddenHttpException('Não autenticado');
         }
 
+        if (!Yii::$app->authManager->checkAccess($user->id, 'cliente')) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'O Utilizador não tem permissões de cliente'];
+        }
+
         Yii::$app->params['id'] = $user->id;
         return $user;
     }

@@ -93,11 +93,16 @@ class RealizarvendaController extends Controller
         //verifica se o produto já está no carrinho
         $produtoEncontrado = false;
 
+        $produtoSemIva = $produto->preco * $quantidadeSelecionada;
+        $Iva = $produto->iva->percentagem;
+        $IvaAplicado = $produtoSemIva * $Iva;
+        $produtoComIva = $produtoSemIva + $IvaAplicado;
+
         foreach ($carrinho as $key => $produtoCarrinho) {
             if ($produtoCarrinho['id'] == $produto_id && $produtoCarrinho['tamanho'] == $tamanhoReferencia) {
                 //atualiza a quantidade e o preço total
                 $carrinho[$key]['quantidade'] += $quantidadeSelecionada;
-                $carrinho[$key]['preco'] += $produto->preco * $quantidadeSelecionada;
+                $carrinho[$key]['preco'] += $produtoComIva;
                 $produtoEncontrado = true;
                 break;
             }
@@ -110,7 +115,7 @@ class RealizarvendaController extends Controller
                 'id' => $produto_id,
                 'nomeProduto' => $produto->nomeProduto,
                 //preço total inicial baseado na quantidade selecionada
-                'preco' => $produto->preco * $quantidadeSelecionada,
+                'preco' => $produtoComIva,
                 'quantidade' => $quantidadeSelecionada,
                 'tamanho' => $tamanhoReferencia
             ];
@@ -212,9 +217,14 @@ class RealizarvendaController extends Controller
                         }
                     }
 
+                    $produtoSemIva = $produto->preco * $quantidadeNova;
+                    $Iva = $produto->iva->percentagem;
+                    $IvaAplicado = $produtoSemIva * $Iva;
+                    $produtoComIva = $produtoSemIva + $IvaAplicado;
+
                     //atualiza o carrinho
                     $carrinho[$key]['quantidade'] = $quantidadeNova;
-                    $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
+                    $carrinho[$key]['preco'] = $produtoComIva;
                 } else {
                     //selecionar o id do tamanho
                     $tamanho = Tamanho::find()->where(['referencia' => $tamanho_referencia])->one();
@@ -264,9 +274,14 @@ class RealizarvendaController extends Controller
 
                     $produto->save();
 
+                    $produtoSemIva = $produto->preco * $quantidadeNova;
+                    $Iva = $produto->iva->percentagem;
+                    $IvaAplicado = $produtoSemIva * $Iva;
+                    $produtoComIva = $produtoSemIva + $IvaAplicado;
+
                     //atualiza o carrinho
                     $carrinho[$key]['quantidade'] = $quantidadeNova;
-                    $carrinho[$key]['preco'] = $produto->preco * $quantidadeNova;
+                    $carrinho[$key]['preco'] = $produtoComIva;
                 }
 
                 //atualiza o carrinho na sessão
@@ -369,7 +384,7 @@ class RealizarvendaController extends Controller
         // Calcular o valor total dos produtos no carrinho
         $valorProdutos = 0;
         foreach ($carrinho as $item) {
-            $valorProdutos += $item['preco'] * $item['quantidade'];
+            $valorProdutos += $item['preco'];
         }
 
         // Obter os métodos de pagamento e de entrega (em vigor)
@@ -472,7 +487,7 @@ class RealizarvendaController extends Controller
         // Calcular o valor total dos produtos no carrinho
         $valorProdutos = 0;
         foreach ($carrinho as $item) {
-            $valorProdutos += $item['preco'] * $item['quantidade'];
+            $valorProdutos += $item['preco'];
         }
 
         // Calcular o valor do desconto e do cupão
@@ -509,17 +524,17 @@ class RealizarvendaController extends Controller
             'telefone' => $telefone,
             'valorProdutos' => $valorProdutos,
             'valorFinal' => $valorFinal,
-            'cupaoCodigo' => $cupaoCodigo, // Adiciona o código do cupão
+            'cupaoCodigo' => $cupaoCodigo,
         ];
 
         if (empty($clienteId)) {
             Yii::$app->session->setFlash('error', 'Não tem o cliente associado à compra.');
             return $this->render('finalizarcompra', $dados);
-        } else if (empty($metodoPagamentoId)) {
-            Yii::$app->session->setFlash('error', 'Não tem um método pagamento associado à compra.');
-            return $this->render('finalizarcompra', $dados);
         } else if (empty($metodoEntregaId)) {
             Yii::$app->session->setFlash('error', 'Não tem um método entrega associado à compra.');
+            return $this->render('finalizarcompra', $dados);
+        } else if (empty($metodoPagamentoId)) {
+            Yii::$app->session->setFlash('error', 'Não tem um método pagamento associado à compra.');
             return $this->render('finalizarcompra', $dados);
         } else if (empty($email)) {
             Yii::$app->session->setFlash('error', 'Não tem um email associado à compra.');
@@ -569,26 +584,30 @@ class RealizarvendaController extends Controller
                     $linhaFatura->quantidade = $produto['quantidade'];
                     $linhaFatura->precoUnit = $produtoID->preco;
                     $linhaFatura->valorIva = $produtoID->iva->percentagem;
-                    $linhaFatura->valorComIva = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
-                    $linhaFatura->subtotal = round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
+
+                    $produtoComIva = $produto['preco'];
+                    $valorIvaAplicado = $produtoID->iva->percentagem;
+
+                    $linhaFatura->valorComIva = number_format($produtoComIva, 2);
+                    $linhaFatura->subtotal = number_format($produtoComIva, 2);
                     $linhaFatura->fatura_id = $fatura->id;
                     $linhaFatura->produto_id = $produtoID->id;
 
                     if ($linhaFatura->save()) {
-                        $fatura->valorTotal += round($produtoID->preco * $produto['quantidade'] + ($produtoID->iva->percentagem / 100), 2);
-                        $fatura->ivaTotal += $produtoID->iva->percentagem;
+                        $fatura->valorTotal += number_format($produtoComIva, 2);
+                        $fatura->ivaTotal += number_format($valorIvaAplicado, 2);
                         $fatura->save();
                     }
                 }
 
                 $metodoentrega = Metodoentrega::find()->where(['id' => $metodoEntregaId])->one();
-                $fatura->valorTotal += $metodoentrega->preco;
+                $fatura->valorTotal += number_format($metodoentrega->preco, 2);
                 $fatura->save();
 
                 if (!empty($cupaoCodigo)) {
                     $cupao = Cupaodesconto::findOne(['codigo' => $cupaoCodigo]);
-                    $valorCupao = ($fatura->valorTotal * $cupao->desconto) / 100; // cálculo correto do valor do cupão
-                    $fatura->valorTotal -= $valorCupao; // aplicar o desconto na fatura
+                    $valorCupao = ($cupao->desconto * $valorProdutos); // cálculo correto do valor do cupão
+                    $fatura->valorTotal -= number_format($valorCupao, 2); // aplicar o desconto na fatura
                     $fatura->save();
 
                     $usoCupao = new UsoCupao();
@@ -598,7 +617,7 @@ class RealizarvendaController extends Controller
                     $usoCupao->save();
                 }
 
-                $this->actionGeneratePdf($fatura->id, $cupao ?? null, $ValorPoupado ?? 0.00);
+                $this->actionGeneratePdf($fatura->id, $cupao ?? null, number_format($ValorPoupado, 2) ?? 0.00);
             }
 
             if (Yii::$app->session->has('carrinho')) {
@@ -609,6 +628,7 @@ class RealizarvendaController extends Controller
                 Yii::$app->session->remove('cupao');
             }
 
+            Yii::$app->session->setFlash('success', 'Compra efetuada com sucesso!');
             return $this->redirect(['index']);
         }
     }

@@ -35,7 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id',
             'percentagem',
-            'vigor',
+            [
+                'attribute' => 'vigor',
+                'value' => function ($model) {
+                    return $model->vigor ? 'Está em vigor' : 'Não está em vigor';
+                },
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Iva $model, $key, $index, $column) {

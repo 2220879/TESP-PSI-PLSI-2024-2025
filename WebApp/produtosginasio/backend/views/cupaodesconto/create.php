@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\Cupaodesconto $model */
 
-$this->title = 'Criar Cupaodesconto';
+$this->title = 'Criar Cupão Desconto';
 $this->params['breadcrumbs'][] = ['label' => 'Cupaodescontos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
