@@ -87,7 +87,7 @@ class UserTest extends \Codeception\Test\Unit
         }
     }
 
-    public function testEditarUtilizador()
+    public function testEditarUser()
     {
         $username = 'Pedro Francisco';
 

@@ -11,7 +11,7 @@ class CompraProdutosCest
     {
         //login
         $I->amOnPage('/login');
-        $I->fillField('LoginForm[username]', 'Tuga Francisco');
+        $I->fillField('LoginForm[username]', 'Teste Francisco');
         $I->fillField('LoginForm[password]', 'Admin*1234567');
         $I->click('button[name="login-button"]');
     }
