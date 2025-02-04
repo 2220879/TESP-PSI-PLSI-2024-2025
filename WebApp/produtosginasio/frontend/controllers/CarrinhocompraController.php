@@ -6,6 +6,7 @@ use common\models\Carrinhocompra;
 use common\models\Linhacarrinho;
 use common\models\ProdutosHasTamanho;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -23,6 +24,17 @@ class CarrinhocompraController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'create', 'update', 'delete', 'diminuir', 'aumentar', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'create', 'update', 'delete', 'diminuir', 'aumentar', 'model'],
+                            'allow' => true,
+                            'roles' => ['cliente'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'percentagem')->textInput() ?>
+    <?= $form->field($model, 'percentagem')->input('number', ['step' => '0.01', 'min' => 0]) ?>
 
     <?= $form->field($model, 'vigor')->dropDownList($vigor, ['prompt' => 'Selecione um vigor']) ?>
 

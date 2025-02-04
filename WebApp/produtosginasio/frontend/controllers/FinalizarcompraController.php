@@ -14,6 +14,7 @@ use common\models\Profile;
 use common\models\Usocupao;
 use Mpdf\Mpdf;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -28,6 +29,17 @@ class FinalizarcompraController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'concluircompra', 'generatePdf'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'concluircompra', 'generatePdf'],
+                            'allow' => true,
+                            'roles' => ['cliente'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

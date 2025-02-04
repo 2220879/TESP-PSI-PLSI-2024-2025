@@ -15,15 +15,15 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'preco')->textInput() ?>
+    <?= $form->field($model, 'preco')->input('number', ['step' => '0.01', 'min' => 0]) ?>
 
-    <?= $form->field($model, 'iva')->textInput() ?>
+    <?= $form->field($model, 'iva')->input('number', ['step' => '0.01', 'min' => 0]) ?>
 
     <?= $form->field($model, 'compra_id')->hiddenInput(['value' => $compra->id])->label(false) ?>
 
     <?= $form->field($model, 'produto_id')->dropDownList($produtos, ['prompt' => 'Selecione um Produto'])->label('Produto') ?>
 
-    <?= $form->field($model, 'quantidade')->textInput() ?>
+    <?= $form->field($model, 'quantidade')->input('number', ['min' => 0]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

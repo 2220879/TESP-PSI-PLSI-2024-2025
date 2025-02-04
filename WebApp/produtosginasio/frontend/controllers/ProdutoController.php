@@ -12,6 +12,7 @@ use common\models\Produto;
 use common\models\ProdutosHasTamanho;
 use common\models\Profile;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,6 +30,17 @@ class ProdutoController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,
+                    'only' => ['index', 'view', 'filtrar', 'detalhes', 'model'],
+                    'rules' => [
+                        [
+                            'actions' => ['index', 'view', 'filtrar', 'detalhes', 'model'],
+                            'allow' => true,
+                            'roles' => ['?', 'cliente'],
+                        ],
+                    ],
+                ],
                 'verbs' => [
                     'class' => VerbFilter::className(),
                     'actions' => [

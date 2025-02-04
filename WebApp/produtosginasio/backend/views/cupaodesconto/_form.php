@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'codigo')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'desconto')->textInput() ?>
+    <?= $form->field($model, 'desconto')->input('number', ['step' => '0.01', 'min' => 0, 'max' => 1]) ?>
 
     <?= $form->field($model, 'dataFim')->input('date') ?>
 

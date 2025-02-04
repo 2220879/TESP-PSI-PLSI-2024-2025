@@ -231,6 +231,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::input('number', 'nif', Yii::$app->request->post('nif'), [
                                 'class' => 'form-control',
                                 'id' => 'nif',
+                                'min' => 0,
                                 'placeholder' => 'Nif',
                             ]) ?>
 
@@ -249,6 +250,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'form-control',
                                 'id' => 'telefone',
                                 'placeholder' => 'Telefone',
+                                'min' => 0,
                                 'required' => true
                             ]) ?>
                             <button type="submit" class="btn btn-primary mt-2">Guardar Dados</button>

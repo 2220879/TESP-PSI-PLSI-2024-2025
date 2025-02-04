@@ -17,9 +17,9 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $form->field($model, 'nomeProduto')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'preco')->textInput() ?>
+    <?= $form->field($model, 'preco')->input('number', ['step' => '0.01', 'min' => 0]) ?>
 
-    <?= $form->field($model, 'quantidade')->textInput() ?>
+    <?= $form->field($model, 'quantidade')->input('number', ['min' => 0]) ?>
 
     <?= $form->field($model, 'descricaoProduto')->textarea(['rows' => 6]) ?>
 

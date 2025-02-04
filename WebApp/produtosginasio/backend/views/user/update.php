@@ -21,11 +21,11 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $form->field($model, 'password')->passwordInput(['value' => '']) ?>
 
-    <?= $form->field($model, 'nif')->textInput(['value' => $profile->nif]) ?>
+    <?= $form->field($model, 'nif')->input('number', ['value' => $profile->nif, 'min' => 0]) ?>
 
     <?= $form->field($model, 'morada')->textInput(['value' => $profile->morada]) ?>
 
-    <?= $form->field($model, 'telefone')->textInput(['value' => $profile->telefone]) ?>
+    <?= $form->field($model, 'telefone')->input('number', ['value' => $profile->telefone, 'min' => 0]) ?>
 
     <?= $form->field($model, 'role')->dropDownList($roles, ['value' => key(Yii::$app->authManager->getRolesByUser($user->id))]) ?>
 

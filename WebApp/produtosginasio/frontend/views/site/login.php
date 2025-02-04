@@ -36,6 +36,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
 
                 <?php ActiveForm::end(); ?>
+
+                <p>
+                    <?= Html::a('Ir para o BackOffice', ['/../../backend/web'], ['class' => 'btn btn-warning']) ?>
+                </p>
             </div>
         </div>
     </div>

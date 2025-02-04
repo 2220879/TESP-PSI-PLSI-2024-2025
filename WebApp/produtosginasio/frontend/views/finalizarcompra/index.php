@@ -205,6 +205,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'form-control',
                                 'id' => 'nif',
                                 'placeholder' => 'Nif',
+                                'min' => 0,
                                 'required' => true
                             ]) ?>
 
@@ -223,6 +224,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'form-control',
                                 'id' => 'telefone',
                                 'placeholder' => 'Telefone',
+                                'min' => 0,
                                 'required' => true
                             ]) ?>
                             <button type="submit" class="btn btn-primary mt-2">Guardar Dados</button>

@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'diasEntrega')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'preco')->textInput() ?>
+    <?= $form->field($model, 'preco')->input('number', ['step' => '0.01', 'min' => 0]) ?>
     <?= $form->field($model, 'vigor')->dropDownList($vigor, ['prompt' => 'Selecione um vigor']) ?>
 
     <div class="form-group">

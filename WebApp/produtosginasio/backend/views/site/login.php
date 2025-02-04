@@ -36,6 +36,7 @@ use yii\helpers\Html;
         <div class="row">
             <div class="col-4">
                 <?= Html::submitButton('Entrar', ['class' => 'btn btn-primary btn-block']) ?>
+                <?= Html::a('Ir para o FrontOffice', ['/../../frontend/web'], ['class' => 'btn btn-warning']) ?>
             </div>
         </div>
 

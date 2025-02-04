@@ -651,10 +651,10 @@ class CarrinhocompraController extends ActiveController
 
                 if ($cupao) {
                     // Calcular o valor do desconto como percentagem do subtotal com IVA
-                    $ValorPoupado = ($cupao->desconto * $carrinho->valorTotal);
+                    $ValorPoupado = number_format(($cupao->desconto * $carrinho->valorTotal), 2);
 
                     // Aplica o desconto no valor total, mas sem considerar o custo de envio
-                    $fatura->valorTotal -= number_format($ValorPoupado, 2);
+                    $fatura->valorTotal -= $ValorPoupado;
                 }
 
                 // Registra o uso do cupão
@@ -667,7 +667,7 @@ class CarrinhocompraController extends ActiveController
             $fatura->save();
 
 
-            $this->actionGeneratePdf($fatura->id, $cupao ?? null, number_format($ValorPoupado, 2) ?? 0.00);
+            $this->actionGeneratePdf($fatura->id, $cupao ?? null, $ValorPoupado ?? 0.00);
         }
 
         //Apaga as linhas carrinho do cliente auntenticado

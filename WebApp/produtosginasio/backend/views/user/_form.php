@@ -18,11 +18,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'password')->passwordInput() ?>
 
-    <?= $form->field($model, 'nif')->textInput() ?>
+    <?= $form->field($model, 'nif')->input('number', ['min' => 0]) ?>
 
     <?= $form->field($model, 'morada')->textInput() ?>
 
-    <?= $form->field($model, 'telefone')->textInput() ?>
+    <?= $form->field($model, 'telefone')->input('number', ['min' => 0]) ?>
 
     <?= $form->field($model, 'role')->dropDownList($roles) ?>
 

@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'total')->textInput() ?>
+    <?= $form->field($model, 'total')->input('number', ['step' => '0.01', 'min' => 0]) ?>
 
     <?= $form->field($model, 'dataDespesa')->input('date') ?>
 

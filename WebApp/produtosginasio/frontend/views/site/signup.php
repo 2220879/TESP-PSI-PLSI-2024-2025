@@ -34,11 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?= $form->field($model, 'password')->passwordInput() ?>
 
-                <?= $form->field($model, 'nif')->textInput() ?>
+                <?= $form->field($model, 'nif')->input('number', ['min' => 0]) ?>
 
                 <?= $form->field($model, 'morada')->textInput() ?>
 
-                <?= $form->field($model, 'telefone')->textInput() ?>
+                <?= $form->field($model, 'telefone')->input('number', ['min' => 0]) ?>
 
                 <div class="form-group">
                     <?= Html::submitButton('Registar', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
