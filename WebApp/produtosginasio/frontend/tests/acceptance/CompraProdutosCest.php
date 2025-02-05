@@ -11,7 +11,7 @@ class CompraProdutosCest
     {
         //login
         $I->amOnPage('/login');
-        $I->fillField('LoginForm[username]', 'Teste Francisco');
+        $I->fillField('LoginForm[username]', 'Tuga Francisco');
         $I->fillField('LoginForm[password]', 'Admin*1234567');
         $I->click('button[name="login-button"]');
     }
@@ -24,8 +24,7 @@ class CompraProdutosCest
     }
 
     // tests
-    public
-    function testComprarProdutos(AcceptanceTester $I)
+    public function testComprarProdutos(AcceptanceTester $I)
     {
         //adicionar o produto pretendido ao carrinho de compras
         $I->amOnPage('/');
@@ -48,13 +47,13 @@ class CompraProdutosCest
         $I->click('#finalizar-compra');
         $I->wait(2);
         $I->selectOption('metodo_entrega', '1');
-        $I->click('Aplicar Método de Entrega');
         $I->wait(1);
         $I->scrollTo('select[name="metodo_pagamento"]');
         $I->selectOption('metodo_pagamento', '1');
-        $I->scrollTo('#guardar-dados');
-        $I->wait(2);
-        $I->click('#guardar-dados');
+        $I->wait(5);
+        $I->scrollTo('button.btn.btn-primary.mt-2');
+        $I->wait(5);
+        $I->click('button.btn.btn-primary.mt-2');
         $I->click('Confirmar Compra');
         $I->wait(1);
         $I->click('i.fa.fa-user');

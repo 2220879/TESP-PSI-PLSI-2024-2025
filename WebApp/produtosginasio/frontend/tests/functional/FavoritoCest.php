@@ -36,7 +36,7 @@ class FavoritoCest
         $I->amOnRoute('/');
         $I->click('#ver-favoritos');
 
-        $I->click('#apagar-favorito-1');
+        $I->click('#apagar-favorito-8');
 
         $I->see('Produto removido dos favoritos.');
     }

@@ -12,51 +12,42 @@ class ProdutoCest
         $I->amOnRoute('/site/login');
         $I->fillField('LoginForm[username]', 'admin');
         $I->fillField('LoginForm[password]', 'Admin*1234567');
-        $I->click('Sign In');
+        $I->click('Entrar');
 
-        $I->dontSeeLink('Sign In');
+        $I->dontSeeLink('Entrar');
     }
 
     public function testCategoriaCampoVazio(FunctionalTester $I)
     {
         $I->amOnRoute('/categoria/create');
-        $I->click('Save');
+        $I->click('Guardar');
         $I->see('Nome Categoria cannot be blank.');
     }
 
     public function testCriarcategoria(FunctionalTester $I)
     {
-        // Vai para a página inicial
         $I->amOnRoute('/web/');
 
-        // Verifica que a seção "Mercadoria" está visível
         $I->see('Gestão');
-        $I->click('Gestão');  // Clica em "Mercadoria"
+        $I->click('Gestão');
 
-        // Verifica se "Produtos" está visível e clica nela
         $I->see('Categorias');
-        $I->click('Categorias');  // Clica em "Produtos"
+        $I->click('Categorias');
 
         $I->amOnRoute('categoria/index');
 
-        // Verifica se a URL está correta e se a página de produtos foi carregada
-        $I->seeInCurrentUrl('/categoria/index'); // Verifica que estamos na página de produtos
+        $I->seeInCurrentUrl('/categoria/index');
 
 
-        // Agora, verifica se o botão "Create Produto" está presente e visível
-        $I->see('Criar Categoria'); // Verifica o botão na página
-        $I->click('Criar Categoria'); // Clica no botão para criar um novo produto
+        $I->see('Criar Categoria');
+        $I->click('Criar Categoria');
 
-        // Vai para a página de criação de produto
         $I->amOnRoute('/categoria/create');
 
-        // Preenche os campos do formulário de criação de produto
         $I->fillField('Categoria[nomeCategoria]', 'Camisola');
 
-        // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
-        // Verifica que o link de "Create Produto" não está mais disponível (indicando que o produto foi salvo)
         $I->dontSeeLink('/categoria/create');
     }
 
@@ -80,15 +71,15 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/categoria/view');
 
-        $I->click('Update');
+        $I->click('Atualizar');
 
         $I->seeInCurrentUrl('/categoria/update');
 
         // Preenche os campos do formulário de atualização da Categoria
-        $I->fillField('Categoria[nomeCategoria]', 'Camisola2');
+        $I->fillField('Categoria[nomeCategoria]', 'Camisola3');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         $I->dontSeeLink('/categoria/update');
     }
@@ -96,7 +87,7 @@ class ProdutoCest
     public function testMarcaCampoVazio(FunctionalTester $I)
     {
         $I->amOnRoute('/marca/create');
-        $I->click('Save');
+        $I->click('Guardar');
         $I->see('Nome Marca cannot be blank.');
     }
 
@@ -126,7 +117,7 @@ class ProdutoCest
         $I->fillField('Marca[nomeMarca]', 'Nike');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         // Verifica que o link de "Create Produto" não está mais disponível (indicando que o produto foi salvo)
         $I->dontSeeLink('/marca/create');
@@ -152,7 +143,7 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/marca/view');
 
-        $I->click('Update');
+        $I->click('Atualizar');
 
         $I->seeInCurrentUrl('/marca/update');
 
@@ -160,7 +151,7 @@ class ProdutoCest
         $I->fillField('Marca[nomeMarca]', 'Nike2');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         $I->dontSeeLink('/marca/update');
     }
@@ -168,7 +159,7 @@ class ProdutoCest
     public function testGeneroCampoVazio(FunctionalTester $I)
     {
         $I->amOnRoute('/genero/create');
-        $I->click('Save');
+        $I->click('Guardar');
         $I->see('Referencia cannot be blank.');
     }
 
@@ -189,8 +180,8 @@ class ProdutoCest
         $I->seeInCurrentUrl('/genero/index');
 
 
-        $I->see('Criar Gênero');
-        $I->click('Criar Gênero');
+        $I->see('Criar Género');
+        $I->click('Criar Género');
 
         // Vai para a página de criação de produto
         $I->amOnRoute('/genero/create');
@@ -198,7 +189,7 @@ class ProdutoCest
         $I->fillField('Genero[referencia]', 'Masculinos');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         $I->dontSeeLink('/genero/create');
     }
@@ -223,7 +214,7 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/genero/view');
 
-        $I->click('Update');
+        $I->click('Atualizar');
 
         $I->seeInCurrentUrl('/genero/update');
 
@@ -231,7 +222,7 @@ class ProdutoCest
         $I->fillField('Genero[referencia]', 'Masculino2');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         $I->dontSeeLink('/genero/update');
     }
@@ -239,7 +230,7 @@ class ProdutoCest
     public function testIvaCamposVazios(FunctionalTester $I)
     {
         $I->amOnRoute('/iva/create');
-        $I->click('Save');
+        $I->click('Guardar');
         $I->see('Percentagem cannot be blank.');
         $I->see('Vigor cannot be blank.');
     }
@@ -271,7 +262,7 @@ class ProdutoCest
         $I->selectOption('Iva[vigor]', '0');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         // Verifica que o link de "Create Produto" não está mais disponível (indicando que o produto foi salvo)
         $I->dontSeeLink('/iva/create');
@@ -297,7 +288,7 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/iva/view');
 
-        $I->click('Update');
+        $I->click('Atualizar');
 
         $I->seeInCurrentUrl('/iva/update');
 
@@ -306,7 +297,7 @@ class ProdutoCest
         $I->selectOption('Iva[vigor]', '1');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         $I->dontSeeLink('/iva/update');
     }
@@ -314,7 +305,7 @@ class ProdutoCest
     public function testTamanhoCampoVazio(FunctionalTester $I)
     {
         $I->amOnRoute('/tamanho/create');
-        $I->click('Save');
+        $I->click('Guardar');
         $I->see('Referencia cannot be blank.');
     }
 
@@ -344,7 +335,7 @@ class ProdutoCest
         $I->fillField('Tamanho[referencia]', 'XS');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         // Verifica que o link de "Create Produto" não está mais disponível (indicando que o produto foi salvo)
         $I->dontSeeLink('/tamanho/create');
@@ -370,7 +361,7 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/tamanho/view');
 
-        $I->click('Update');
+        $I->click('Atualizar');
 
         $I->seeInCurrentUrl('/tamanho/update');
 
@@ -378,7 +369,7 @@ class ProdutoCest
         $I->fillField('Tamanho[referencia]', 'L');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         $I->dontSeeLink('/tamanho/update');
     }
@@ -386,7 +377,7 @@ class ProdutoCest
     public function testProdutoCamposVazios(FunctionalTester $I)
     {
         $I->amOnRoute('/produto/create');
-        $I->click('Save');
+        $I->click('Guardar');
         $I->see('Nome Produto cannot be blank.');
         $I->see('Preco cannot be blank.');
         $I->see('Descricao Produto cannot be blank.');
@@ -416,8 +407,8 @@ class ProdutoCest
 
 
         // Agora, verifica se o botão "Create Produto" está presente e visível
-        $I->see('Create Produto'); // Verifica o botão na página
-        $I->click('Create Produto'); // Clica no botão para criar um novo produto
+        $I->see('Criar Produto'); // Verifica o botão na página
+        $I->click('Criar Produto'); // Clica no botão para criar um novo produto
 
         // Vai para a página de criação de produto
         $I->amOnRoute('/produto/create');
@@ -434,7 +425,7 @@ class ProdutoCest
         $I->selectOption('Produto[genero_id]', '10');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         // Verifica que o link de "Create Produto" não está mais disponível (indicando que o produto foi salvo)
         $I->dontSeeLink('/produto/create');
@@ -459,7 +450,7 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/produto/view');
 
-        $I->click('Update');
+        $I->click('Atualizar');
 
         $I->seeInCurrentUrl('/produto/update');
 
@@ -475,7 +466,7 @@ class ProdutoCest
         $I->selectOption('Produto[genero_id]', '10');
 
         // Clica no botão de salvar para enviar o formulário
-        $I->click('Save');
+        $I->click('Guardar');
 
         // Verifica que o link de "Create Produto" não está mais disponível (indicando que o produto foi salvo)
         $I->dontSeeLink('/produto/update');
@@ -503,7 +494,7 @@ class ProdutoCest
 
         $I->seeInCurrentUrl('/produto/view');
 
-        $I->click('Delete');
+        $I->click('Apagar');
 
         //$I->executeJS("window.confirm = function() { return true; };");
 

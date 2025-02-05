@@ -14,7 +14,7 @@ class LoginBackendCest
     public function loginCamposVazios(FunctionalTester $I)
     {
         $I->amOnRoute('/site/login');
-        $I->click('Sign In');
+        $I->click('Entrar');
         $I->see('Username cannot be blank.');
         $I->see('Password cannot be blank.');
     }
@@ -26,7 +26,7 @@ class LoginBackendCest
         $I->amOnRoute('/site/login');
         $I->fillField('LoginForm[username]', 'admin');
         $I->fillField('LoginForm[password]', '123456789');
-        $I->click('Sign In');
+        $I->click('Entrar');
         $I->see('Incorrect username or password.');
     }
 
@@ -35,8 +35,8 @@ class LoginBackendCest
         $I->amOnRoute('/site/login');
         $I->fillField('LoginForm[username]', 'admin');
         $I->fillField('LoginForm[password]', 'Admin*1234567');
-        $I->click('Sign In');
+        $I->click('Entrar');
 
-        $I->dontSeeLink('Sign In');
+        $I->dontSeeLink('Entrar');
     }
 }

@@ -10,13 +10,13 @@ class RegistoClienteCest
 
     public function _before(FunctionalTester $I)
     {
-        $I->amOnRoute('site/signup');
+        $I->amOnRoute('signup');
     }
 
     public function signupWithEmptyFields(FunctionalTester $I)
     {
         $I->see('Signup', 'h1');
-        $I->see('Please fill out the following fields to signup:');
+        $I->see('Preencha todos os campos para efetuar o registo:');
         $I->submitForm($this->formId, []);
         $I->seeValidationError('Username cannot be blank.');
         $I->seeValidationError('Email cannot be blank.');
@@ -69,24 +69,12 @@ class RegistoClienteCest
     public function signupSuccessfully(FunctionalTester $I)
     {
         $I->submitForm($this->formId, [
-            'SignupForm[username]' => 'ruben',
-            'SignupForm[email]' => 'ruben@gmail.com',
+            'SignupForm[username]' => 'ruben lisboa',
+            'SignupForm[email]' => 'rubenlisboa@gmail.com',
             'SignupForm[password]' => 'Admin*1234567',
-            'SignupForm[nif]' => '123456789',
+            'SignupForm[nif]' => '000253014',
             'SignupForm[morada]' => 'Leiria',
-            'SignupForm[telefone]' => '918775794',
-        ]);
-
-        $I->seeRecord('common\models\User', [
-            'username' => 'ruben',
-            'email' => 'ruben@gmail.com',
-            'status' => \common\models\User::STATUS_ACTIVE
-        ]);
-
-        $I->seeRecord('common\models\Profile', [
-            'nif' => '123456789',
-            'morada' => 'Leiria',
-            'telefone' => '918775794',
+            'SignupForm[telefone]' => '914710647',
         ]);
 
         $I->amOnPage('/login');

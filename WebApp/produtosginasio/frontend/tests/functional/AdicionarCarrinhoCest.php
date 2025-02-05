@@ -30,8 +30,8 @@ class AdicionarCarrinhoCest
         $I->click('button[data-tamanho-id="1"]');
 
         // Verificar se o botão de adicionar ao carrinho é exibido e clicar nele
-        $I->seeElement('#adicionar-carrinho i.fa.fa-cart-plus');
-        $I->click('#adicionar-carrinho i.fa.fa-cart-plus');
+        $I->seeElement('#adicionar-carrinho .fa.fa-cart-plus');
+        $I->click('#adicionar-carrinho .fa.fa-cart-plus');
 
         // Verificar se o produto foi realmente adicionado ao carrinho
         $I->see('Calção Adida');
