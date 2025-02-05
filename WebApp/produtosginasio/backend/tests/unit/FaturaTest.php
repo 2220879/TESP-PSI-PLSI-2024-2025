@@ -22,15 +22,16 @@ class FaturaTest extends \Codeception\Test\Unit
         $fatura->dataEmissao = date('Y-m-d');
         $fatura->horaEmissao = date('H:i:s');
         $fatura->valorTotal = 55.00;
-        $fatura->ivaTotal = 23.00;
+        $fatura->ivaTotal = 0.23;
         $fatura->nif = 123456789;
-        $fatura->metodopagamento_id = Metodopagamento::find()->one()->id;
-        $fatura->metodoentrega_id = Metodoentrega::find()->one()->id;
-        $fatura->encomenda_id = Encomenda::find()->one()->id;
-        $fatura->profile_id = Profile::find()->one()->id;
+        $fatura->metodopagamento_id = 1;
+        $fatura->metodoentrega_id = 1;
+        $fatura->encomenda_id = 2;
+        $fatura->profile_id = 2;
 
         $this->assertTrue($fatura->save());
     }
+
     public function testFaturaSemCampos()
     {
         $fatura = new Fatura();
@@ -49,7 +50,7 @@ class FaturaTest extends \Codeception\Test\Unit
 
     public function testFaturaApagar()
     {
-        $fatura = Fatura::find()->one();
+        $fatura = Fatura::find()->where(['id' => 1])->one();
         $this->assertNotNull($fatura);
 
         $this->assertTrue($fatura->delete() !== false, 'A fatura deveria ter sido apagada com sucesso.');
@@ -62,14 +63,14 @@ class FaturaTest extends \Codeception\Test\Unit
     {
         $linha = new Linhafatura();
         $linha->dataVenda = date('Y-m-d');
-        $linha->nomeProduto = 'Produto';
-        $linha->quantidade = 5;
+        $linha->nomeProduto = 'Calção Adida';
+        $linha->quantidade = 1;
         $linha->precoUnit = 20.00;
-        $linha->valorIva = 23.00;
-        $linha->valorComIva = 123.00;
-        $linha->subtotal = 100.00;
-        $linha->fatura_id = Fatura::find()->one()->id;
-        $linha->produto_id = Produto::find()->one()->id;
+        $linha->valorIva = 0.23;
+        $linha->valorComIva = 24.60;
+        $linha->subtotal = 24.60;
+        $linha->fatura_id = 2;
+        $linha->produto_id = 8;
 
         $this->assertTrue($linha->save());
     }
@@ -83,8 +84,8 @@ class FaturaTest extends \Codeception\Test\Unit
         $linha->precoUnit = null;
         $linha->valorIva = null;
         $linha->valorComIva = null;
-        $linha->subtotal =null;
-        $linha->fatura_id =null;
+        $linha->subtotal = null;
+        $linha->fatura_id = null;
         $linha->produto_id = null;
 
         $this->assertFalse($linha->save(), 'A linha de fatura não deveria ser guardada sem campos obrigatórios.');
@@ -92,7 +93,7 @@ class FaturaTest extends \Codeception\Test\Unit
 
     public function testLinhaFaturaApagar()
     {
-        $linha = Linhafatura::find()->one();
+        $linha = Linhafatura::find()->where(['id' => 1])->one();
         $this->assertNotNull($linha, 'Nenhuma linha de fatura encontrada para apagar.');
 
         $this->assertTrue($linha->delete() !== false, 'A linha de fatura deveria ter sido apagada com sucesso.');

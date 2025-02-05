@@ -20,8 +20,8 @@ class ProdutosHasTamanhoTest extends \Codeception\Test\Unit
     // tests
     public function testAdicionarProdutoTamanho()
     {
-        $nomeProduto = 'Camisola Polo Adidas';
-        $tamanho = 'S';
+        $nomeProduto = 'Calção Adida';
+        $tamanho = 'M';
 
         $produto = Produto::findOne(['nomeProduto' => $nomeProduto]);
         $tamanho = Tamanho::findOne(['referencia' => $tamanho]);
@@ -43,7 +43,7 @@ class ProdutosHasTamanhoTest extends \Codeception\Test\Unit
 
         $produtohastamanho->produto_id = $produto->id;
         $produtohastamanho->tamanho_id = $tamanho->id;
-        $produtohastamanho->quantidade = 10;
+        $produtohastamanho->quantidade = 20;
         $this->assertTrue($produtohastamanho->save());
 
         //recalcular a quantidade total do produto
@@ -58,7 +58,7 @@ class ProdutosHasTamanhoTest extends \Codeception\Test\Unit
 
     public function testEditarQuantidadeProdutoTamanho()
     {
-        $nomeProduto = 'Camisola Polo Adidas';
+        $nomeProduto = 'Calção Adida';
         $tamanhoReferencia = 'M';
 
         //buscar o produto e o tamanho
@@ -74,7 +74,7 @@ class ProdutosHasTamanhoTest extends \Codeception\Test\Unit
         $this->assertNotNull($produtohastamanho, 'Produto com o respetivo tamanho não encontrado');
 
         //alterar a quantidade do tamanho
-        $produtohastamanho->quantidade = 10;
+        $produtohastamanho->quantidade = 30;
         $this->assertTrue($produtohastamanho->save());
 
         //recalcular a quantidade total do produto
@@ -91,7 +91,7 @@ class ProdutosHasTamanhoTest extends \Codeception\Test\Unit
 
     public function testEditarTamanhoProdutoTamanho()
     {
-        $nomeProduto = 'Camisola Polo Adidas';
+        $nomeProduto = 'Calção Adida';
         $tamanhoReferencia = 'M';
 
         //buscar o produto e o tamanho
@@ -109,14 +109,13 @@ class ProdutosHasTamanhoTest extends \Codeception\Test\Unit
         $novoTamanho = 'S';
         $tamanho = Tamanho::findOne(['referencia' => $novoTamanho]);
 
-        //alterar a quantidade do tamanho
         $produtohastamanho->tamanho_id = $tamanho->id;
         $this->assertTrue($produtohastamanho->save());
     }
 
     public function testApagarProdutoTamanho()
     {
-        $nomeProduto = 'Camisola Polo Adidas';
+        $nomeProduto = 'Calção Adida';
         $tamanhoReferencia = 'S';
 
         //buscar o produto e o tamanho

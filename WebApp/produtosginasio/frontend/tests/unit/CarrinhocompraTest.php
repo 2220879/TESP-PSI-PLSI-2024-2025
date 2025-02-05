@@ -10,38 +10,15 @@ use common\models\Tamanho;
 
 class CarrinhocompraTest extends \Codeception\Test\Unit
 {
-    /*protected function _before()
+    protected function _before()
     {
     }
 
     protected function _after()
     {
-    }*/
+    }
 
     // tests
-    /*public function testSaveProdutoCarrinhoCompras()
-    {
-        $profile = Profile::find()->where(['id' => 1])->one();
-
-        $produto = Produto::find()->where(['id' => 1])->one();
-
-        $carrinhoCompras = Carrinhocompra::find()->where(['profile_id' => $profile->id])->one();
-
-        $carrinhoCompras->quantidade = 1;
-
-        $linhacarrinho = Linhacarrinho::find()->where(['carrinhocompras_id' => $carrinhoCompras->id])->one();
-
-        $linhacarrinho->precoUnit = $produto->preco;
-
-        $carrinhoCompras->valorTotal = number_format($linhacarrinho->precoUnit, 2, '.', '') * $linhacarrinho->quantidade;
-
-        $carrinhoCompras->profile_id = $profile->id;
-
-        $carrinhoCompras->save();
-
-        $this->assertTrue($carrinhoCompras->validate());
-    }*/
-
     public function testSaveCarrinhoCompras()
     {
         $profile = Profile::find()->one();
@@ -65,60 +42,23 @@ class CarrinhocompraTest extends \Codeception\Test\Unit
 
     public function testUpdateCarrinhoCompras()
     {
-        /*$profile = Profile::find()->where(['id' => 1])->one();
-
-        $produto = Produto::find()->where(['id' => 1])->one();
-
-        $carrinhoCompras = Carrinhocompra::find()->where(['profile_id' => $profile])->one();
-
-        $linhacarrinho = Linhacarrinho::find()->where(['carrinho_id' => $carrinhoCompras->id])->one();
-
-        $carrinhoCompras->quantidade = 2;
-
-        $carrinhoCompras->valorTotal = number_format($linhacarrinho->precoUnit, 2, '.', '');
-
-        $carrinhoCompras->profile_id = $profile->id;
-
-        $carrinhoCompras->save();*/
-
-        $carrinhoCompras = Carrinhocompra::find()->one();
+        $carrinhoCompras = Carrinhocompra::find()->where(['id' => 4])->one();
         $carrinhoCompras->quantidade = 2;
         $carrinhoCompras->valorTotal = 0.00;
         $carrinhoCompras->profile_id = Profile::find()->one()->id;
 
-        $carrinhoCompras->update();
+        $this->assertEquals(1, $carrinhoCompras->update(), "Falha ao atualizar o carrinho de compras");
     }
 
     public function testRemoveCarrinhoCompras()
     {
-        $carrinhoCompras = Carrinhocompra::find()->one();
+        $carrinhoCompras = Carrinhocompra::find()->where(['id' => 5])->one();
 
-        $carrinhoCompras->delete();
+        $this->assertEquals(1, $carrinhoCompras->delete(), "Falha ao eliminar o carrinho de compras");
     }
 
     public function testAddLinhacarrinho()
     {
-        /*$carrinho = Carrinhocompra::find()->one();
-
-        if (!$carrinho) {
-            $this->fail('Nenhum carrinho de compras encontrado.');
-            return;
-        }
-
-        $produto = Produto::find()->one();
-
-        if (!$produto) {
-            $this->fail('Nenhum produto encontrado.');
-            return;
-        }
-
-        $tamanho = Tamanho::find()->one();
-
-        if (!$tamanho) {
-            $this->fail('Nenhum tamanho encontrado.');
-            return;
-        }*/
-
         $linhacarrinho = new Linhacarrinho();
 
         $linhacarrinho->quantidade = 1;
@@ -126,9 +66,9 @@ class CarrinhocompraTest extends \Codeception\Test\Unit
         $linhacarrinho->valorIva = 0.06;
         $linhacarrinho->valorComIva = number_format($linhacarrinho->precoUnit + ($linhacarrinho->precoUnit * $linhacarrinho->valorIva), 2, '.', '');
         $linhacarrinho->subtotal = number_format($linhacarrinho->valorComIva * $linhacarrinho->quantidade, 2, '.', '');
-        $linhacarrinho->carrinhocompras_id = Carrinhocompra::find()->one()->id;
-        $linhacarrinho->produto_id = Produto::find()->one()->id;
-        $linhacarrinho->tamanho_id = Tamanho::find()->one()->id;
+        $linhacarrinho->carrinhocompras_id = 2;
+        $linhacarrinho->produto_id = 8;
+        $linhacarrinho->tamanho_id = 1;
 
         $this->assertTrue($linhacarrinho->save());
         $linhacarrinhoGuardar = Linhacarrinho::findOne($linhacarrinho->id);
@@ -138,59 +78,46 @@ class CarrinhocompraTest extends \Codeception\Test\Unit
 
     public function testUpdateLinhacarrinho()
     {
-        $linhacarrinho = Linhacarrinho::find()->one();
+        $linhacarrinho = Linhacarrinho::find()->where(['id' => 1])->one();
 
-        if ($linhacarrinho) {
-            $linhacarrinho->quantidade = 2;
-            $linhacarrinho->precoUnit = 14.99;
-            $linhacarrinho->valorIva = 0.06;
-            $linhacarrinho->valorComIva = 15.89;
-            $linhacarrinho->subtotal = $linhacarrinho->valorComIva * $linhacarrinho->quantidade;
+        $linhacarrinho->quantidade = 2;
+        $linhacarrinho->precoUnit = 14.99;
+        $linhacarrinho->valorIva = 0.06;
+        $linhacarrinho->valorComIva = 15.89;
+        $linhacarrinho->subtotal = $linhacarrinho->valorComIva * $linhacarrinho->quantidade;
 
-            $carrinho = Carrinhocompra::find()->one();
+        $carrinho = Carrinhocompra::find()->where(['id' => 2])->one();
 
-            if ($carrinho) {
-                $linhacarrinho->carrinhocompras_id = $carrinho->id;
-            } else {
-                $this->fail('Nenhum carrinho de compras encontrado.');
-                return;
-            }
-
-            $produto = Produto::find()->one();
-            if ($produto) {
-                $linhacarrinho->produto_id = $produto->id;
-            } else {
-                $this->fail('Nenhum produto encontrado.');
-                return;
-            }
-
-            $tamanho = Tamanho::find()->one();
-            if ($tamanho) {
-                $linhacarrinho->tamanho_id = $tamanho->id;
-            } else {
-                $this->fail('Nenhum tamanho encontrado.');
-                return;
-            }
-
-            $linhacarrinho->update();
+        if ($carrinho) {
+            $linhacarrinho->carrinhocompras_id = $carrinho->id;
         } else {
-            $this->fail('Nenhuma linha de carrinho encontrada.');
+            $this->fail('Nenhum carrinho de compras encontrado.');
+            return;
         }
+
+        $produto = Produto::find()->where(['id' => 8])->one();
+        if ($produto) {
+            $linhacarrinho->produto_id = $produto->id;
+        } else {
+            $this->fail('Nenhum produto encontrado.');
+            return;
+        }
+
+        $tamanho = Tamanho::find()->where(['id' => 1])->one();
+        if ($tamanho) {
+            $linhacarrinho->tamanho_id = $tamanho->id;
+        } else {
+            $this->fail('Nenhum tamanho encontrado.');
+            return;
+        }
+
+        $this->assertEquals(1, $linhacarrinho->update(), "Falha ao atualizar o carrinho de compras");
     }
 
     public function testRemoveLinhacarrinho()
     {
-        $carrinho = Carrinhocompra::find()->where(['profile_id' => 1])->one();
-        if ($carrinho) {
-            $linhacarrinho = Linhacarrinho::find()->where(['carrinhocompras_id' => $carrinho->id])->one();
-            if ($linhacarrinho) {
-                $linhacarrinho->delete();
-            } else {
-                $this->fail('Nenhuma linha de carrinho encontrada para deletar.');
-            }
-        } else {
-            $this->fail('Nenhum carrinho de compras encontrado.');
-        }
+        $linhacarrinho = Linhacarrinho::find()->where(['id' => 1])->one();
+        $this->assertEquals(1, $linhacarrinho->delete(), "Falha ao eliminar a linha no carrinho de compras");
     }
 
 }

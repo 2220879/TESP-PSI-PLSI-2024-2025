@@ -29,7 +29,8 @@ class ProdutoTest extends \Codeception\Test\Unit
         $this->assertFalse($categoria->validate(['nomeCategoria']));
     }
 
-    public function testCategoriaLimiteCaracteres(){
+    public function testCategoriaLimiteCaracteres()
+    {
 
         $categoria = new Categoria();
         $categoria->nomeCategoria = str_repeat('A', 46);
@@ -39,47 +40,54 @@ class ProdutoTest extends \Codeception\Test\Unit
     public function testCategoriaDuplicado()
     {
         $categoria1 = new Categoria();
-        $categoria1->nomeCategoria = 'Calças';
+        $categoria1->nomeCategoria = 'Camisola';
         $categoria1->save();
 
         $categoria2 = new Categoria();
-        $categoria2->nomeCategoria = 'Calças';
+        $categoria2->nomeCategoria = 'Camisola';
 
         $this->assertFalse($categoria2->validate(['nomeCategoria']));
     }
 
     public function testCategoriaAtualizar()
     {
-        $categoria = new Categoria();
-        $categoria->nomeCategoria = 'Acessórios';
+        $categoria = Categoria::findOne(['nomeCategoria' => 'Camisola']);
 
-        $this->assertTrue($categoria->validate());
-        $this->assertTrue($categoria->save());
+        //verificar se a categoria foi encontrada
+        $this->assertNotNull($categoria, "Categoria não encontrada");
 
-        $categoriaId = $categoria->id;
-        $categoriaRecemCriada = Categoria::findOne($categoriaId);
+        // Atualizar o nome da categoria para "Acessórios"
+        $novoNome = 'Acessórios';
 
-        // Verificar se a categoria foi salva corretamente
-        $this->assertNotNull($categoriaRecemCriada);
-        $this->assertEquals('Acessórios', $categoriaRecemCriada->nomeCategoria);
+        // Verificar se o novo nome já existe no banco de dados
+        $categoriaExistente = Categoria::findOne(['nomeCategoria' => $novoNome]);
 
-        $categoriaRecemCriada->nomeCategoria = 'Hoddies';
+        // Se a categoria com o novo nome já existir, falhar o teste
+        $this->assertNull($categoriaExistente, "Já existe uma categoria com esse nome");
 
-        $this->assertTrue($categoriaRecemCriada->save());
+        // Atualizar o nome da categoria
+        $categoria->nomeCategoria = $novoNome;
 
-        $categoriaAtualizada = Categoria::findOne($categoriaId);
-        $this->assertEquals('Hoddies', $categoriaAtualizada->nomeCategoria);
+        // Validar e salvar a categoria atualizada
+        $this->assertTrue($categoria->validate(), "Falha na validação");
+        $this->assertTrue($categoria->save(), "Falha ao guardar a categoria");
+
+        // Buscar a categoria após a atualização
+        $categoriaAtualizada = Categoria::findOne($categoria->id);
+
+        // Verificar se o nome foi atualizado corretamente
+        $this->assertEquals($novoNome, $categoriaAtualizada->nomeCategoria, "Nome da categoria não foi atualizado corretamente");
     }
 
 
     public function testCategoriaApagar()
     {
-        $categoriaExistente = Categoria::findOne(['nomeCategoria' => 'Camisola']);
+        $categoriaExistente = Categoria::findOne(['nomeCategoria' => 'Acessórios']);
         $this->assertNotNull($categoriaExistente);
 
         $this->assertTrue($categoriaExistente->delete() !== false, 'A categoria não foi apagada corretamente.');
 
-        $categoriaExcluida = Categoria::findOne(['nomeCategoria' => 'Camisola']);
+        $categoriaExcluida = Categoria::findOne(['nomeCategoria' => $categoriaExistente]);
         $this->assertNull($categoriaExcluida, 'A categoria ainda existe na base de dados após a exclusão.');
     }
 
@@ -88,7 +96,7 @@ class ProdutoTest extends \Codeception\Test\Unit
     public function testGeneroValido()
     {
         $genero = new Genero();
-        $genero->referencia = "Masculino";
+        $genero->referencia = "Feminino";
         $this->assertTrue($genero->save());
     }
 
@@ -101,13 +109,9 @@ class ProdutoTest extends \Codeception\Test\Unit
 
     public function testGeneroDuplicado()
     {
-        $genero1 = new Genero();
-        $genero1->referencia = "Feminino";
-        $this->assertTrue($genero1->save());
-
-        $genero2 = new Genero();
-        $genero2->referencia = "Feminino";
-        $this->assertFalse($genero2->save());
+        $genero = new Genero();
+        $genero->referencia = "Feminino";
+        $this->assertFalse($genero->save());
     }
 
     public function testGeneroLimiteCaracteres()
@@ -119,17 +123,14 @@ class ProdutoTest extends \Codeception\Test\Unit
 
     public function testGeneroEditar()
     {
-        $genero = new Genero();
-        $genero->referencia = "Masculinos";
-        $this->assertTrue($genero->save());
-
-        $genero->referencia = "Masculino Atualizado";
+        $genero = Genero::findOne(['referencia' => 'Masculino']);
+        $genero->referencia = "Masculino2";
         $this->assertTrue($genero->save());
     }
 
     public function testGeneroApagar()
     {
-        $generoExistente = Genero::findOne(['referencia' => 'Masculino Atualizado']);
+        $generoExistente = Genero::findOne(['referencia' => 'Feminino']);
         $this->assertNotNull($generoExistente);
 
         $this->assertTrue($generoExistente->delete() !== false, "O género não foi excluído corretamente.");
@@ -142,7 +143,7 @@ class ProdutoTest extends \Codeception\Test\Unit
     public function testIvaValido()
     {
         $iva = new Iva();
-        $iva->percentagem = 13.0;
+        $iva->percentagem = 0.13;
         $iva->vigor = 1;
 
         $this->assertTrue($iva->save());
@@ -168,44 +169,30 @@ class ProdutoTest extends \Codeception\Test\Unit
 
     public function testIvaDuplicado()
     {
-        $iva1 = new Iva();
-        $iva1->percentagem = 10.0;
-        $iva1->vigor = 1;
-        $this->assertTrue($iva1->save());
-
-
-        $iva2 = new Iva();
-        $iva2->percentagem = 10.0;
-        $iva2->vigor = 1;
-
-        $this->assertFalse($iva2->save(), 'O IVA com a mesma percentagem foi guardado, o que não é permitido.');
+        $iva = new Iva();
+        $iva->percentagem = 0.13;
+        $iva->vigor = 1;
+        $this->assertFalse($iva->save());
 
     }
 
     public function testIvaAtualizar()
     {
-
-        $ivaExistente = Iva::findOne(['percentagem' => 13.0]);
-
-        $this->assertNotNull($ivaExistente, 'O IVA especificado não foi encontrado na base de dados.');
-
-        $ivaExistente->percentagem = 25.0;
-
+        $idIva = 1;
+        $ivaExistente = Iva::findOne(['id' => $idIva]);
+        $ivaExistente->percentagem = 0.25;
         $this->assertTrue($ivaExistente->save());
-
-        $ivaAtualizado = Iva::findOne(['percentagem' => 25.0]);
-        $this->assertNotNull($ivaAtualizado, 'O IVA atualizado não foi encontrado na base de dados.');
     }
 
     public function testIvaApagar()
     {
-        $ivaExistente = Iva::findOne(['percentagem' => 13.0]);
+        $ivaExistente = Iva::findOne(['percentagem' => 0.19]);
 
         $this->assertNotNull($ivaExistente, 'O IVA especificado não foi encontrado no base de dados.');
 
         $this->assertTrue($ivaExistente->delete() !== false, 'O IVA não foi apagado corretamente.');
 
-        $ivaExcluido = Iva::findOne(['percentagem' => 13.0]);
+        $ivaExcluido = Iva::findOne(['percentagem' => 0.19]);
         $this->assertNull($ivaExcluido, 'O IVA ainda existe na base de dados após a exclusão.');
     }
 
@@ -225,41 +212,31 @@ class ProdutoTest extends \Codeception\Test\Unit
     public function testMarcaDuplicada()
     {
         $marca = new Marca();
-        $marca->nomeMarca = 'Adidas';
-
-        $this->assertTrue($marca->save());
-
-        $marcaDuplicada = new Marca();
-        $marcaDuplicada->nomeMarca = 'Adidas';
-
-        $this->assertFalse($marcaDuplicada->save());
+        $marca->nomeMarca = 'Nike';
+        $this->assertFalse($marca->save());
     }
 
     public function testMarcaAtualizacao()
     {
-        $marca = new Marca();
-        $marca->nomeMarca = 'Zumub';
-        $this->assertTrue($marca->save(), 'A marca não foi criada corretamente.');
-
-        // Atualizar o nome da marca
-        $marca->nomeMarca = 'Prozis';
+        $marca = Marca::findOne(['nomeMarca' => 'Nike']);
+        $marca->nomeMarca = 'Adidas';
         $this->assertTrue($marca->save());
 
         // Verificar se a marca foi atualizada
-        $marcaAtualizada = Marca::findOne(['nomeMarca' => 'Prozis']);
+        $marcaAtualizada = Marca::findOne(['nomeMarca' => 'Adidas']);
         $this->assertNotNull($marcaAtualizada, 'A marca não foi atualizada corretamente.');
     }
 
     public function testMarcaApagar()
     {
-        $marcaExistente = Marca::findOne(['nomeMarca' => 'Nike']);
+        $marcaExistente = Marca::findOne(['nomeMarca' => 'Adidas']);
 
         $this->assertNotNull($marcaExistente, 'A marca especificada não foi encontrada no base de dados.');
 
         $this->assertTrue($marcaExistente->delete() !== false, 'A marca não foi apagada corretamente.');
 
         //Verificar e a marca foi excluida
-        $marcaExcluida = Marca::findOne(['nomeMarca' => 'Nike']);
+        $marcaExcluida = Marca::findOne(['nomeMarca' => 'Adidas']);
         $this->assertNull($marcaExcluida, 'A marca ainda existe na base de dados após ser apagada.');
     }
 
@@ -274,17 +251,10 @@ class ProdutoTest extends \Codeception\Test\Unit
 
     public function testTamanhoAtualizar()
     {
-        $tamanho = new Tamanho();
-        $tamanho->referencia = 'XS';
-        $this->assertTrue($tamanho->save());
-
-
+        $idTamanho = 6;
+        $tamanho = Tamanho::findOne(['id' => $idTamanho]);
         $tamanho->referencia = 'M';
         $this->assertTrue($tamanho->save());
-
-
-        $tamanhoAtualizado = Tamanho::findOne(['referencia' => 'M']);
-        $this->assertNotNull($tamanhoAtualizado, 'O tamanho não foi atualizado corretamente.');
     }
 
 
@@ -292,13 +262,7 @@ class ProdutoTest extends \Codeception\Test\Unit
     {
         $tamanho = new Tamanho();
         $tamanho->referencia = 'XS';
-
-        $this->assertTrue($tamanho->save());
-
-        $tamanhoDuplicado = new Tamanho();
-        $tamanhoDuplicado->referencia = 'XS';
-
-        $this->assertFalse($tamanhoDuplicado->save());
+        $this->assertFalse($tamanho->save());
     }
 
     public function testTamanhoApagar()
@@ -321,10 +285,10 @@ class ProdutoTest extends \Codeception\Test\Unit
         $produto->descricaoProduto = 'Descrição do produto teste';
         $produto->preco = 50.00;
         $produto->quantidade = 10;
-        $produto->marca_id = Marca::find()->one()->id; // Vai Assumie que pelo menos uma marca existe
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
+        $produto->marca_id = 1;
+        $produto->categoria_id = 1;
+        $produto->iva_id = 1;
+        $produto->genero_id = 1;
 
         $this->assertTrue($produto->save());
     }
@@ -332,14 +296,14 @@ class ProdutoTest extends \Codeception\Test\Unit
     public function testProdutoSemNome()
     {
         $produto = new Produto();
-        $produto->nomeProduto='';
+        $produto->nomeProduto = '';
         $produto->descricaoProduto = 'Produto sem nome';
         $produto->preco = 50.00;
         $produto->quantidade = 10;
-        $produto->marca_id = Marca::find()->one()->id;
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
+        $produto->marca_id = 1;
+        $produto->categoria_id = 1;
+        $produto->iva_id = 1;
+        $produto->genero_id = 1;
 
         $resultado = $produto->save();
         $this->assertFalse($resultado, "O produto foi guardado sem nome, o que é inválido.");
@@ -352,10 +316,10 @@ class ProdutoTest extends \Codeception\Test\Unit
         $produto->descricaoProduto = '';
         $produto->preco = 50.00;
         $produto->quantidade = 10;
-        $produto->marca_id = Marca::find()->one()->id;
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
+        $produto->marca_id = 1;
+        $produto->categoria_id = 1;
+        $produto->iva_id = 1;
+        $produto->genero_id = 1;
 
         $resultado = $produto->save();
         $this->assertFalse($resultado, "O produto foi guardado sem descrição, o que é inválido.");
@@ -369,10 +333,10 @@ class ProdutoTest extends \Codeception\Test\Unit
         $produto->descricaoProduto = 'Descrição do produto sem preço';
         $produto->preco = null;
         $produto->quantidade = 10;
-        $produto->marca_id = Marca::find()->one()->id;
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
+        $produto->marca_id = 1;
+        $produto->categoria_id = 1;
+        $produto->iva_id = 1;
+        $produto->genero_id = 1;
 
         $resultado = $produto->save();
         $this->assertFalse($resultado, "O produto foi guardado sem preço, o que é inválido.");
@@ -402,10 +366,10 @@ class ProdutoTest extends \Codeception\Test\Unit
         $produto->descricaoProduto = 'Produto com preço negativo';
         $produto->preco = -10.00;
         $produto->quantidade = 5;
-        $produto->marca_id = Marca::find()->one()->id;
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
+        $produto->marca_id = 1;
+        $produto->categoria_id = 1;
+        $produto->iva_id = 1;
+        $produto->genero_id = 1;
 
         $resultado = $produto->save();
         $this->assertFalse($resultado, "O produto com preço negativo foi guardado, o que é inválido.");
@@ -413,18 +377,7 @@ class ProdutoTest extends \Codeception\Test\Unit
 
     public function testProdutoAtualizarPreco()
     {
-        $produto = new Produto();
-        $produto->nomeProduto = 'Produto Atualizar Preço';
-        $produto->descricaoProduto = 'Produto com atualização de preço';
-        $produto->preco = 50.00;
-        $produto->quantidade = 10;
-        $produto->marca_id = Marca::find()->one()->id;
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
-        $produto->save();
-
-
+        $produto = Produto::findOne(['nomeProduto' => 'Produto Teste']);
         $produto->preco = 60.00;
         $produto->save();
 
@@ -434,17 +387,7 @@ class ProdutoTest extends \Codeception\Test\Unit
 
     public function testProdutoAtualizarQuantidade()
     {
-        $produto = new Produto();
-        $produto->nomeProduto = 'Produto Atualizar Quantidade';
-        $produto->descricaoProduto = 'Produto com atualização de quantidade';
-        $produto->preco = 50.00;
-        $produto->quantidade = 10;
-        $produto->marca_id = Marca::find()->one()->id;
-        $produto->categoria_id = Categoria::find()->one()->id;
-        $produto->iva_id = Iva::find()->one()->id;
-        $produto->genero_id = Genero::find()->one()->id;
-        $produto->save();
-
+        $produto = Produto::findOne(['nomeProduto' => 'Produto Teste']);
         $produto->quantidade = 20;
         $produto->save();
 

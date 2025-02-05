@@ -27,12 +27,12 @@ class UserTest extends \Codeception\Test\Unit
     // tests
     public function testCriarUtilizador()
     {
-        $username = 'Pedro Francisco';
+        $username = 'Tuga Português';
         $password = 'Admin*1234567';
-        $email = 'pedrofrancisco@gmail.com';
-        $nif = 123456789;
-        $morada = 'Leiria';
-        $telefone = 912345678;
+        $email = 'portugues@gmail.com';
+        $nif = 641255888;
+        $morada = 'Marinha Grande';
+        $telefone = 963547899;
 
         $user = new User();
 
@@ -57,15 +57,21 @@ class UserTest extends \Codeception\Test\Unit
             $profile->telefone = $telefone;
             $profile->user_id = $user->id;
             $this->assertTrue($profile->save());
+
+            $carrinhoCompras = new Carrinhocompra();
+            $carrinhoCompras->quantidade = 0;
+            $carrinhoCompras->valorTotal = 0.00;
+            $carrinhoCompras->profile_id = $profile->id;
+            $this->assertTrue($carrinhoCompras->save());
         }
     }
 
     public function testEditarUtilizadorProfile()
     {
-        $username = 'Pedro Francisco';
+        $username = 'Tuga Português';
         $password = 'Admin*1234567';
         $morada = 'Leiria';
-        $telefone = 912345678;
+        $telefone = 111478963;
 
         $user = User::findOne(['username' => $username]);
 
@@ -89,7 +95,7 @@ class UserTest extends \Codeception\Test\Unit
 
     public function testEditarUser()
     {
-        $username = 'Pedro Francisco';
+        $username = 'Tuga Português';
 
         $user = User::findOne(['username' => $username]);
 
@@ -97,8 +103,8 @@ class UserTest extends \Codeception\Test\Unit
             $this->fail('Utilizador ' . $username . ' não encontrado');
         }
 
-        $novoUsername = 'Tuga Francisco';
-        $novoEmail = 'pedrofrancisco2@gmail.com';
+        $novoUsername = 'Tuga Português2';
+        $novoEmail = 'portugal2@gmail.com';
         $password = 'Admin*1234567';
 
         if (User::find()->where(['username' => $novoUsername])->exists()) {
@@ -116,7 +122,7 @@ class UserTest extends \Codeception\Test\Unit
 
     public function testEditarProfile()
     {
-        $username = 'Pedro Francisco';
+        $username = 'Tuga Português2';
 
         $user = User::findOne(['username' => $username]);
 
@@ -124,9 +130,9 @@ class UserTest extends \Codeception\Test\Unit
             $this->fail('Utilizador ' . $username . ' não encontrado');
         }
 
-        $novoNif = '123456789';
-        $novaMorada = 'Leiria';
-        $novoTelefone = '912345678';
+        $novoNif = '852146320';
+        $novaMorada = 'Porto Mós';
+        $novoTelefone = '236541052';
 
         if (Profile::find()->where(['nif' => $novoNif, 'user_id' => $user->id])->exists()) {
             $this->fail('O nif inserido já está associado a outro Utilizador.');
@@ -143,7 +149,7 @@ class UserTest extends \Codeception\Test\Unit
 
     public function testApagarUtilizador()
     {
-        $username = 'Pedro Francisco';
+        $username = 'Tuga Português2';
 
         $user = User::findOne(['username' => $username]);
 
