@@ -568,10 +568,27 @@ class CarrinhocompraController extends ActiveController
         $telefone = Yii::$app->request->post('telefone');
 
         // Verifica se os campos obrigatórios estão presentes
-        if (empty($metodoPagamentoId) || empty($metodoEntregaId) || empty($email) || empty($morada) || empty($telefone)) {
+        if (empty($metodoPagamentoId)) {
             Yii::$app->response->statusCode = 400;
-            return ['message' => 'Todos os campos devem ser preenchidos.'];
+            return ['message' => 'Selecione o método de pagamento.'];
         }
+        if (empty($metodoEntregaId)) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Selecione o método de entrega.'];
+        }
+        if (empty($email)) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Preencha o campo de email.'];
+        }
+        if (empty($morada)) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Preencha o campo de morada.'];
+        }
+        if (empty($telefone)) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'Preencha o campo de telefone.'];
+        }
+
         // Cria a encomenda
         $encomenda = new Encomenda();
         $encomenda->data = date('Y-m-d');

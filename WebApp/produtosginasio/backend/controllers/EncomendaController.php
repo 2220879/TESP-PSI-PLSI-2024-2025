@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use common\models\Encomenda;
 use common\models\EncomendaSearch;
+use common\models\Fatura;
+use common\models\Linhafatura;
 use common\models\Profile;
 use common\models\User;
 use Yii;
@@ -27,10 +29,10 @@ class EncomendaController extends Controller
             [
                 'access' => [
                     'class' => AccessControl::class,
-                    'only' => ['index', 'view', 'update', 'model'],
+                    'only' => ['index', 'view', 'update', 'detalhes', 'model'],
                     'rules' => [
                         [
-                            'actions' => ['index', 'view', 'update', 'model'],
+                            'actions' => ['index', 'view', 'update', 'detalhes', 'model'],
                             'allow' => true,
                             'roles' => ['admin', 'funcionario'],
                         ],
@@ -70,9 +72,10 @@ class EncomendaController extends Controller
      */
     public function actionView($id)
     {
+        $fatura = Fatura::find()->where(['encomenda_id' => $id])->one();
         return $this->render('view', [
             'model' => $this->findModel($id),
-        ]);
+            'metodoEntrega' => $fatura->metodoentrega->descricao]);
     }
 
     /**
@@ -96,6 +99,16 @@ class EncomendaController extends Controller
         return $this->render('update', [
             'model' => $model,
             'status' => $status,
+        ]);
+    }
+
+    public function actionDetalhes($id)
+    {
+        $fatura = Fatura::find()->where(['encomenda_id' => $id])->one();
+        $linhas = Linhafatura::find()->where(['fatura_id' => $fatura->id])->all();
+
+        return $this->render('detalhes', [
+            'produtos' => $linhas,
         ]);
     }
 

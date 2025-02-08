@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Atualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Detalhes', ['detalhes', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?= DetailView::widget([
@@ -26,6 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'morada:ntext',
             'telefone',
             'email:ntext',
+            [
+                'attribute' => 'metodoentrega_id',
+                'value' => $metodoEntrega,
+                'label' => 'Método Entrega',
+            ],
             [
                 'attribute' => 'estadoEncomenda:ntext',
                 'value' => function ($model) {

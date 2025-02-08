@@ -100,7 +100,7 @@ class SiteController extends Controller
         $model = new LoginForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            // Verifica diretamente se o usuário tem os papéis de 'admin' ou 'funcionario'
+            // Verifica diretamente se o utilizador tem os papéis de 'admin' ou 'funcionario'
             if (Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'admin') ||
                 Yii::$app->authManager->checkAccess(Yii::$app->user->id, 'funcionario')) {
                 return $this->goBack();
