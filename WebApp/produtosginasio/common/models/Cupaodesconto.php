@@ -61,7 +61,7 @@ class Cupaodesconto extends \yii\db\ActiveRecord
         return $this->hasMany(Usocupao::class, ['cupaodesconto_id' => 'id']);
     }
 
-    public function afterSave($insert, $changedAttributes)
+    /*public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
 
@@ -112,5 +112,5 @@ class Cupaodesconto extends \yii\db\ActiveRecord
         } else {
             file_put_contents("debug.output", "Time out");
         }
-    }
+    }*/
 }
